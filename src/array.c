@@ -50,7 +50,7 @@ static void down_and_free(array **a) {
 	}
 }
 
-int array_remove(array **a, int i) {
+int array_remove(array **a, int i, int *res) {
 	array *ap;
 	int *head;
 	
@@ -64,6 +64,7 @@ int array_remove(array **a, int i) {
 		return ERROR;
 	// switch the element to be removed with the last element
 	// of the array
+	*res = head[i];
 	head[i] = head[ap->size - 1];
 	ap->size--;
 
@@ -71,7 +72,7 @@ int array_remove(array **a, int i) {
 	return OK;
 }
 
-int array_delete(array **a, int i) {
+int array_delete(array **a, int i, int *res) {
 	array *ap;
 	int *head;
 
