@@ -4,32 +4,30 @@
 #include "array.h"
 #include "system.h"
 
-int stack_push(stack **s, int x) {
-	stack *sp;
-
-	if (*s == NULL) {
-		sp = *s = malloc(sizeof(stack));
-		if (sp == NULL)
-			return ERROR;
-		(*s)->a = NULL;
-	}
-	sp = *s;
+int stack_init(stack *s, size_t tsize) {
+	array *a = s->a;
 	
-	return array_add(&sp->a, x);
+	return array_init(a, tsize);
 }
 
-int stack_pop(stack **s) {
-	stack *sp = *s;
-	int res;
-	
-	array_remove(&sp->a, sp->a->size - 1, &res);
-	return res;
+int stack_push(stack *s, void *x) {
+	array *a = s->a;
+	return array_add(a, x);
 }
 
-int stack_size(stack *s) {
-	// poping the last element from the stack will
-	// leave the array pointer as NULL
-	if (s->a == NULL)
-		return 0;
-	return s->a->size;
+void *stack_pop(stack *s) {
+	array *a = s->a;
+	size_t size = array_size(a);
+	void *ret = array_value(a, size - 1);
+
+	array_remove(a, size - 1);
+
+	return ret;
+}
+
+size_t stack_size(stack *s) {
+	array *a = s->a;
+	size_t size = a->size;
+
+	return size;
 }
