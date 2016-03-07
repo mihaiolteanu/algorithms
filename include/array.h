@@ -1,5 +1,22 @@
 /* array.h 
-   Implementation of a resizable array.
+   Implementation of a generic resizable array.
+   
+Example for a resizable int array, if casting all over the place
+is not what you want:
+
+#include "array.h"
+static int array_int_init(array *a) {
+	return array_init(a, sizeof(int));
+}
+
+static int array_int_add(array *a, int new) {
+	return array_add(a, &new);
+}
+
+static int array_int_value(array *a, size_t index) {
+	return *(int *)array_value(a, index);
+}
+
 */
 
 #ifndef ARRAY_H
@@ -10,39 +27,43 @@
 
 // auto-resizable array structure
 typedef struct {
-	int size;   // number of elements currently in the array
-	int cap;    // maximum number of elements allowed in the array
-	int *head;  // first element of the array
+	size_t size;  // number of elements currently in the array
+	size_t cap;   // maximum number of elements allowed
+	size_t tsize; // size of one data element
+	void *data;   // array elements
 } array;
 
-/* add a new entry to the array; resize array if necessary
-used to initialized the array as well. *a should be a null
-pointer the first time the function is called. Return OK on success.*/
-extern int array_add(array **a, int v);
+/* Initialize the array with sizeof of one of the elements
+that it will hold. Returns ERROR if array could not be initialized,
+OK otherwise*/
+extern int array_init(array *a, size_t elem_size);
 
-/* remove an element from the array at the given index.
-this is a O(1) operation, as the element to be removed is swapped
-with the last element of the array, downsizing at the same time,
-if necessary. *a is assigned to NULL if this is the last element
-in the array. Return OK on success. Result is stored in res. */
-extern int array_remove(array **a, int i, int *res);
+/* Add the contents at the specified address, elem_address, to
+the array and increases the array size. The number of bytes 
+copied depends on the elem_size the array was initialized with.
+If the array is full, it doubles it's capacity. If the capacity
+cannot be increased, return ERROR. Return OK otherwise.*/
+extern int array_add(array *a, void *elem_addr);
 
-/* remove an element from the array at the given index.
-this is an O(n) operation, as the elements following the removed
-element at index i are shifted to the left to fill the position.
-Returns OK on success, ERROR on failure. Result is stored in res. */
-extern int array_delete(array **a, int i, int *res);
+/* Return the address of the index position in the array. If
+the index is greater than the array size, or if the index is
+negative, return NULL. The number of safely accesible bytes
+at the return address is equal to the elem_size specified
+when array_init was called. */
+extern void *array_value(array *a, size_t index);
 
-// get the value stored in the array at index i
-extern int array_value(array *a, int i);
+/* Remove element at index from the array. Downsize the array
+if needed. The array capacity will not get lower than the initial
+capacity (INIT_CAP). If the index is greater than the array size or if
+the index is negative, the function returns OK and the array is
+not modified. Returns ERROR is the array cannot be downsized. */
+extern int array_remove(array *a, size_t index);
 
-// return the number of elements in the array
+/* Return the number of elements currently held into the array.*/
 extern int array_size(array *a);
 
-// return the array capacity
+/* Return the maximum number of elements the current array can
+hold.*/
 extern int array_cap(array *a);
-
-// pretty-print the array
-extern void array_print(array *a);
 
 #endif // ARRAY_H

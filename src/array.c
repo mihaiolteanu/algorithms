@@ -1,114 +1,102 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "array.h"
 #include "system.h"
 
 // downsize and free the array, if needed.
 // to be called from delete/remove/free/etc operations
-static void down_and_free(array **a);
+static int downsize_if_needed(array *a);
+// double tha array capacity, if needed
+static int resize_if_needed(array *a);
 
-int array_add(array **a, int v) {
-	array *ap;
-
-	if (*a == NULL) {          // initialization
-		ap = *a = malloc(sizeof(array));
-		if (ap == NULL)
-			return ERROR;
-		ap->head = malloc(INIT_CAP*sizeof(int));
-		if (ap->head == NULL)
-			return ERROR;
-		ap->size = 0;
-		ap->cap = INIT_CAP;
-	} else
-		ap = *a;
-	
-	if (ap->size == ap->cap) { // array is full, so double its capacity
-		int *tmp_head = realloc(ap->head, 2*ap->cap*sizeof(int));
-		if (tmp_head == NULL)
-			return ERROR;
-		ap->head = tmp_head;
-		ap->cap = 2*ap->cap;
-	}
-	ap->head[ap->size++] = v;
+int array_init(array *a, size_t elem_size) {
+	a->size = 0;
+	a->cap = INIT_CAP;
+	a->tsize = elem_size;
+	a->data = malloc(INIT_CAP*elem_size);
+	if (a->data == NULL)
+		return ERROR;
 	return OK;
 }
 
-static void down_and_free(array **a) {
-	array *ap = *a;
-
-	// downsize the array if needed
-	if (ap->size < ap->cap / 2) {
-		*a = realloc(*a, ap->cap / 2);
-		ap->cap = ap->cap / 2;
-	}
-
-	// free the space occupied by the array if needed
-	if (ap->size == 0) {
-		free(ap->head);
-		free(ap);
-		*a = NULL;
-	}
+int array_add(array *a, void *elem_addr) {
+	memcpy((char *)a->data + a->size*a->tsize,
+	       (char *)elem_addr,
+	       a->tsize);
+	a->size++;
+	return resize_if_needed(a);
 }
 
-int array_remove(array **a, int i, int *res) {
-	array *ap;
-	int *head;
-	
-	if (*a == NULL)
-		return ERROR;
+void *array_value(array *a, size_t index) {
+	size_t size = a->size;
+	size_t tsize = a->tsize;
+	char *data = (char *)a->data;
 
-	ap = *a;
-	head = ap->head;
+	if (index >= size || index < 0)
+		return NULL;
 
-	if (ap->size <= i)
-		return ERROR;
-	// switch the element to be removed with the last element
-	// of the array
-	*res = head[i];
-	head[i] = head[ap->size - 1];
-	ap->size--;
-
-	down_and_free(a);
-	return OK;
+	return data + index*tsize;
 }
 
-int array_delete(array **a, int i, int *res) {
-	array *ap;
-	int *head;
+int array_remove(array *a, size_t index) {
+	size_t size = a->size;
+	size_t tsize = a->tsize;
+	char *data = (char *)a->data;
 
-	if (*a == NULL)
-		return ERROR;
+	if (index >= size || index < 0)
+		return OK;
 
-	ap = *a;
-	head = ap->head;
-
-	if (ap->size <= i)
-		return ERROR;
-
-	for (int j = i; j < ap->size - 1; j++)
-		head[j] = head[j+1];
-	ap->size--;
-
-	down_and_free(a);
-	return OK;
-}
-
-int array_value(array *a, int i) {
-	return (a->head)[i];
+	char *dest = data + index*tsize;
+	char *src = data + (index+1)*tsize;
+	size_t elems = (size - index - 1)*tsize;
+	memmove(dest, src, elems);
+	a->size--;
+	return downsize_if_needed(a);
 }
 
 int array_size(array *a) {
-	return a->size;
+	size_t size = a->size;
+
+	return size;
 }
 
 int array_cap(array *a) {
-	return a->cap;
+	size_t cap = a->cap;
+
+	return cap;
 }
 
-void array_print(array *a) {
-	if (a == NULL)
-		return;
-	for(int i = 0; i < a->size; i++)
-		printf("%d ", a->head[i]);
-	printf("\n");
+static int resize_if_needed(array *a) {
+	size_t size = a->size;
+	size_t cap = a->cap;
+	size_t tsize = a->tsize;
+	char *data = (char *)a->data;
+
+	if (size < cap)
+		return OK;
+	void *tmp_data = realloc(data, 2*cap*tsize);
+	if (tmp_data == NULL)
+		return ERROR;
+	a->cap = 2*cap;
+	a->data = tmp_data;
+	return OK;
+}
+
+static int downsize_if_needed(array *a) {
+	size_t size = a->size;
+	size_t cap = a->cap;
+	size_t tsize = a->tsize;
+	char *data = (char *)a->data;
+
+	// Downsize if number of elements are half the capacity
+	// and the capacity is not lower than the initial capacity
+	if (size >= cap/2 || cap <=INIT_CAP )
+		return OK;
+	void *tmp_data = realloc(data, cap*tsize/2);
+	if (tmp_data == NULL)
+		return ERROR;
+	a->cap = cap/2;
+	a->data = tmp_data;
+	return OK;
 }
