@@ -20,4 +20,8 @@ extern void *stack_pop(stack *s);
 
 extern size_t stack_size(stack *s);
 
+/* When done, free all the memory that the stack_init and stack_add
+might have requested from the system. */
+extern void stack_destroy(stack *s);
+
 #endif // STACK_H

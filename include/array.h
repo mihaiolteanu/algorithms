@@ -66,4 +66,8 @@ extern int array_size(array *a);
 hold.*/
 extern int array_cap(array *a);
 
+/* When done, free all the memory that the array_init and array_add
+might have requested from the system. */
+extern void array_destroy(array *a);
+
 #endif // ARRAY_H

@@ -67,6 +67,10 @@ int array_cap(array *a) {
 	return cap;
 }
 
+extern void array_destroy(array *a) {
+	free(a->data);
+}
+
 static int resize_if_needed(array *a) {
 	size_t size = a->size;
 	size_t cap = a->cap;

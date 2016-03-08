@@ -34,3 +34,11 @@ size_t stack_size(stack *s) {
 
 	return size;
 }
+
+extern void stack_destroy(stack *s) {
+	array *a = s->a;
+	
+	array_destroy(a);
+	free(a);
+}
+	
