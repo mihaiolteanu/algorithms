@@ -5,8 +5,11 @@
 #include "system.h"
 
 int stack_init(stack *s, size_t tsize) {
-	array *a = s->a;
-	
+	array *a;
+	a = s->a = malloc(sizeof(array));
+	if (a == NULL)
+		return ERROR;
+
 	return array_init(a, tsize);
 }
 
