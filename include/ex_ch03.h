@@ -12,4 +12,4 @@ otherwise. For full credit, identify the position of the first offending
 parenthesis if the string is not properly nested and balanced. */
 extern void ex_03_01(char *parens);
 
-//#endif // EX_CH03_H
+#endif // EX_CH03_H
