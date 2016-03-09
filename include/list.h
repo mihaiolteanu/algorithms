@@ -1,5 +1,74 @@
 /* linkedlist.h
-   Implementation of a generic linked list
+   Implementation of a generic linked list. Define your own functions
+   for specific data types, for ease of use.
+
+*** Example for a linked list of ints implementation, using the 
+*** generic one
+
+static void list_int_init(list *l) {
+	list_init(l, sizeof(int));
+}
+
+static int list_int_add(list *l, int elem) {
+	return list_add(l, &elem);
+}
+
+// return the address if found, null otherwise
+static int *list_int_search(list *l, int elem) {
+	return (int *)list_search(l, &elem, 0, sizeof(int));
+}
+
+
+*** Example for a linked list of a city structure containing size and
+*** population elements
+
+typedef struct city_t {
+	size_t size;
+	size_t pop;
+} city;
+
+static void list_city_init(list *l) {
+	list_init(l, sizeof(city));
+}
+
+static int list_city_add(list *l, city *c) {
+	return list_add(l, c);
+}
+
+static city *list_city_search_size(list *l, size_t size) {
+	return (city *)list_search(l,
+				   &size, 
+				   0, // (char *) city.size - (char *) city.size
+				   sizeof(size_t) // sizeof(city.size)
+		);
+}
+
+static city *list_city_search_pop(list *l, size_t pop) {
+	return (city *)list_search(l,
+				   &pop,
+				   4, // (char *)city.pop - (char *)city.size 
+				   sizeof(size_t) // sizeof(city.pop)
+		);
+}
+
+int main(void) {
+	list l;
+	city re = { 24, 34 };
+	city si = { 55, 150 };
+
+	list_city_init(&l);
+	list_city_add(&l, &re);
+	list_city_add(&l, &si);
+
+	city *result = list_city_search_pop(&l, 150);
+	if (result == NULL)
+		printf("not found\n");
+	else
+		printf("size: %d, pop: %d", result->size, result->pop);
+	printf("\n");
+
+	return 0;
+}
 */
 
 #ifndef LIST_H
@@ -34,9 +103,5 @@ extern int list_add(list *l, void *elem_addr);
 // elem_size  - this is the size of the element to be compared. For a
 //              struct, it is the size of the element to be compared.
 extern void *list_search(list *l, void *src_addr, size_t struct_pos, size_t elem_size);
-
-
-
-
 
 #endif // LIST_H

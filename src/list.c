@@ -14,7 +14,7 @@ int list_add(list *l, void *elem_addr) {
 	list_node *node = malloc(sizeof(list_node) + tsize);
 	if (node == NULL)
 		return ERROR;
-	printf("%d added at addr %p\n", *(int *)elem_addr, node);
+	printf("%d added at addr %p\n", *(int *)elem_addr, node->data);
 	memcpy((char *)&node->data, (char *)elem_addr, tsize);
 	node->next = l->head;
 	l->head = node;
@@ -27,7 +27,7 @@ void *list_search(list *l, void *src_addr, size_t struct_pos, size_t elem_size) 
 	while(node != NULL) {
 		char *data = node->data;
 		char *elem = data + struct_pos;
-		int same = strncmp((char *)src_addr + struct_pos,
+		int same = strncmp((char *)src_addr,
 				   elem, elem_size);
 		if (same == 0)
 			return data;
