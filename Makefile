@@ -1,19 +1,18 @@
 CC=gcc
 CFLAGS=-g -std=c99
-ROOT=..
 TARGET=main
-OBJS_PATH=$(ROOT)/obj
-SRCS_PATH=$(ROOT)/src
-INC=-I$(ROOT)/include
+OBJS_PATH=obj
+SRCS_PATH=src
+INC=-Iinclude
 
 OBJS:=$(patsubst $(SRCS_PATH)/%.c,$(OBJS_PATH)/%.o,$(wildcard $(SRCS_PATH)/*.c))
-HDRS:=$(ROOT)/include/*.h
+HDRS:=include/*.h
 
 $(TARGET) : $(OBJS) $(HDRS)
-	$(CC) $(INC) $(CFLAGS) -o main $(OBJS)
+	$(LINK.o) -o $@ $(OBJS)
 
 $(OBJS_PATH)/%.o : $(SRCS_PATH)/%.c $(HDRS) | $(OBJS_PATH)
-	$(CC) $(INC) $(CFLAGS) -c -o $@ $<
+	$(COMPILE.c) $(INC) -o $@ $<
 
 $(OBJS_PATH):
 	mkdir $@
