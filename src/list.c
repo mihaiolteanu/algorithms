@@ -14,7 +14,6 @@ int list_add(list *l, void *elem_addr) {
 	list_node *node = malloc(sizeof(list_node) + tsize);
 	if (node == NULL)
 		return ERROR;
-	printf("%d added at addr %p\n", *(int *)elem_addr, node->data);
 	memcpy((char *)&node->data, (char *)elem_addr, tsize);
 	node->next = l->head;
 	l->head = node;
