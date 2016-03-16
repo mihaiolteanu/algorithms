@@ -2,23 +2,6 @@
    Implementation of a generic linked list. Define your own functions
    for specific data types, for ease of use.
 
-*** Example for a linked list of ints implementation, using the 
-*** generic one
-
-static void list_int_init(list *l) {
-	list_init(l, sizeof(int));
-}
-
-static int list_int_add(list *l, int elem) {
-	return list_add(l, &elem);
-}
-
-// return the address if found, null otherwise
-static int *list_int_search(list *l, int elem) {
-	return (int *)list_search(l, &elem, 0, sizeof(int));
-}
-
-
 *** Example for a linked list of a city structure containing size and
 *** population elements
 
