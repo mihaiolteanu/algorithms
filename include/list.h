@@ -78,13 +78,17 @@ extern int list_add(list *l, void *elem_addr);
 // l          - list pointer
 // src_addr   - address of element to be searched (possible the address of
 //              a struct variable
-// struct_pos - address relative to the src_addr from which to compare
+// pos        - address relative to the src_addr from which to compare
 //              if zero, compare the whole address. For a struct, compare
 //              only that element of the struct, and this value should be
 //              the address of the element minus the address of the struct
 //              variable.
 // elem_size  - this is the size of the element to be compared. For a
 //              struct, it is the size of the element to be compared.
-extern void *list_search(list *l, void *src_addr, size_t struct_pos, size_t elem_size);
+// Returns the address of the searched item, NULL if not found.
+// *return_addr == *(src_addr + pos)
+extern void *list_search(list *l, void *src_addr, size_t pos, size_t elem_size);
+
+extern void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size);
 
 #endif // LIST_H
