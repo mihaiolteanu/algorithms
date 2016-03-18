@@ -3,6 +3,12 @@
 #include "list.h"
 #include "system.h"
 
+// Find if elem_size of bytes at src_addr are equal to elem_size of bytes
+// starting at struct_pos bytes past the node.
+static int elem_compare(void *src_addr, list_node *node, size_t struct_pos, size_t elem_size);
+// Free the memory allocated for node.
+static void node_free(list_node *node);
+
 void list_init(list *l, size_t elem_size) {
 	l->tsize = elem_size;
 	l->head = NULL;
@@ -24,13 +30,37 @@ void *list_search(list *l, void *src_addr, size_t struct_pos, size_t elem_size) 
 	list_node *node = l->head;
 
 	while(node != NULL) {
-		char *data = node->data;
-		char *elem = data + struct_pos;
-		int same = strncmp((char *)src_addr,
-				   elem, elem_size);
-		if (same == 0)
-			return data;
+		if (elem_compare(src_addr, node, struct_pos, elem_size) == 0)
+			return node->data;
 		node = node->next;
 	}
 	return NULL;
 }
+
+void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size) {
+	list_node **nodepp = &l->head;
+	
+	while(*nodepp != NULL) {
+		if (elem_compare(src_addr, *nodepp, pos, elem_size) == 0) {
+			list_node *old_elem = *nodepp;
+			*nodepp = (*nodepp)->next; // Relink
+			node_free(old_elem);
+			return;
+		}
+		nodepp = &(*nodepp)->next;
+	}
+	return;
+}
+
+static void node_free(list_node *node) {
+	free(node);
+}
+
+static int elem_compare(void *src_addr, list_node *node, size_t struct_pos, size_t elem_size) {
+	char *data = node->data;
+	char *elem = data + struct_pos;
+	return strncmp((char *)src_addr,
+		       elem, elem_size);
+}
+
+
