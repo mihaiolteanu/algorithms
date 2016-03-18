@@ -8,6 +8,9 @@
 static int elem_compare(void *src_addr, list_node *node, size_t struct_pos, size_t elem_size);
 // Free the memory allocated for node.
 static void node_free(list_node *node);
+// Helper function to recursively reverse a linked list. To be used in a helper
+// function
+static void list_reverse_rec_local(list *l, list_node *prev, list_node *node);
 
 void list_init(list *l, size_t elem_size) {
 	l->tsize = elem_size;
@@ -66,6 +69,19 @@ void list_reverse(list *l) {
 		nodep = next;
 	}
 	l->head = prev;
+}
+
+static void list_reverse_rec_local(list *l, list_node *prev, list_node *node) {
+	if (node == NULL)
+		return; // Nothing to reverse
+	l->head = node;
+	if (node->next != NULL)
+		list_reverse_rec_local(l, node, node->next);
+	node->next = prev;
+}
+
+void list_reverse_rec(list *l) {
+	list_reverse_rec_local(l, NULL, l->head);
 }
 
 static void node_free(list_node *node) {

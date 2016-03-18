@@ -91,6 +91,10 @@ extern void *list_search(list *l, void *src_addr, size_t pos, size_t elem_size);
 
 extern void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size);
 
+// Reverse the linked list.
 extern void list_reverse(list *l);
+
+// Recursively reverse the linked list. Because it's fun.
+extern void list_reverse_rec(list *l);
 
 #endif // LIST_H
