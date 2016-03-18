@@ -52,6 +52,22 @@ void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size) {
 	return;
 }
 
+void list_reverse(list *l) {
+	list_node *nodep = l->head; // First element
+	list_node *prev = NULL;
+
+	if (nodep == NULL)
+		return; // Nothing to reverse.
+
+	while (nodep != NULL) {
+		list_node *next = nodep->next;
+		nodep->next = prev;
+		prev = nodep;
+		nodep = next;
+	}
+	l->head = prev;
+}
+
 static void node_free(list_node *node) {
 	free(node);
 }

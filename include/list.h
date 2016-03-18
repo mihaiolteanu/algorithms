@@ -91,4 +91,6 @@ extern void *list_search(list *l, void *src_addr, size_t pos, size_t elem_size);
 
 extern void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size);
 
+extern void list_reverse(list *l);
+
 #endif // LIST_H
