@@ -10,8 +10,9 @@ typedef struct {
 } stack;
 
 extern int stack_init(stack *s, size_t tsize);
+
 // insert item x at the top of the stack s
-// at first call, *s must be null
+// s must be initialized before the first push; see stack_init
 extern int stack_push(stack *s, void *x);
 
 // return and remove the top item of the stack s
