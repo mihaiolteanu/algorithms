@@ -9,6 +9,7 @@
 static int downsize_if_needed(array *a);
 // double tha array capacity, if needed
 static int resize_if_needed(array *a);
+static int increment_size(array *a);
 
 int array_init(array *a, size_t elem_size) {
 	a->size = 0;
@@ -26,6 +27,23 @@ int array_add(array *a, void *elem_addr) {
 	       a->tsize);
 	a->size++;
 	return resize_if_needed(a);
+}
+
+extern int array_add_at_index(array *a, void *elem_addr, size_t index) {
+	char *data = a->data;
+	size_t size = a->size;
+	size_t tsize = a->tsize;
+
+	increment_size(a);
+	// Shift one position to the right, starting from the index, to make
+	// room for the new element.
+	memmove(data + (index+1)*tsize,
+		data + index*tsize,
+		(size - index)*tsize);
+	// Copy the new element from the end to the new available location.
+	memcpy(data + index*tsize,
+	       elem_addr,
+	       tsize);
 }
 
 void *array_value(array *a, size_t index) {
@@ -84,6 +102,23 @@ int array_cap(array *a) {
 void array_destroy(array *a) {
 	free(a->data);
 }
+
+static int increment_size(array *a) {
+	size_t size = a->size;
+	size_t cap = a->cap;
+	size_t tsize = a->tsize;
+	char *data = (char *)a->data;
+
+	size = ++(a->size);
+	if (size < cap)
+		return OK; // nothing to do
+	void *tmp_data = realloc(data, 2*cap*tsize);
+	if (tmp_data == NULL)
+		return ERROR;
+	a->cap = 2*cap;
+	a->data = tmp_data;
+	return OK;
+}		
 
 static int resize_if_needed(array *a) {
 	size_t size = a->size;

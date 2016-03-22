@@ -39,11 +39,17 @@ OK otherwise*/
 extern int array_init(array *a, size_t elem_size);
 
 /* Add the contents at the specified address, elem_address, to
-the array and increases the array size. The number of bytes 
+the end of the array and increases the array size. The number of bytes 
 copied depends on the elem_size the array was initialized with.
 If the array is full, it doubles it's capacity. If the capacity
 cannot be increased, return ERROR. Return OK otherwise.*/
 extern int array_add(array *a, void *elem_addr);
+
+/* Add the contents at the specified address, elem_address, to 
+the array at the specified index and increase the array size. The
+elements after the index will be shifted to the right to make room
+for the new element. */
+extern int array_add_at_index(array *a, void *elem_addr, size_t index);
 
 /* Return the address of the index position in the array. If
 the index is greater than the array size, or if the index is
