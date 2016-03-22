@@ -55,7 +55,7 @@ int array_remove(array *a, size_t index) {
 	return downsize_if_needed(a);
 }
 
-extern void array_qsort(array *a, int (*compar)(const void *x, const void *y)) {
+void array_qsort(array *a, int (*compar)(const void *x, const void *y)) {
 	qsort(a->data, a->tsize, a->size, compar);
 }
 
@@ -71,7 +71,7 @@ int array_cap(array *a) {
 	return cap;
 }
 
-extern void array_destroy(array *a) {
+void array_destroy(array *a) {
 	free(a->data);
 }
 
