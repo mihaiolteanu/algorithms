@@ -59,6 +59,15 @@ the index is negative, the function returns OK and the array is
 not modified. Returns ERROR is the array cannot be downsized. */
 extern int array_remove(array *a, size_t index);
 
+/* Sort the array in the ascending order based on the comparison function
+pointed to by compar, which is called with two arguments that point to the
+objects being compared.
+Example comparison function for a resizable array of ints:
+int array_int_comp(const void *a, const void *b) {
+	return ( *(int *)a > *(int *)b);
+} */
+extern void array_qsort(array *a, int (*compar)(const void *x, const void *y));
+
 /* Return the number of elements currently held into the array.*/
 extern int array_size(array *a);
 
