@@ -7,8 +7,7 @@
 // downsize and free the array, if needed.
 // to be called from delete/remove/free/etc operations
 static int downsize_if_needed(array *a);
-// double tha array capacity, if needed
-static int resize_if_needed(array *a);
+// increment the array size and double tha array capacity, if needed
 static int increment_size(array *a);
 
 int array_init(array *a, size_t elem_size) {
@@ -25,8 +24,7 @@ int array_add(array *a, void *elem_addr) {
 	memcpy((char *)a->data + a->size*a->tsize,
 	       (char *)elem_addr,
 	       a->tsize);
-	a->size++;
-	return resize_if_needed(a);
+	return increment_size(a);
 }
 
 extern int array_add_at_index(array *a, void *elem_addr, size_t index) {
@@ -104,12 +102,11 @@ void array_destroy(array *a) {
 }
 
 static int increment_size(array *a) {
-	size_t size = a->size;
+	size_t size = ++a->size;
 	size_t cap = a->cap;
 	size_t tsize = a->tsize;
 	char *data = (char *)a->data;
 
-	size = ++(a->size);
 	if (size < cap)
 		return OK; // nothing to do
 	void *tmp_data = realloc(data, 2*cap*tsize);
@@ -119,22 +116,6 @@ static int increment_size(array *a) {
 	a->data = tmp_data;
 	return OK;
 }		
-
-static int resize_if_needed(array *a) {
-	size_t size = a->size;
-	size_t cap = a->cap;
-	size_t tsize = a->tsize;
-	char *data = (char *)a->data;
-
-	if (size < cap)
-		return OK;
-	void *tmp_data = realloc(data, 2*cap*tsize);
-	if (tmp_data == NULL)
-		return ERROR;
-	a->cap = 2*cap;
-	a->data = tmp_data;
-	return OK;
-}
 
 static int downsize_if_needed(array *a) {
 	size_t size = a->size;
