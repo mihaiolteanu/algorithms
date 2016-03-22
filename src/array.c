@@ -39,6 +39,16 @@ void *array_value(array *a, size_t index) {
 	return data + index*tsize;
 }
 
+void *array_search(array *a, void *elem_addr,
+		   int (*comp)(void *x, void *y)) {
+	for (int i = 0; i < array_size(a); i++) {
+		void *elem = array_value(a, i);
+		if (comp(elem_addr, elem) == 0)
+			return elem; // found
+	}
+	return NULL;
+}
+
 int array_remove(array *a, size_t index) {
 	size_t size = a->size;
 	size_t tsize = a->tsize;

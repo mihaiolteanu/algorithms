@@ -52,6 +52,33 @@ at the return address is equal to the elem_size specified
 when array_init was called. */
 extern void *array_value(array *a, size_t index);
 
+/* Search the array for the element at the elem_addr. Use the compare
+function, comp, to decide the comparing algorithm. The comparison function 
+must return an integer less than, equal to, or greater than zero if the first
+argument is considered to be respectively less than, equal to, or greater
+than the second. Returns the address of the found element in the array, NULL
+otherwise.
+
+Example comp function for a city struct, for searching a city with a given
+size:
+typedef struct {
+	char *name;
+	size_t size;
+} city;
+
+int citycomp(void *x, void *y) {
+	city *xcity = (city *)x;
+	city *ycity = (city *)y;
+	size_t xsize = xcity->size;
+	size_t ysize = ycity->size;
+
+	if (xsize < ysize)
+		return -1;
+	return (xsize > ysize);
+} */
+extern void *array_search(array *a, void *elem_addr,
+			  int (*comp)(void *x, void *y));
+
 /* Remove element at index from the array. Downsize the array
 if needed. The array capacity will not get lower than the initial
 capacity (INIT_CAP). If the index is greater than the array size or if
