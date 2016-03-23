@@ -30,7 +30,7 @@ typedef struct {
 	size_t size;  // number of elements currently in the array
 	size_t cap;   // maximum number of elements allowed
 	size_t tsize; // size of one data element
-	void *data;   // array elements
+	char *data;   // array elements
 } array;
 
 /* Initialize the array with sizeof of one of the elements

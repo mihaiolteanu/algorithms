@@ -21,8 +21,8 @@ int array_init(array *a, size_t elem_size) {
 }
 
 int array_add(array *a, void *elem_addr) {
-	memcpy((char *)a->data + a->size*a->tsize,
-	       (char *)elem_addr,
+	memcpy(a->data + a->size*a->tsize,
+	       elem_addr,
 	       a->tsize);
 	return increment_size(a);
 }
@@ -47,7 +47,7 @@ extern int array_add_at_index(array *a, void *elem_addr, size_t index) {
 void *array_value(array *a, size_t index) {
 	size_t size = a->size;
 	size_t tsize = a->tsize;
-	char *data = (char *)a->data;
+	char *data = a->data;
 
 	if (index >= size || index < 0)
 		return NULL;
@@ -68,7 +68,7 @@ void *array_search(array *a, void *elem_addr,
 int array_remove(array *a, size_t index) {
 	size_t size = a->size;
 	size_t tsize = a->tsize;
-	char *data = (char *)a->data;
+	char *data = a->data;
 
 	if (index >= size || index < 0)
 		return OK;
@@ -105,7 +105,7 @@ static int increment_size(array *a) {
 	size_t size = ++a->size;
 	size_t cap = a->cap;
 	size_t tsize = a->tsize;
-	char *data = (char *)a->data;
+	char *data = a->data;
 
 	if (size < cap)
 		return OK; // nothing to do
@@ -121,7 +121,7 @@ static int downsize_if_needed(array *a) {
 	size_t size = a->size;
 	size_t cap = a->cap;
 	size_t tsize = a->tsize;
-	char *data = (char *)a->data;
+	char *data = a->data;
 
 	// Downsize if number of elements are half the capacity
 	// and the capacity is not lower than the initial capacity
