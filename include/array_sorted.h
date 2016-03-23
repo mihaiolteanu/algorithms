@@ -8,7 +8,7 @@
 #include "array.h"
 
 typedef struct {
-	int (*comp)(void *, void *); // Comparison function
+	int (*comp)(const void *, const void *); // Comparison function
 	array *a;
 } array_sorted;
 
@@ -16,7 +16,7 @@ typedef struct {
 array has elem_size. The comparison function is used to decide the order
 of the new added elements in the array. */
 extern int array_sorted_init(array_sorted *as, size_t elem_size,
-			     int (*comp)(void *x, void *y));
+			     int (*comp)(const void *x, const void *y));
 
 /* Add the element at elem_addr to the sorted array, using the compare
 function specified in the initialization. */

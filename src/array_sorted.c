@@ -1,9 +1,10 @@
+#include <stdlib.h>
 #include "array_sorted.h"
 #include "array.h"
 #include "system.h"
 
 int array_sorted_init(array_sorted *as, size_t elem_size,
-		      int (*comp)(void *x, void *y)) {
+		      int (*comp)(const void *x, const void *y)) {
 	as->comp = comp;
 	return array_init(as->a, elem_size);
 }
@@ -27,7 +28,10 @@ void *array_sorted_value(array_sorted *as, size_t index) {
 }
 
 void *array_sorted_search(array_sorted *as, void *elem_addr) {
-	return NULL;
+	array *a = as->a;
+
+	char *data = bsearch(elem_addr, a->data, a->size, a->tsize, as->comp);
+	return data;
 }	
 
 int array_sorted_remove(array_sorted *as, size_t index) {
@@ -35,6 +39,8 @@ int array_sorted_remove(array_sorted *as, size_t index) {
 }
 
 int array_sorted_size(array_sorted *as) {
+	array *a = as->a;
 	
+	return array_size(a);
 }
 	
