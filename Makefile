@@ -1,21 +1,17 @@
-CC=gcc
-CFLAGS=-g -std=c99
 TARGET=main
-OBJS_PATH=obj
-SRCS_PATH=src
+CFLAGS=-g -std=c99
 INC=-Iinclude
 
-OBJS:=$(patsubst $(SRCS_PATH)/%.c,$(OBJS_PATH)/%.o,$(wildcard $(SRCS_PATH)/*.c))
-HDRS:=include/*.h
+SRCS:=$(wildcard src/*.c)
+OBJS:=$(SRCS:.c=.o)
+OBJS:=$(subst src, obj, $(OBJS))
+HDRS:=$(wildcard include/*.h)
 
 $(TARGET) : $(OBJS) $(HDRS)
 	$(LINK.o) -o $@ $(OBJS)
 
-$(OBJS_PATH)/%.o : $(SRCS_PATH)/%.c $(HDRS) | $(OBJS_PATH)
+obj/%.o : src/%.c
 	$(COMPILE.c) $(INC) -o $@ $<
-
-$(OBJS_PATH):
-	mkdir $@
 
 clean:
 	rm -rf $(TARGET) $(OBJS)
