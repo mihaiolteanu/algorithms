@@ -22,6 +22,8 @@ static int array_int_value(array *a, size_t index) {
 #ifndef ARRAY_H
 #define ARRAY_H
 
+#include <stddef.h>
+
 // initial array capacity
 #define INIT_CAP 4
 
