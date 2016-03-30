@@ -13,17 +13,12 @@ static void test_array_add_at_index();
 // Add n elements to the array a
 static void helper_array_add_elements(array *a, size_t n);
 
-int main(void) {
+void run_all_array_tests() {
 	test_array_size();
 	test_array_value();
 	test_array_capacity();
 	test_array_remove();
 	test_array_add_at_index();
-
-	printf("-----------------\n\n");
-	printf("All array tests passed\n");
-
-	return 0;
 }
 
 static void helper_array_add_elements(array *a, size_t n) {
