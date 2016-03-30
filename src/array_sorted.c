@@ -5,6 +5,10 @@
 
 int array_sorted_init(array_sorted *as, size_t elem_size,
 		      int (*comp)(const void *x, const void *y)) {
+	array *a = malloc(sizeof(array));
+	if (a == NULL)
+		return ERROR;
+	as->a = a;
 	as->comp = comp;
 	return array_init(as->a, elem_size);
 }
