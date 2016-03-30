@@ -16,13 +16,20 @@ int array_sorted_init(array_sorted *as, size_t elem_size,
 int array_sorted_add(array_sorted *as, void *elem_addr) {
 	array *a = as->a;
 
+	// First element
 	if (array_size(a) == 0)
-		return array_add(a, elem_addr); // First element
+		return array_add(a, elem_addr);
+
+	// Find the position before the first element greater or equal
+	// than this new element and insert the new element there.
 	for (int i = 0; i < array_size(a); i++) {
 		void *value = array_value(a, i);
-		if (as->comp(elem_addr, value) == -1)
+		int comp_res = as->comp(elem_addr, value);
+		if (comp_res == -1 || comp_res == 0)
 			return array_add_at_index(a, elem_addr, i);
 	}
+	// This is the greatest element so far, so insert at the end.
+	return array_add(a, elem_addr);
 }
 
 void *array_sorted_value(array_sorted *as, size_t index) {
