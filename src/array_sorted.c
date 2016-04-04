@@ -25,7 +25,7 @@ int array_sorted_add(array_sorted *as, void *elem_addr) {
 	for (int i = 0; i < array_size(a); i++) {
 		void *value = array_value(a, i);
 		int comp_res = as->comp(elem_addr, value);
-		if (comp_res == -1 || comp_res == 0)
+		if (comp_res <= 0)
 			return array_add_at_index(a, elem_addr, i);
 	}
 	// This is the greatest element so far, so insert at the end.
