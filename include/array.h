@@ -94,6 +94,10 @@ the index is negative, the function returns OK and the array is
 not modified. Returns ERROR is the array cannot be downsized. */
 extern int array_remove_byindex(array *a, size_t index);
 
+/* Remove element at address. The address should be the result of the
+array_search function. */
+extern int array_remove_byaddr(array *a, void *addr);
+
 /* Sort the array in the ascending order based on the comparison function
 pointed to by compar, which is called with two arguments that point to the
 objects being compared.

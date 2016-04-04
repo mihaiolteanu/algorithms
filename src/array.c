@@ -81,6 +81,18 @@ int array_remove_byindex(array *a, size_t index) {
 	return downsize_if_needed(a);
 }
 
+int array_remove_byaddr(array *a, void *addr) {
+	// The easiest way is to calculate the index, based on the base
+	// address of the array and the address of the element to removed
+	// and the element size
+	size_t tsize = a->tsize;
+	char *data = a->data;
+	ptrdiff_t diffbytes = (char *)addr - data;
+	size_t index = diffbytes / tsize;
+
+	return array_remove_byindex(a, index);
+}
+
 void array_qsort(array *a, int (*compar)(const void *x, const void *y)) {
 	qsort(a->data, a->tsize, a->size, compar);
 }

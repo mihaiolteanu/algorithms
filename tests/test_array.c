@@ -6,24 +6,49 @@
 static void test_array_size();
 static void test_array_value();
 static void test_array_capacity();
+static void test_array_search();
 static void test_array_remove_byindex();
+static void test_array_remove_byaddr();
 static void test_array_add_at_index();
 
-// Helper functions
+// ***** Helper functions *****
 // Add n elements to the array a
-static void helper_array_add_elements(array *a, size_t n);
+static void helper_array_add_elements(array *a, size_t n) {
+	for (int i = 0; i < n; i++)
+		array_add(a, &i);
+}
+// Comparison function for sorted array of ints.
+static int intcomp(void *a, void *b) {
+	return ( *(int *)a > *(int *)b);
+}
 
 void run_all_array_tests() {
 	test_array_size();
 	test_array_value();
 	test_array_capacity();
+	test_array_search();
 	test_array_remove_byindex();
+	test_array_remove_byaddr();
 	test_array_add_at_index();
 }
 
-static void helper_array_add_elements(array *a, size_t n) {
-	for (int i = 0; i < n; i++)
-		array_add(a, &i);
+static void test_array_search() {
+	array a;
+	array_init(&a, sizeof(int));
+
+	// 0 1 2 3 4
+	helper_array_add_elements(&a, 5);
+	int tosearch = 2;
+	int *res = array_search(&a, &tosearch, intcomp);
+	assert(*res == tosearch);
+	
+	tosearch = 0;
+	res = array_search(&a, &tosearch, intcomp);
+	assert(*res == tosearch);
+
+	tosearch = 4;
+	res = array_search(&a, &tosearch, intcomp);
+	assert(*res == tosearch);
 }
 
 static void test_array_add_at_index() {
@@ -68,6 +93,61 @@ static void test_array_remove_byindex() {
 	// Index starts at zero, so this is > size
 	array_remove_byindex(&a, 2); 
 	assert(array_size(&a) == 2);
+}
+
+static void test_array_remove_byaddr() {
+	array a;
+	array_init(&a, sizeof(int));
+
+	// [0 1 2 3 4]
+	helper_array_add_elements(&a, 5);
+
+	// Search and remove an element, if found.
+	int tosearch = 2;
+	int *res = array_search(&a, &tosearch, intcomp);
+	if (res != NULL) {
+		array_remove_byaddr(&a, res);
+		// [0 1 3 4]
+		assert(*(int*)array_value(&a, 0) == 0);
+		assert(*(int*)array_value(&a, 1) == 1);
+		assert(*(int*)array_value(&a, 2) == 3);
+		assert(*(int*)array_value(&a, 3) == 4);
+	}
+	// else, array returned NULL, but the search implementation
+	// is tested elsewhere.
+
+	// Remove the first element.
+	tosearch = 0;
+	res = array_search(&a, &tosearch, intcomp);
+	if (res != NULL) {
+		array_remove_byaddr(&a, res);
+		// [1 3 4]
+		assert(*(int*)array_value(&a, 0) == 1);
+		assert(*(int*)array_value(&a, 1) == 3);
+		assert(*(int*)array_value(&a, 2) == 4);
+	}
+
+	// Remove the last element.
+	tosearch = 4;
+	res = array_search(&a, &tosearch, intcomp);
+	if (res != NULL) {
+		array_remove_byaddr(&a, res);
+		// [1 3]
+		assert(*(int*)array_value(&a, 0) == 1);
+		assert(*(int*)array_value(&a, 1) == 3);
+	}
+
+	// Simulate a remove from a failed search. Nothing should happen.
+	array_remove_byaddr(&a, NULL);
+	// [1 3]  - array should not be changed
+	assert(*(int*)array_value(&a, 0) == 1);
+	assert(*(int*)array_value(&a, 1) == 3);
+
+	// Simulate a remove from a wrong address. Nothing should happen
+	array_remove_byaddr(&a, (void*)123);
+	// [1 3]  - array should not be changed
+	assert(*(int*)array_value(&a, 0) == 1);
+	assert(*(int*)array_value(&a, 1) == 3);
 }
 
 static void test_array_capacity() {
