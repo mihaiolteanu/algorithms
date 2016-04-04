@@ -55,3 +55,9 @@ int array_sorted_size(array_sorted *as) {
 	return array_size(a);
 }
 	
+void array_sorted_destroy(array_sorted *as) {
+	array *a = as->a;
+
+	array_destroy(a);
+	free(a);
+}
