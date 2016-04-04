@@ -23,7 +23,7 @@ void *stack_pop(stack *s) {
 	size_t size = array_size(a);
 	void *ret = array_value(a, size - 1);
 
-	array_remove(a, size - 1);
+	array_remove_byindex(a, size - 1);
 
 	return ret;
 }

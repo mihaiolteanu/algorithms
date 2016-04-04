@@ -65,7 +65,7 @@ void *array_search(array *a, void *elem_addr,
 	return NULL;
 }
 
-int array_remove(array *a, size_t index) {
+int array_remove_byindex(array *a, size_t index) {
 	size_t size = a->size;
 	size_t tsize = a->tsize;
 	char *data = a->data;

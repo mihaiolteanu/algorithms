@@ -24,7 +24,7 @@ extern int array_sorted_add(array_sorted *as, void *elem_addr);
 
 extern void *array_sorted_value(array_sorted *as, size_t index);
 extern void *array_sorted_search(array_sorted *as, void *elem_addr);
-extern int array_sorted_remove(array_sorted *as, size_t index);
+extern int array_sorted_remove_byindex(array_sorted *as, size_t index);
 extern int array_sorted_size(array_sorted *as);
 extern int array_sorted_cap(array_sorted *as);
 extern void array_sorted_destroy(array_sorted *as);

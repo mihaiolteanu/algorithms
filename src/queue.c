@@ -31,7 +31,7 @@ void *queue_dequeue(queue *q) {
 	void *data = malloc(sizeof(a->tsize));
 	memcpy(data, data_addr, a->tsize);		
 	
-	array_remove(a, 0);
+	array_remove_byindex(a, 0);
 	// Don't forget to free the data after you use it.
 	return data;
 }

@@ -6,7 +6,7 @@
 static void test_array_size();
 static void test_array_value();
 static void test_array_capacity();
-static void test_array_remove();
+static void test_array_remove_byindex();
 static void test_array_add_at_index();
 
 // Helper functions
@@ -17,7 +17,7 @@ void run_all_array_tests() {
 	test_array_size();
 	test_array_value();
 	test_array_capacity();
-	test_array_remove();
+	test_array_remove_byindex();
 	test_array_add_at_index();
 }
 
@@ -46,13 +46,13 @@ static void test_array_add_at_index() {
 	assert(*(int *)array_value(&a, 4) == 3);
 }
 
-static void test_array_remove() {
+static void test_array_remove_byindex() {
 	array a;
 	array_init(&a, sizeof(int));
 
 	// Removing from an empty array does not modify the array.
 	assert(array_size(&a) == 0);
-	array_remove(&a, 0);
+	array_remove_byindex(&a, 0);
 	assert(array_size(&a) == 0);
 
 	// Add 3 random elements to the array.
@@ -60,12 +60,13 @@ static void test_array_remove() {
 
 	// Removing an element decreases the size of the array by one.
 	assert(array_size(&a) == 3);
-	array_remove(&a, 0);
+	array_remove_byindex(&a, 0);
 	assert(array_size(&a) == 2);
 
 	// Removing an element at an index greater than the size does not
-	// modify the array
-	array_remove(&a, 2); // Index starts at zero, so this is > size
+	// modify the array.
+	// Index starts at zero, so this is > size
+	array_remove_byindex(&a, 2); 
 	assert(array_size(&a) == 2);
 }
 
@@ -81,8 +82,8 @@ static void test_array_capacity() {
 	assert(array_cap(&a) == 2*INIT_CAP);
 
 	// Does the capacity shrinks if the array is half-full?
-	array_remove(&a, 0);
-	array_remove(&a, 0);
+	array_remove_byindex(&a, 0);
+	array_remove_byindex(&a, 0);
 	assert(array_cap(&a) == INIT_CAP);
 }
 

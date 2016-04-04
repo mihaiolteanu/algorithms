@@ -7,13 +7,13 @@
 
 static void test_array_sorted_size(); 
 static void test_array_sorted_value();
-static void test_array_sorted_remove();
+static void test_array_sorted_remove_byindex();
 
 
 void run_all_array_sorted_tests() {
 	test_array_sorted_size();  
 	test_array_sorted_value(); 
-	test_array_sorted_remove();
+	test_array_sorted_remove_byindex();
 }
 
 
@@ -43,12 +43,12 @@ static void test_array_sorted_size() {
 
 	// Removing elements correctly resizes the array.
 	for (size_t i = asize; i > 0; i--) {
-		array_sorted_remove(&as, 0);
+		array_sorted_remove_byindex(&as, 0);
 		assert(array_sorted_size(&as) == i-1);
 	}
 
 	// Removing from an empty array doesn't change the size
-	array_sorted_remove(&as, 0);
+	array_sorted_remove_byindex(&as, 0);
 	assert(array_sorted_size(&as) == 0);
 }
 
@@ -86,7 +86,7 @@ static void test_array_sorted_value() {
 	assert(*(int *)array_sorted_value(&as, 3) == 7);	
 }
 
-static void test_array_sorted_remove() {
+static void test_array_sorted_remove_byindex() {
 	array_sorted as;
 	array_sorted_init(&as, sizeof(int), intcomp);
 
@@ -99,11 +99,11 @@ static void test_array_sorted_remove() {
 	assert(*(int *)array_sorted_value(&as, 2) == 2);
 
 	// [0 2]
-	array_sorted_remove(&as, 1);
+	array_sorted_remove_byindex(&as, 1);
 	assert(*(int *)array_sorted_value(&as, 0) == 0);
 	assert(*(int *)array_sorted_value(&as, 1) == 2);
 
 	// [2]
-	array_sorted_remove(&as, 0);
+	array_sorted_remove_byindex(&as, 0);
 	assert(*(int *)array_sorted_value(&as, 0) == 2);
 }

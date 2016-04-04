@@ -45,8 +45,8 @@ void *array_sorted_search(array_sorted *as, void *elem_addr) {
 	return data;
 }	
 
-int array_sorted_remove(array_sorted *as, size_t index) {
-	return array_remove(as->a, index);
+int array_sorted_remove_byindex(array_sorted *as, size_t index) {
+	return array_remove_byindex(as->a, index);
 }
 
 int array_sorted_size(array_sorted *as) {
