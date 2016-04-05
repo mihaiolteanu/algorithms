@@ -49,6 +49,10 @@ int array_sorted_remove_byindex(array_sorted *as, size_t index) {
 	return array_remove_byindex(as->a, index);
 }
 
+int array_sorted_remove_byaddr(array_sorted *as, void *elem_addr) {
+	return array_remove_byaddr(as->a, elem_addr);
+}
+
 int array_sorted_size(array_sorted *as) {
 	array *a = as->a;
 	
