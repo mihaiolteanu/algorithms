@@ -55,6 +55,8 @@ void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size) {
 	return;
 }
 
+/* 3-2.
+   solution for exercise 3-2 */
 void list_reverse(list *l) {
 	list_node *nodep = l->head; // First element
 	list_node *prev = NULL;
@@ -80,6 +82,8 @@ static void list_reverse_rec_local(list *l, list_node *prev, list_node *node) {
 	node->next = prev;
 }
 
+/* 3-2.
+   recursive solution for exercise 3-2 */
 void list_reverse_rec(list *l) {
 	list_reverse_rec_local(l, NULL, l->head);
 }

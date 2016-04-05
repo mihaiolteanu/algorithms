@@ -129,6 +129,8 @@ static int increment_size(array *a) {
 	return OK;
 }		
 
+/* 3-3.
+   helper function for implementing a solution to exercise 3-3 (a) */
 static int downsize_if_needed(array *a) {
 	size_t size = a->size;
 	size_t cap = a->cap;
