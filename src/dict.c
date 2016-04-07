@@ -2,8 +2,7 @@
 #include "dict.h"
 #include "system.h"
 
-int dict_init(dict *d, size_t elem_size,
-	      int (*comp)(const void *, const void *)) {
+int dict_init(dict *d, size_t elem_size, comp_fn_t comp) {
 	array_sorted *as = malloc(sizeof(array_sorted));
 	if (as == NULL)
 		return ERROR;

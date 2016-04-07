@@ -55,8 +55,7 @@ void *array_value(array *a, size_t index) {
 	return data + index*tsize;
 }
 
-void *array_search(array *a, void *elem_addr,
-		   int (*comp)(void *x, void *y)) {
+void *array_search(array *a, void *elem_addr, comp_fn_t comp) {
 	for (int i = 0; i < array_size(a); i++) {
 		void *elem = array_value(a, i);
 		if (comp(elem_addr, elem) == 0)

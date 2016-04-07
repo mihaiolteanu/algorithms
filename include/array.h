@@ -23,6 +23,7 @@ static int array_int_value(array *a, size_t index) {
 #define ARRAY_H
 
 #include <stddef.h>
+#include "system.h"
 
 // initial array capacity
 #define INIT_CAP 4
@@ -84,8 +85,7 @@ int citycomp(void *x, void *y) {
 		return -1;
 	return (xsize > ysize);
 } */
-extern void *array_search(array *a, void *elem_addr,
-			  int (*comp)(void *x, void *y));
+extern void *array_search(array *a, void *elem_addr, comp_fn_t comp);
 
 /* Remove element at index from the array. Downsize the array
 if needed. The array capacity will not get lower than the initial

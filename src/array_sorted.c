@@ -3,8 +3,7 @@
 #include "array.h"
 #include "system.h"
 
-int array_sorted_init(array_sorted *as, size_t elem_size,
-		      int (*comp)(const void *x, const void *y)) {
+int array_sorted_init(array_sorted *as, size_t elem_size, comp_fn_t comp) {
 	array *a = malloc(sizeof(array));
 	if (a == NULL)
 		return ERROR;

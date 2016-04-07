@@ -6,6 +6,7 @@
 
 #include <stddef.h>
 #include "array_sorted.h"
+#include "system.h"
 
 typedef struct {
 	array_sorted *as;
@@ -13,7 +14,7 @@ typedef struct {
 
 /* Initialize a new dictionary. The comparison function decides when two
 elements of the same type are equal.*/
-extern int dict_init(dict *d, size_t elem_size, int (*comp)(const void *, const void *));
+extern int dict_init(dict *d, size_t elem_size, comp_fn_t comp);
 
 /* Search for the item at address, based on the comparison function. */
 extern void *dict_search(dict *d, void *elem_addr);
