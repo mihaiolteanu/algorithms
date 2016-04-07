@@ -6,17 +6,9 @@
 #include <stdlib.h> // abs
 #include <string.h>
 #include "dict.h"
-
-// Use a city member for the dictionary.
-typedef struct {
-	size_t size; // Size of the city
-	char *name;  // Name of the city
-} city;
+#include "common_city_struct.h"
 
 // ***** Helper functions *****
-// Comparison function for city objects. It has the same return values as
-// the standsrd strcmp function.
-static int city_comp_byname(const void *a, const void *b);
 // Search city by name and assert the result with the expected size.
 static void city_search_byname(dict *d, city *city_with_name, int exp_size);
 
@@ -31,7 +23,7 @@ void run_all_dict_tests() {
 static void test_dict_search() {
 	// Test a dictionary of city objects.
 	dict d;
-	dict_init(&d, sizeof(city), city_comp_byname);
+	dict_init(&d, sizeof(city), comp_city_byname);
 
 	// Insert some cities.
 	city sb = {150, "sibiu"};
@@ -58,7 +50,7 @@ static void test_dict_max_min() {
 	// Test a dictionary of city objects.
 	dict d;
 	city *res;
-	dict_init(&d, sizeof(city), city_comp_byname);
+	dict_init(&d, sizeof(city), comp_city_byname);
 
 	// Nothing added yet, so no min nor max exists.
 	res = dict_min(&d);
@@ -82,13 +74,6 @@ static void test_dict_max_min() {
 	res = dict_max(&d);
 	assert(strcmp(res->name, "sibiu") == 0);
 
-}
-
-static int city_comp_byname(const void *a, const void *b) {
-	city *citya = (city *)a;
-	city *cityb = (city *)b;
-	
-	return strcmp(citya->name, cityb->name);
 }
 
 static void city_search_byname(dict *d, city *city_with_name, int exp_size) {

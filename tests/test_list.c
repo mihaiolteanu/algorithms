@@ -5,21 +5,13 @@
 #include <assert.h>
 #include "list.h"
 #include "system.h"
-
-// Use a city member for the linked list.
-typedef struct {
-	size_t size; // Size of the city
-	char *name;  // Name of the city
-} city;
+#include "common_city_struct.h"
 
 // ***** Test functions *****
 static void test_list_search();
 static void test_list_remove();
 
 // ***** Helper functions *****
-// Comparison function, TODO: same as dict tests. Should be made as a seperate
-// file and use it in all the other tests, together with the city struct.
-static int city_comp_byname(const void *a, const void *b);
 // Search city by name and assert the result with the expected size.
 static void city_search_byname(list *l, city *city_with_name, int exp_size);
 
@@ -30,7 +22,7 @@ void run_all_list_tests() {
 
 static void test_list_search() {
 	list l;
-	list_init(&l, sizeof(city), city_comp_byname);
+	list_init(&l, sizeof(city), comp_city_byname);
 
 	// Insert some cities.
 	// TODO: same as dict tests. Should be made into a seperate function,
@@ -55,7 +47,7 @@ static void test_list_search() {
 
 static void test_list_remove() {
 	list l;
-	list_init(&l, sizeof(city), city_comp_byname);
+	list_init(&l, sizeof(city), comp_city_byname);
 
 	// Insert some cities.
 	// TODO: same as dict tests. Should be made into a seperate function,
@@ -83,13 +75,6 @@ static void test_list_remove() {
 	city_search_byname(&l, &tosearch, 150);
 
 	list_destroy(&l);
-}
-
-static int city_comp_byname(const void *a, const void *b) {
-	city *citya = (city *)a;
-	city *cityb = (city *)b;
-	
-	return strcmp(citya->name, cityb->name);
 }
 
 static void city_search_byname(list *l, city *city_with_name, int exp_size) {
