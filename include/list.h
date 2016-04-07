@@ -1,58 +1,6 @@
 /* linkedlist.h
    Implementation of a generic linked list. Define your own functions
-   for specific data types, for ease of use.
-
-*** Example for a linked list of a city structure containing size and
-*** population elements
-
-typedef struct city_t {
-	size_t size;
-	size_t pop;
-} city;
-
-static void list_city_init(list *l) {
-	list_init(l, sizeof(city));
-}
-
-static int list_city_add(list *l, city *c) {
-	return list_add(l, c);
-}
-
-static city *list_city_search_size(list *l, size_t size) {
-	return (city *)list_search(l,
-				   &size, 
-				   0, // (char *) city.size - (char *) city.size
-				   sizeof(size_t) // sizeof(city.size)
-		);
-}
-
-static city *list_city_search_pop(list *l, size_t pop) {
-	return (city *)list_search(l,
-				   &pop,
-				   4, // (char *)city.pop - (char *)city.size 
-				   sizeof(size_t) // sizeof(city.pop)
-		);
-}
-
-int main(void) {
-	list l;
-	city re = { 24, 34 };
-	city si = { 55, 150 };
-
-	list_city_init(&l);
-	list_city_add(&l, &re);
-	list_city_add(&l, &si);
-
-	city *result = list_city_search_pop(&l, 150);
-	if (result == NULL)
-		printf("not found\n");
-	else
-		printf("size: %d, pop: %d", result->size, result->pop);
-	printf("\n");
-
-	return 0;
-}
-*/
+   for specific data types, for ease of use. */
 
 #ifndef LIST_H
 #define LIST_H
