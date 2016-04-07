@@ -39,6 +39,9 @@ extern void list_remove(list *l, void *src_addr);
 // Reverse the linked list.
 extern void list_reverse(list *l);
 
+/* Destroy the array */
+extern void list_destroy(list *);
+
 // Recursively reverse the linked list. Because it's fun.
 extern void list_reverse_rec(list *l);
 

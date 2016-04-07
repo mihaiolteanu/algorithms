@@ -11,6 +11,8 @@ static void node_free(list_node *node);
 // Helper function to recursively reverse a linked list. To be used in a helper
 // function
 static void list_reverse_rec_local(list *l, list_node *prev, list_node *node);
+// Given a node, deallocate it and all the nodes that are linked to it.
+static void deallocate_all_nodes(list_node *node);
 
 void list_init(list *l, size_t elem_size, comp_fn_t comp) {
 	l->tsize = elem_size;
@@ -74,6 +76,18 @@ void list_reverse(list *l) {
 		nodep = next;
 	}
 	l->head = prev;
+}
+
+void list_destroy(list *l) {
+	list_node *head = l->head;
+
+	deallocate_all_nodes(head);
+}
+
+static void deallocate_all_nodes(list_node *node) {
+	if (node != NULL)
+		deallocate_all_nodes(node->next);
+	free(node);
 }
 
 static void list_reverse_rec_local(list *l, list_node *prev, list_node *node) {
