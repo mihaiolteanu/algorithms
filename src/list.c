@@ -12,8 +12,9 @@ static void node_free(list_node *node);
 // function
 static void list_reverse_rec_local(list *l, list_node *prev, list_node *node);
 
-void list_init(list *l, size_t elem_size) {
+void list_init(list *l, size_t elem_size, comp_fn_t comp) {
 	l->tsize = elem_size;
+	l->comp = comp;
 	l->head = NULL;
 }
 
@@ -29,22 +30,24 @@ int list_add(list *l, void *elem_addr) {
 	return OK;
 }
 
-void *list_search(list *l, void *src_addr, size_t struct_pos, size_t elem_size) {
+void *list_search(list *l, void *src_addr) {
 	list_node *node = l->head;
+	comp_fn_t comp = l->comp;
 
 	while(node != NULL) {
-		if (elem_compare(src_addr, node, struct_pos, elem_size) == 0)
+		if (comp(src_addr, node->data) == 0)
 			return node->data;
 		node = node->next;
 	}
 	return NULL;
 }
 
-void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size) {
+void list_remove(list *l, void *src_addr) {
 	list_node **nodepp = &l->head;
-	
+	comp_fn_t comp = l->comp;
+
 	while(*nodepp != NULL) {
-		if (elem_compare(src_addr, *nodepp, pos, elem_size) == 0) {
+		if (comp(src_addr, (*nodepp)->data) == 0) {
 			list_node *old_elem = *nodepp;
 			*nodepp = (*nodepp)->next; // Relink
 			node_free(old_elem);

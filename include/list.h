@@ -6,6 +6,7 @@
 #define LIST_H
 
 #include <stdlib.h>
+#include "system.h"
 
 typedef struct list_node_t {
 	struct list_node_t *next;
@@ -15,29 +16,25 @@ typedef struct list_node_t {
 
 typedef struct {
 	size_t tsize;
+	comp_fn_t comp;
 	list_node *head;
 } list;
 
+/* Initialize a linked list object. The data items will have elem_size
+   number of bytes. The comparison function is used for searching. */
+extern void list_init(list *l, size_t elem_size, comp_fn_t comp);
 
-extern void list_init(list *l, size_t elem_size);
-
+/* Add a new node to the linked list. The contents at the given address
+   are copied to the data field of the new node. */
 extern int list_add(list *l, void *elem_addr);
 
-// l          - list pointer
-// src_addr   - address of element to be searched (possible the address of
-//              a struct variable
-// pos        - address relative to the src_addr from which to compare
-//              if zero, compare the whole address. For a struct, compare
-//              only that element of the struct, and this value should be
-//              the address of the element minus the address of the struct
-//              variable.
-// elem_size  - this is the size of the element to be compared. For a
-//              struct, it is the size of the element to be compared.
-// Returns the address of the searched item, NULL if not found.
-// *return_addr == *(src_addr + pos)
-extern void *list_search(list *l, void *src_addr, size_t pos, size_t elem_size);
+/* Search for a node in the list using the comparison function given in the
+   init function. Returns the address of the item, if found, NULL otherwise.*/
+extern void *list_search(list *l, void *src_addr);
 
-extern void list_remove(list *l, void *src_addr, size_t pos, size_t elem_size);
+/* Remove a node from the list. Use the comparison function given in the init
+   to decide which element is equal to the element at src_addr. */
+extern void list_remove(list *l, void *src_addr);
 
 // Reverse the linked list.
 extern void list_reverse(list *l);
