@@ -49,7 +49,8 @@ static void test_list_search() {
 	city_search_byname(&l, &tosearch, 300);
 	tosearch.name = "alba";
 	city_search_byname(&l, &tosearch, 200);
-	
+
+	list_destroy(&l);
 }
 
 static void test_list_remove() {
@@ -80,6 +81,8 @@ static void test_list_remove() {
 	city_search_byname(&l, &tosearch, 300);
 	tosearch.name = "sibiu";
 	city_search_byname(&l, &tosearch, 150);
+
+	list_destroy(&l);
 }
 
 static int city_comp_byname(const void *a, const void *b) {
