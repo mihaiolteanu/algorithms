@@ -18,7 +18,7 @@ static void helper_array_add_elements(array *a, size_t n) {
 		array_add(a, &i);
 }
 // Comparison function for sorted array of ints.
-static int intcomp(void *a, void *b) {
+static int intcomp(const void *a, const void *b) {
 	return ( *(int *)a > *(int *)b);
 }
 
