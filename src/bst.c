@@ -52,3 +52,19 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) 
 		else
 			bst_insert_local(right, newnode, comp);
 }
+
+bst_node *bst_getroot(bst *b) {
+	return b->head;
+}
+
+void *bst_node_value(bst_node *node) {
+	return node->data;
+}
+
+bst_node *bst_node_left(bst_node *node) {
+	return node->left;
+}
+
+bst_node *bst_node_right(bst_node *node) {
+	return node->right;
+}
