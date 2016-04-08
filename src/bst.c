@@ -6,6 +6,9 @@
 /* Given a node from a binary search tree, insert a new node in the correct
    location given by the comparison function */
 static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp);
+/* Given a node and a data address, search the tree for a node that contains
+   the same data. */
+static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp);
 
 int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 	b->tsize = elem_size;
@@ -34,6 +37,24 @@ int bst_insert(bst *b, void *elem_addr) {
 		return OK;
 	}
 	bst_insert_local(node, newnode, b->comp);
+}
+
+void *bst_search(bst *b, void *elem_addr) {
+	bst_node *root = b->head;
+	comp_fn_t comp = b->comp;
+
+	return bst_search_local(root, elem_addr, comp);
+}
+
+static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {
+	if (node == NULL)
+		return NULL;
+	int compres = comp(node->data, elem_addr);
+	if ( compres == 0)
+		return node->data; // found
+	if (compres > 0)
+		return bst_search_local(node->left, elem_addr, comp);
+	return bst_search_local(node->right, elem_addr, comp);
 }
 
 static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) {
