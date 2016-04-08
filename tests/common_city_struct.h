@@ -18,5 +18,22 @@ typedef struct {
 //extern int comp_city_byname(const void *a, const void *b);
 extern comp_fn_t comp_city_byname;
 
+/* List of cities to be added to the data structure of choice. */
+#define CITIES_SB_CJ_AB_SIZE 3
+extern city cities_sb_cj_ab[];
+
+/* Insert the list of cities into the abstract data type using the insert
+   function provided by the implementation of that data type. */
+extern void city_insert(void *adt,
+			int (*adt_add)(void *adt, void *elem_addr),
+			city *cities);
+
+/* Search for a city in the data structure pointed by adt, using that ds
+   search function, and assert that the found city size matches the expected
+   size*/
+extern void city_search_byname(void *adt,
+			       int (*adt_search)(void *adt, void *elem_addr),
+			       city *c, int exp_size);
+
 #endif // COMMON_CITY_STRUCT_H
 
