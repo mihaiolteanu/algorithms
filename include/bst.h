@@ -30,6 +30,10 @@ given in the init function is used to decide when two items from the tree
 are equal. Returns the node address from the tree if found, NULL othrwise.*/
 extern void *bst_search(bst *b, void *elem_addr);
 
+/* Find the min/max node data from the tree. */
+extern void *bst_min(bst *b);
+extern void *bst_max(bst *b);
+
 // ***** Functions mostly used for tests *****
 /* Get the root of the tree. */
 extern bst_node *bst_getroot(bst *b);
