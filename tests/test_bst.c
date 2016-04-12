@@ -9,10 +9,12 @@
 // ***** Test functions *****
 static void test_bst_insert();
 static void test_bst_search();
+static void test_bst_min_max();
 
 void run_all_bst_tests() {
 	test_bst_insert();
 	test_bst_search();
+	test_bst_min_max();
 }
 
 static void test_bst_insert() {
@@ -77,4 +79,18 @@ static void test_bst_search() {
 				   &cities_sb_cj_ab[i],
 				   cities_sb_cj_ab[i].size);
 
+}
+
+static void test_bst_min_max() {
+	bst b;
+	city *c;
+	
+	// Insert some cities.
+	city_insert(&b, bst_insert, cities_sb_cj_ab);
+
+	c = bst_min(&b);
+	assert(strcmp(c->name, "alba") == 0);
+
+	c = bst_max(&b);
+	assert(strcmp(c->name, "sibiu") == 0);
 }
