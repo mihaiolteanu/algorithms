@@ -66,6 +66,20 @@ void *bst_max(bst *b) {
 	return node->data;
 }
 
+static void bst_traverse_inorder_local(bst_node *node, void (*visit)(void *)) {
+	if (node == NULL)
+		return;
+	bst_traverse_inorder_local(node->left, visit);
+	visit(node->data);
+	bst_traverse_inorder_local(node->right, visit);
+}
+
+void bst_traverse_inorder(bst *b, void (*visit)(void *)) {
+	bst_node *node = b->head;
+
+	bst_traverse_inorder_local(node, visit);
+}
+
 static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {
 	if (node == NULL)
 		return NULL;
