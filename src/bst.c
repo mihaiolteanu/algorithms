@@ -9,8 +9,6 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp);
 /* Given a node and a data address, search the tree for a node that contains
    the same data. */
 static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp);
-static void *bst_min_local(bst_node *node);
-static void *bst_max_local(bst_node *node);
 	
 int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 	b->tsize = elem_size;
@@ -49,32 +47,23 @@ void *bst_search(bst *b, void *elem_addr) {
 }
 
 void *bst_min(bst *b) {
-	bst_node *root = b->head;
+	bst_node *node = b->head;
 
-	return bst_min_local(root);
+	if (node == NULL)
+		return NULL;
+	while (node->left != NULL)
+		node = node->left;
+	return node->data;
 }
 
 void *bst_max(bst *b) {
-	bst_node *root = b->head;
+	bst_node *node = b->head;
 
-	return bst_max_local(root);
-}
-
-
-static void *bst_min_local(bst_node *node) {
 	if (node == NULL)
 		return NULL;
-	if (node->left == NULL)
-		return node->data;
-	return bst_min_local(node->left);
-}
-
-static void *bst_max_local(bst_node *node) {
-	if (node == NULL)
-		return NULL;
-	if (node->right == NULL)
-		return node->data;
-	return bst_max_local(node->right);
+	while(node->right != NULL)
+		node = node->right;
+	return node->data;
 }
 
 static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {
