@@ -38,6 +38,8 @@ extern void *bst_max(bst *b);
    for each visited node. */
 extern void bst_traverse_inorder(bst *b, void (*visit)(void *));
 
+extern void bst_traverse_preorder(bst *b, void (*visit)(void *));
+
 // ***** Functions mostly used for tests *****
 /* Get the root of the tree. */
 extern bst_node *bst_getroot(bst *b);
