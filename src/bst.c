@@ -66,33 +66,41 @@ void *bst_max(bst *b) {
 	return node->data;
 }
 
-static void bst_traverse_inorder_local(bst_node *node, void (*visit)(void *)) {
+static void bst_traverse_inorder_local(bst_node *node,
+				       void (*visit)(void *visited, void *obj),
+				       void *obj) {
 	if (node == NULL)
 		return;
-	bst_traverse_inorder_local(node->left, visit);
-	visit(node->data);
-	bst_traverse_inorder_local(node->right, visit);
+	bst_traverse_inorder_local(node->left, visit, obj);
+	visit(node->data, obj);
+	bst_traverse_inorder_local(node->right, visit, obj);
 }
 
-void bst_traverse_inorder(bst *b, void (*visit)(void *)) {
+void bst_traverse_inorder(bst *b,
+			  void (*visit)(void *visited, void *obj),
+			  void *obj) {
 	bst_node *node = b->head;
 
-	bst_traverse_inorder_local(node, visit);
+	bst_traverse_inorder_local(node, visit, obj);
 }
 
-static void bst_traverse_preorder_local(bst_node *node, void (*visit)(void *)) {
+static void bst_traverse_preorder_local(bst_node *node,
+					void (*visit)(void *visited, void *obj),
+					void *obj) {
 	if (node == NULL)
-		return NULL;
+		return;
 
-	visit(node->data);
-	bst_traverse_preorder_local(node->left, visit);
-	bst_traverse_preorder_local(node->right, visit);
+	visit(node->data, obj);
+	bst_traverse_preorder_local(node->left, visit, obj);
+	bst_traverse_preorder_local(node->right, visit, obj);
 }
 
-void bst_traverse_preorder(bst *b, void (*visit)(void *)) {
+void bst_traverse_preorder(bst *b,
+			   void (*visit)(void *visited, void *obj),
+			   void *obj) {
 	bst_node *node = b->head;
 
-	bst_traverse_preorder_local(node, visit);
+	bst_traverse_preorder_local(node, visit, obj);
 }
 
 static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {

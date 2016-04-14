@@ -35,10 +35,14 @@ extern void *bst_min(bst *b);
 extern void *bst_max(bst *b);
 
 /* Do an in-order traversal of the binary tree and call the visit function
-   for each visited node. */
-extern void bst_traverse_inorder(bst *b, void (*visit)(void *));
+   for each visited node. The visit function is called with the node data
+   and object as arguments. */
+extern void bst_traverse_inorder(bst *b, void (*visit)(void *visited, void *obj), void *obj);
 
-extern void bst_traverse_preorder(bst *b, void (*visit)(void *));
+/* Do a pre-order traversal of the binary tree and call the visit function
+   for each visited node. The visit function is called with the node data
+   and object as arguments. */
+extern void bst_traverse_preorder(bst *b, void (*visit)(void *visited, void *obj), void *obj);
 
 // ***** Functions mostly used for tests *****
 /* Get the root of the tree. */
