@@ -5,12 +5,14 @@
 #include <string.h>
 #include "bst.h"
 #include "common_city_struct.h"
+#include "array.h"
 
 // ***** Test functions *****
 static void test_bst_insert();
 static void test_bst_search();
 static void test_bst_min_max();
 static void test_bst_traverse_inorder();
+static void test_bst_traverse_preorder();
 
 /* Comparison function for sorted array of ints. TODO: maybe move it to a
    separate module so that all test modules can use it?! */
@@ -28,6 +30,7 @@ void run_all_bst_tests() {
 	test_bst_search();
 	test_bst_min_max();
 	test_bst_traverse_inorder();
+	test_bst_traverse_preorder();
 }
 
 static void test_bst_insert() {
@@ -108,37 +111,63 @@ static void test_bst_min_max() {
 	assert(strcmp(c->name, "sibiu") == 0);
 }
 
-
-/* Keep the data traversed in an array. */
-#define INORDER_NODES 5
-int inorder_values[INORDER_NODES];
-int inorder_cur = 0;
-
 /* Each node visit adds the node data to the array. */
-void int_visit(void *data) {
-	inorder_values[inorder_cur++] = *(int*)data;
+void int_visit(void *data, array *a) {
+	array_add(a, data);
 }
 
 static void test_bst_traverse_inorder() {
 	bst b;
-
-	/* Use a bst of ints */
+	// The values to be added in the bst
+	int node_values[] = {5, 3, 7, 4, 2};
+	// And then visit and collect each node data in an array.
+	array a;
+	array_init(&a, sizeof(int));
 	bst_init(&b, sizeof(int), intcomp);
-
+	
 	/* Build the tree:
-	           3
+	           5
 		  / \
-                 2   5
+                 3   7
                 / \
-               1   4
+               2   4
 	*/
-	int node_values[INORDER_NODES] = {3, 2, 5, 4, 1};
-	for (int i = 0; i < INORDER_NODES; i++)
+	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
 		bst_insert(&b, &(node_values[i]));
 
-	// Traverse the tree and collect the data: [1 2 3 4 5]
-	bst_traverse_inorder(&b, int_visit);
-	for(int i = 0; i < INORDER_NODES; i++)
-		assert(inorder_values[i] == i + 1);
+	// Traverse the tree and collect the data: [2 3 4 5 7]
+	bst_traverse_inorder(&b, int_visit, &a);
+	assert(*(int*)array_value(&a, 0) == 2);
+	assert(*(int*)array_value(&a, 1) == 3);
+	assert(*(int*)array_value(&a, 2) == 4);
+	assert(*(int*)array_value(&a, 3) == 5);
+	assert(*(int*)array_value(&a, 4) == 7);
+}
+
+static void test_bst_traverse_preorder() {
+	bst b;
+	// The values to be added in the bst
+	int node_values[] = {5, 3, 7, 4, 2};
+	// And then visit and collect each node data in an array.
+	array a;
+	array_init(&a, sizeof(int));
+	bst_init(&b, sizeof(int), intcomp);
 	
+	/* Build the tree:
+	           5
+		  / \
+                 3   7
+                / \
+               2   4
+	*/
+	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
+		bst_insert(&b, &(node_values[i]));
+
+	// Traverse the tree and collect the data: [5 3 2 4 7]
+	bst_traverse_preorder(&b, int_visit, &a);
+	assert(*(int*)array_value(&a, 0) == 5);
+	assert(*(int*)array_value(&a, 1) == 3);
+	assert(*(int*)array_value(&a, 2) == 2);
+	assert(*(int*)array_value(&a, 3) == 4);
+	assert(*(int*)array_value(&a, 4) == 7);
 }
