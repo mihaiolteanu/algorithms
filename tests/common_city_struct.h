@@ -22,17 +22,27 @@ extern comp_fn_t comp_city_byname;
 #define CITIES_SB_CJ_AB_SIZE 3
 extern city cities_sb_cj_ab[];
 
+/* An add (or insert) function for an adt usually accepts the adt itself as the
+   first argument and the address of the element to be added to the addt as the
+   second. */
+typedef int (*adt_add_fn_t)(void *adt, void *elem_addr);
+
 /* Insert the list of cities into the abstract data type using the insert
    function provided by the implementation of that data type. */
 extern void city_insert(void *adt,
-			int (*adt_add)(void *adt, void *elem_addr),
+			adt_add_fn_t adt_add,
 			city *cities);
+
+/* A search function for an adt usually accepts the adt itself as the first
+   argument and the address of the element it searches for as the second.
+   Therefore, we can have a generic function type for it. */
+typedef void* (*adt_search_fn_t)(void *adt, void *elem_addr);
 
 /* Search for a city in the data structure pointed by adt, using that ds
    search function, and assert that the found city size matches the expected
    size*/
 extern void city_search_byname(void *adt,
-			       int (*adt_search)(void *adt, void *elem_addr),
+			       adt_search_fn_t adt_search,
 			       city *c, int exp_size);
 
 #endif // COMMON_CITY_STRUCT_H

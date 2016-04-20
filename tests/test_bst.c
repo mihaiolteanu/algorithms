@@ -37,7 +37,7 @@ static void test_bst_insert() {
 	       /
 	      ab
 	*/
-	city_insert(&b, bst_insert, cities_sb_cj_ab);
+	city_insert(&b, (adt_add_fn_t)bst_insert, cities_sb_cj_ab);
 
 	// sb is the root.
 	node = bst_getroot(&b);
@@ -77,11 +77,11 @@ static void test_bst_search() {
 	bst_init(&b, sizeof(city), comp_city_byname);
 
 	// Insert some cities.
-	city_insert(&b, bst_insert, cities_sb_cj_ab);
+	city_insert(&b, (adt_add_fn_t)bst_insert, cities_sb_cj_ab);
 
 	// All cities must be included in the tree.
 	for(int i = 0; i < CITIES_SB_CJ_AB_SIZE; i++)
-		city_search_byname(&b, bst_search,
+		city_search_byname(&b, (adt_search_fn_t)bst_search,
 				   &cities_sb_cj_ab[i],
 				   cities_sb_cj_ab[i].size);
 
@@ -92,7 +92,7 @@ static void test_bst_min_max() {
 	city *c;
 	
 	// Insert some cities.
-	city_insert(&b, bst_insert, cities_sb_cj_ab);
+	city_insert(&b, (adt_add_fn_t)bst_insert, cities_sb_cj_ab);
 
 	c = bst_min(&b);
 	assert(strcmp(c->name, "alba") == 0);
@@ -126,7 +126,7 @@ static void test_bst_traverse_inorder() {
 		bst_insert(&b, &(node_values[i]));
 
 	// Traverse the tree and collect the data: [2 3 4 5 7]
-	bst_traverse_inorder(&b, int_visit, &a);
+	bst_traverse_inorder(&b, (bst_visit_fn_t)int_visit, &a);
 	assert(*(int*)array_value(&a, 0) == 2);
 	assert(*(int*)array_value(&a, 1) == 3);
 	assert(*(int*)array_value(&a, 2) == 4);
@@ -154,7 +154,7 @@ static void test_bst_traverse_preorder() {
 		bst_insert(&b, &(node_values[i]));
 
 	// Traverse the tree and collect the data: [5 3 2 4 7]
-	bst_traverse_preorder(&b, int_visit, &a);
+	bst_traverse_preorder(&b, (bst_visit_fn_t)int_visit, &a);
 	assert(*(int*)array_value(&a, 0) == 5);
 	assert(*(int*)array_value(&a, 1) == 3);
 	assert(*(int*)array_value(&a, 2) == 2);

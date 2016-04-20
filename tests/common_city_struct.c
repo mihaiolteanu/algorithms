@@ -18,7 +18,7 @@ city cities_sb_cj_ab[CITIES_SB_CJ_AB_SIZE] = {
 };
 
 void city_insert(void *adt,
-		 int (*adt_add)(void *adt, void *elem_addr),
+		 adt_add_fn_t adt_add,
 		 city *cities) {
 	city *c;
 	for (int i = 0; i < CITIES_SB_CJ_AB_SIZE; i++)
@@ -26,8 +26,8 @@ void city_insert(void *adt,
 }
 		
 void city_search_byname(void *adt,
-		 int (*adt_search)(void *adt, void *elem_addr),
-		 city *c, int exp_size) {
+			adt_search_fn_t adt_search,
+			city *c, int exp_size) {
 	city *res = adt_search(adt, c);
 	if (res != NULL)
 		assert(res->size == exp_size);

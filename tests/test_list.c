@@ -21,11 +21,11 @@ static void test_list_search() {
 	list_init(&l, sizeof(city), comp_city_byname);
 
 	// Insert some cities.
-	city_insert(&l, list_add, cities_sb_cj_ab);
+	city_insert(&l, (adt_add_fn_t)list_add, cities_sb_cj_ab);
 
 	// Now let's find them by name.
 	for (int i = 0; i < CITIES_SB_CJ_AB_SIZE; i++)
-		city_search_byname(&l, list_search,
+		city_search_byname(&l, (adt_search_fn_t)list_search,
 				   &cities_sb_cj_ab[i],
 				   cities_sb_cj_ab[i].size);
 
@@ -37,7 +37,7 @@ static void test_list_remove() {
 	list_init(&l, sizeof(city), comp_city_byname);
 
 	// Insert some cities.
-	city_insert(&l, list_add, cities_sb_cj_ab);
+	city_insert(&l, (adt_add_fn_t)list_add, cities_sb_cj_ab);
 
 	//Remove an element from the middle of the list.
 	city *c = &cities_sb_cj_ab[1];
@@ -49,9 +49,9 @@ static void test_list_remove() {
 
 	// But the others should.
 	c = &cities_sb_cj_ab[0];
-	city_search_byname(&l, list_search, c, c->size);
+	city_search_byname(&l, (adt_search_fn_t)list_search, c, c->size);
 	c = &cities_sb_cj_ab[2];
-	city_search_byname(&l, list_search, c, c->size);
+	city_search_byname(&l, (adt_search_fn_t)list_search, c, c->size);
 
 	list_destroy(&l);
 }

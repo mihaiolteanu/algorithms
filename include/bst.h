@@ -34,15 +34,19 @@ extern void *bst_search(bst *b, void *elem_addr);
 extern void *bst_min(bst *b);
 extern void *bst_max(bst *b);
 
+/* Function type for visit function to be caled for each node. Used for tree
+   traversal. */
+typedef void (*bst_visit_fn_t)(void *visited, void *obj);
+
 /* Do an in-order traversal of the binary tree and call the visit function
    for each visited node. The visit function is called with the node data
    and object as arguments. */
-extern void bst_traverse_inorder(bst *b, void (*visit)(void *visited, void *obj), void *obj);
+extern void bst_traverse_inorder(bst *b, bst_visit_fn_t visit, void *obj);
 
 /* Do a pre-order traversal of the binary tree and call the visit function
    for each visited node. The visit function is called with the node data
    and object as arguments. */
-extern void bst_traverse_preorder(bst *b, void (*visit)(void *visited, void *obj), void *obj);
+extern void bst_traverse_preorder(bst *b, bst_visit_fn_t visit, void *obj);
 
 // ***** Functions mostly used for tests *****
 /* Get the root of the tree. */
