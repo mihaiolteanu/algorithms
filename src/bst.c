@@ -8,7 +8,7 @@
 static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp);
 /* Given a node and a data address, search the tree for a node that contains
    the same data. */
-static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp);
+static bst_node *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp);
 	
 int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 	b->tsize = elem_size;
@@ -30,6 +30,7 @@ int bst_insert(bst *b, void *elem_addr) {
 	memcpy(newnode->data, elem_addr, tsize);
 	newnode->left = NULL;
 	newnode->right = NULL;
+	newnode->count = 1;
 
 	// Now find a place to link it.
 	if (node == NULL) {
@@ -41,9 +42,24 @@ int bst_insert(bst *b, void *elem_addr) {
 
 void *bst_search(bst *b, void *elem_addr) {
 	bst_node *root = b->head;
+	bst_node *res = NULL;
 	comp_fn_t comp = b->comp;
 
-	return bst_search_local(root, elem_addr, comp);
+	res = bst_search_local(root, elem_addr, comp);
+	if (res != NULL)
+		return res->data;
+	return res;
+}
+
+int bst_search_count(bst *b, void *elem_addr) {
+	bst_node *root = b->head;
+	bst_node *res = NULL;
+	comp_fn_t comp = b->comp;
+
+	res = bst_search_local(root, elem_addr, comp);
+	if (res != NULL)
+		return res->count;
+	return -1;
 }
 
 void *bst_min(bst *b) {
@@ -103,12 +119,12 @@ void bst_traverse_preorder(bst *b,
 	bst_traverse_preorder_local(node, visit, obj);
 }
 
-static void *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {
+static bst_node *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {
 	if (node == NULL)
 		return NULL;
 	int compres = comp(node->data, elem_addr);
 	if ( compres == 0)
-		return node->data; // found
+		return node; // found
 	if (compres > 0)
 		return bst_search_local(node->left, elem_addr, comp);
 	return bst_search_local(node->right, elem_addr, comp);
@@ -124,11 +140,13 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) 
 			node->left = newnode;
 		else
 			bst_insert_local(left, newnode, comp);
-	else
+	else if (compres > 0)
 		if (right == NULL)
 			node->right = newnode;
 		else
 			bst_insert_local(right, newnode, comp);
+	else
+		node->count++;
 }
 
 bst_node *bst_getroot(bst *b) {

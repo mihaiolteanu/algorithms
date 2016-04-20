@@ -8,6 +8,7 @@
 typedef struct bst_node_t {
 	struct bst_node_t *left;
 	struct bst_node_t *right;
+	int count;    /* Number of nodes with the same key. */
 	char data[0]; // GCC zero-length array
 } bst_node;
 
@@ -29,6 +30,10 @@ extern int bst_insert(bst *b, void *elem_addr);
 given in the init function is used to decide when two items from the tree
 are equal. Returns the node address from the tree if found, NULL othrwise.*/
 extern void *bst_search(bst *b, void *elem_addr);
+
+/* Search for the item at elem_address in the tree. Return the number of nodes
+   that have the same key as the searched item. */
+extern int bst_search_count(bst *b, void *elem_addr);
 
 /* Find the min/max node data from the tree. */
 extern void *bst_min(bst *b);

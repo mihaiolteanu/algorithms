@@ -11,6 +11,7 @@
 // ***** Test functions *****
 static void test_bst_insert();
 static void test_bst_search();
+static void test_bst_search_count();
 static void test_bst_min_max();
 static void test_bst_traverse_inorder();
 static void test_bst_traverse_preorder();
@@ -18,6 +19,7 @@ static void test_bst_traverse_preorder();
 void run_all_bst_tests() {
 	test_bst_insert();
 	test_bst_search();
+	test_bst_search_count();
 	test_bst_min_max();
 	test_bst_traverse_inorder();
 	test_bst_traverse_preorder();
@@ -87,10 +89,36 @@ static void test_bst_search() {
 
 }
 
+static void test_bst_search_count() {
+	bst b;
+	int search_elem, search_res;
+	int node_values[] = {5, 3, 7, 4, 2, 7, 7, 4};
+
+	bst_init(&b, sizeof(int), comp_int_member);
+
+	// Insert some nodes
+	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
+		bst_insert(&b, &(node_values[i]));
+
+	search_elem = 7;
+	search_res = bst_search_count(&b, &search_elem);
+	assert(search_res == 3); // We've added three nodes with value 7.
+
+	search_elem = 4;
+	search_res = bst_search_count(&b, &search_elem);
+	assert(search_res == 2); // We've added three nodes with value 4.
+
+	search_elem = 5;
+	search_res = bst_search_count(&b, &search_elem);
+	assert(search_res == 1); // We've added one node with value 5.
+}
+
 static void test_bst_min_max() {
 	bst b;
 	city *c;
-	
+
+	bst_init(&b, sizeof(city), comp_city_byname);
+
 	// Insert some cities.
 	city_insert(&b, (adt_add_fn_t)bst_insert, cities_sb_cj_ab);
 
