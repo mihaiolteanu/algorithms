@@ -5,6 +5,7 @@
 #include <string.h>
 #include "bst.h"
 #include "common_city_struct.h"
+#include "common_int_member.h"
 #include "array.h"
 
 // ***** Test functions *****
@@ -13,17 +14,6 @@ static void test_bst_search();
 static void test_bst_min_max();
 static void test_bst_traverse_inorder();
 static void test_bst_traverse_preorder();
-
-/* Comparison function for sorted array of ints. TODO: maybe move it to a
-   separate module so that all test modules can use it?! */
-static int intcomp(const void *a, const void *b) {
-	int avalue = *(int *)a;
-	int bvalue = *(int *)b;
-
-	if (avalue < bvalue)
-		return -1;
-	return avalue > bvalue;
-}
 
 void run_all_bst_tests() {
 	test_bst_insert();
@@ -123,7 +113,7 @@ static void test_bst_traverse_inorder() {
 	// And then visit and collect each node data in an array.
 	array a;
 	array_init(&a, sizeof(int));
-	bst_init(&b, sizeof(int), intcomp);
+	bst_init(&b, sizeof(int), comp_int_member);
 	
 	/* Build the tree:
 	           5
@@ -151,7 +141,7 @@ static void test_bst_traverse_preorder() {
 	// And then visit and collect each node data in an array.
 	array a;
 	array_init(&a, sizeof(int));
-	bst_init(&b, sizeof(int), intcomp);
+	bst_init(&b, sizeof(int), comp_int_member);
 	
 	/* Build the tree:
 	           5

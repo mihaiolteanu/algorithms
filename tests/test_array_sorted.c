@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include "array_sorted.h"
+#include "common_int_member.h"
 
 static void test_array_sorted_size(); 
 static void test_array_sorted_value();
@@ -16,20 +17,11 @@ void run_all_array_sorted_tests() {
 	test_array_sorted_remove_byindex();
 }
 
-
-// Helper functions
-
-// Comparison function for sorted array of ints.
-static int intcomp(const void *a, const void *b) {
-	return ( *(int *)a > *(int *)b);
-}
-
-
 // Test functions
 
 static void test_array_sorted_size() {
 	array_sorted as;
-	array_sorted_init(&as, sizeof(int), intcomp);
+	array_sorted_init(&as, sizeof(int), comp_int_member);
 
 	// No elements added yet.
 	assert(array_sorted_size(&as) == 0);
@@ -54,7 +46,7 @@ static void test_array_sorted_size() {
 
 static void test_array_sorted_value() {
 	array_sorted as;
-	array_sorted_init(&as, sizeof(int), intcomp);
+	array_sorted_init(&as, sizeof(int), comp_int_member);
 
 	// [5]
 	int new_elem = 5;
@@ -88,7 +80,7 @@ static void test_array_sorted_value() {
 
 static void test_array_sorted_remove_byindex() {
 	array_sorted as;
-	array_sorted_init(&as, sizeof(int), intcomp);
+	array_sorted_init(&as, sizeof(int), comp_int_member);
 
 	for (int i = 0; i < 3; i++)
 		array_sorted_add(&as, &i);

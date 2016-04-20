@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include "array.h"
+#include "common_int_member.h"
 
 // Test functions
 static void test_array_size();
@@ -16,10 +17,6 @@ static void test_array_add_at_index();
 static void helper_array_add_elements(array *a, size_t n) {
 	for (int i = 0; i < n; i++)
 		array_add(a, &i);
-}
-// Comparison function for sorted array of ints.
-static int intcomp(const void *a, const void *b) {
-	return ( *(int *)a > *(int *)b);
 }
 
 void run_all_array_tests() {
@@ -39,15 +36,15 @@ static void test_array_search() {
 	// 0 1 2 3 4
 	helper_array_add_elements(&a, 5);
 	int tosearch = 2;
-	int *res = array_search(&a, &tosearch, intcomp);
+	int *res = array_search(&a, &tosearch, comp_int_member);
 	assert(*res == tosearch);
 	
 	tosearch = 0;
-	res = array_search(&a, &tosearch, intcomp);
+	res = array_search(&a, &tosearch, comp_int_member);
 	assert(*res == tosearch);
 
 	tosearch = 4;
-	res = array_search(&a, &tosearch, intcomp);
+	res = array_search(&a, &tosearch, comp_int_member);
 	assert(*res == tosearch);
 }
 
@@ -104,7 +101,7 @@ static void test_array_remove_byaddr() {
 
 	// Search and remove an element, if found.
 	int tosearch = 2;
-	int *res = array_search(&a, &tosearch, intcomp);
+	int *res = array_search(&a, &tosearch, comp_int_member);
 	if (res != NULL) {
 		array_remove_byaddr(&a, res);
 		// [0 1 3 4]
@@ -118,7 +115,7 @@ static void test_array_remove_byaddr() {
 
 	// Remove the first element.
 	tosearch = 0;
-	res = array_search(&a, &tosearch, intcomp);
+	res = array_search(&a, &tosearch, comp_int_member);
 	if (res != NULL) {
 		array_remove_byaddr(&a, res);
 		// [1 3 4]
@@ -129,7 +126,7 @@ static void test_array_remove_byaddr() {
 
 	// Remove the last element.
 	tosearch = 4;
-	res = array_search(&a, &tosearch, intcomp);
+	res = array_search(&a, &tosearch, comp_int_member);
 	if (res != NULL) {
 		array_remove_byaddr(&a, res);
 		// [1 3]
