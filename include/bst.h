@@ -32,7 +32,7 @@ are equal. Returns the node address from the tree if found, NULL othrwise.*/
 extern void *bst_search(bst *b, void *elem_addr);
 
 /* Search for the item at elem_address in the tree. Return the number of nodes
-   that have the same key as the searched item. */
+   that have the same key as the searched item, -1 if not found. */
 extern int bst_search_count(bst *b, void *elem_addr);
 
 /* Find the min/max node data from the tree. */
@@ -52,6 +52,18 @@ extern void bst_traverse_inorder(bst *b, bst_visit_fn_t visit, void *obj);
    for each visited node. The visit function is called with the node data
    and object as arguments. */
 extern void bst_traverse_preorder(bst *b, bst_visit_fn_t visit, void *obj);
+
+/* Modify an existing node according to the fill function. Only create a new
+   node if no other node can be modified to the fill function's liking.The
+   affected node and all its children are reinserted in the tree to mantain
+   the bst invariant.
+   check_fill function checks if the current node data from the tree can be
+   filled with the data at elem_addr. Returns 0 if fill is 100%, -1 if
+   underfill and 1 if overfill.*/
+extern void bst_fill(bst *b,
+		     int (*check_fill)(void *node_data, void *elem_addr),
+		     void (*fill)(void *node_data, void *elem_addr),
+		     void *elem_addr);
 
 // ***** Functions mostly used for tests *****
 /* Get the root of the tree. */

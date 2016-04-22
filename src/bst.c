@@ -9,6 +9,8 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp);
 /* Given a node and a data address, search the tree for a node that contains
    the same data. */
 static bst_node *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp);
+/* Insert all the nodes from one tree into another. */
+static void bst_insert_bst(bst *from, bst *to);
 	
 int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 	b->tsize = elem_size;
@@ -147,6 +149,63 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) 
 			bst_insert_local(right, newnode, comp);
 	else
 		node->count++;
+}
+
+/* The order of the parameters for the visit function in bst traversal are
+   switched in the bst_insert. So make a wrapper. */
+static int bst_insert_switch_params(void *elem_addr, bst *b) {
+	return bst_insert(b, elem_addr);
+}
+
+static void bst_insert_bst(bst *from, bst *to) {
+	bst_node *from_node = from->head;
+
+	/* Traverse the tree, adding each found node in the destination tree.*/
+	bst_traverse_inorder_local(from_node, bst_insert_switch_params, to);
+}
+
+static bst_node *fill_find_node(bst_node *node,
+				int (*check_fill)(void *node_data, void *elem_addr),
+				void *elem_addr) {
+	bst_node *tmp_node = NULL;
+
+	if (node == NULL)
+		return NULL;
+
+	int check_fill_res = check_fill(node->data, elem_addr);
+
+	if (check_fill_res == 0)
+		/* Node can be filled completely. Perfect match! */
+		return node;
+
+	if (check_fill_res > 0) // Overfill.
+		return fill_find_node(node->left, check_fill, elem_addr);
+
+	if (check_fill_res < 0) { // Underfill.
+		if ((tmp_node = (fill_find_node(node->right, check_fill, elem_addr))) == NULL)
+			/* All the other nodes are either NULL or would overfill
+			 * so keep this one.*/
+			return node;
+		return tmp_node;
+	}
+}
+
+void bst_fill(bst *b,
+	      int (*check_fill)(void *node_data, void *elem_addr),
+	      void (*fill)(void *node_data, void *elem_addr),
+	      void *elem_addr) {
+	bst_node *node = b->head;
+	bst_node *node_tofill = NULL;
+
+	node_tofill = fill_find_node(node, check_fill, elem_addr);
+
+	if (node_tofill == NULL) {
+		fill(NULL, NULL);
+		/* No suitable position found, so create a new node,
+		 fill it and insert it into the tree. */
+	}
+	else
+		fill(node_tofill->data, elem_addr);
 }
 
 bst_node *bst_getroot(bst *b) {
