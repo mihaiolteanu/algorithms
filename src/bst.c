@@ -32,6 +32,7 @@ int bst_insert(bst *b, void *elem_addr) {
 	memcpy(newnode->data, elem_addr, tsize);
 	newnode->left = NULL;
 	newnode->right = NULL;
+	newnode->parent = NULL;
 	newnode->count = 1;
 
 	// Now find a place to link it.
@@ -149,6 +150,7 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) 
 			bst_insert_local(right, newnode, comp);
 	else
 		node->count++;
+	newnode->parent = node;
 }
 
 /* The order of the parameters for the visit function in bst traversal are
