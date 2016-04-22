@@ -35,10 +35,8 @@ void run_all_bst_tests() {
 	test_bst_search();
 	test_bst_search_count();
 	test_bst_min_max();
-
 	test_bst_traverse_inorder();
 	test_bst_traverse_preorder();
-
 	test_bst_fill();
 }
 
@@ -52,29 +50,54 @@ static int test_bst_check_fill(void *node_data, void *elem_addr) {
 		return -1;
 	return 1;
 }
-#include <stdio.h>
+
 /* Fill function */
 static void h_bst_fill(void *node_data, void *elem_addr) {
-	if (node_data == NULL)
-		printf("No node found \n");
-	else {
-		int data = *(int*)node_data;
-		printf("Found node: %d\n", data);
-	}
+	if (node_data != NULL)
+		*(int*)node_data += *(int*)elem_addr;
 }
 
 static void test_bst_fill() {
 	bst b;
-	int node_values[] = {5, 7, 6, 9, 4};
-	int newval;
+	int fillval;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	
-	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
-		bst_insert(&b, &(node_values[i]));
 
-	newval = 2;
-	bst_fill(&b, test_bst_check_fill, h_bst_fill, &newval);
+	/* Build the tree with five nodes:
+	           5
+		  / \
+                 3   7
+                / \
+               2   4
+	*/
+	h_bst_insert_ints(&b, 5,
+			  5, 3, 7, 4, 2);
+
+
+	/* Fill at 3.
+	          5
+                 / \
+                2   7
+                 \   \
+                  4  10
+	*/
+	fillval = 7;
+	bst_fill(&b, test_bst_check_fill, h_bst_fill, &fillval);
+	h_traverse_inorder_int_assert(&b, 5,
+				      2, 4, 5, 7, 10);
+
+
+	/* Fill at 4.
+	          5
+                 / \
+                2   7
+                     \
+                     10(2)
+	*/
+	fillval = 6;
+	bst_fill(&b, test_bst_check_fill, h_bst_fill, &fillval);
+	h_traverse_inorder_int_assert(&b, 4,
+				      2, 5, 7, 10);
 }	
 
 static void test_bst_insert() {

@@ -170,8 +170,8 @@ static void bst_insert_bst(bst *from, bst *to) {
 }
 
 static bst_node *fill_find_node(bst_node *node,
-				int (*check_fill)(void *node_data, void *elem_addr),
-				void *elem_addr) {
+			int (*check_fill)(void *node_data, void *elem_addr),
+			void *elem_addr) {
 	bst_node *tmp_node = NULL;
 
 	if (node == NULL)
@@ -187,7 +187,8 @@ static bst_node *fill_find_node(bst_node *node,
 		return fill_find_node(node->left, check_fill, elem_addr);
 
 	if (check_fill_res < 0) { // Underfill.
-		if ((tmp_node = (fill_find_node(node->right, check_fill, elem_addr))) == NULL)
+		tmp_node = fill_find_node(node->right, check_fill, elem_addr);
+		if (tmp_node == NULL)
 			/* All the other nodes are either NULL or would overfill
 			 * so keep this one.*/
 			return node;
@@ -201,16 +202,31 @@ void bst_fill(bst *b,
 	      void *elem_addr) {
 	bst_node *node = b->head;
 	bst_node *node_tofill = NULL;
+	bst_node *parent = NULL;
 
 	node_tofill = fill_find_node(node, check_fill, elem_addr);
 
-	if (node_tofill == NULL) {
-		fill(NULL, NULL);
-		/* No suitable position found, so create a new node,
-		 fill it and insert it into the tree. */
-	}
-	else
+	if (node_tofill == NULL)
+		/* No suitable position found, so add a new node with the given
+		 * data. */
+		bst_insert(b, elem_addr);
+	else {
+		/* Update the node with the given data. */
 		fill(node_tofill->data, elem_addr);
+		parent = node_tofill->parent;
+		/* Find if the filled node was left or right sibbling and
+		 * detach the filled node from the tree. */
+		if (parent->left == node_tofill)
+			parent->left = NULL;
+		else
+			parent->right = NULL;
+
+		/* Reinsert the detached node and all of its children to the
+		 * initial tree. */
+		bst temp_bst;
+		temp_bst.head = node_tofill;
+		bst_insert_bst(&temp_bst, b);
+	}
 }
 
 bst_node *bst_getroot(bst *b) {
