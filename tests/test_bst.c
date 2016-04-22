@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <stdarg.h>
 #include "bst.h"
 #include "common_city_struct.h"
 #include "common_int_member.h"
@@ -134,6 +135,26 @@ void int_visit(void *data, array *a) {
 	array_add(a, data);
 }
 
+/* Traverse the bst in an in-order fashion, collecting all the node values into
+ * an array and then assert if the collected values match those given as
+ * arguments in the va_list. */
+static h_traverse_inorder_int_assert(bst *b, int count, ...) {
+	va_list ap;
+	array a;
+
+	array_init(&a, sizeof(int));
+	/* Collect the node values inorder in the array a */
+	bst_traverse_inorder(b, (bst_visit_fn_t)int_visit, &a);
+
+	/* The collected node values should match the ones given as arguments to
+	   this function */
+	va_start(ap, count);
+	for (int i = 0; i < count; i++)
+		assert(*(int*)array_value(&a, i) == va_arg(ap, int));
+
+	va_end(ap);
+}
+
 static void test_bst_traverse_inorder() {
 	bst b;
 	// The values to be added in the bst
@@ -153,13 +174,7 @@ static void test_bst_traverse_inorder() {
 	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
 		bst_insert(&b, &(node_values[i]));
 
-	// Traverse the tree and collect the data: [2 3 4 5 7]
-	bst_traverse_inorder(&b, (bst_visit_fn_t)int_visit, &a);
-	assert(*(int*)array_value(&a, 0) == 2);
-	assert(*(int*)array_value(&a, 1) == 3);
-	assert(*(int*)array_value(&a, 2) == 4);
-	assert(*(int*)array_value(&a, 3) == 5);
-	assert(*(int*)array_value(&a, 4) == 7);
+	h_traverse_inorder_int_assert(&b, 5, 2, 3, 4, 5, 7);
 }
 
 static void test_bst_traverse_preorder() {
