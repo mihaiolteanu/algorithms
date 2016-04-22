@@ -144,13 +144,10 @@ static void test_bst_search() {
 static void test_bst_search_count() {
 	bst b;
 	int search_elem, search_res;
-	int node_values[] = {5, 3, 7, 4, 2, 7, 7, 4};
 
 	bst_init(&b, sizeof(int), comp_int_member);
-
-	// Insert some nodes
-	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
-		bst_insert(&b, &(node_values[i]));
+	h_bst_insert_ints(&b, 8,
+			  5, 3, 7, 4, 2, 7, 7, 4);
 
 	search_elem = 7;
 	search_res = bst_search_count(&b, &search_elem);
