@@ -16,15 +16,66 @@ static void test_bst_search_count();
 static void test_bst_min_max();
 static void test_bst_traverse_inorder();
 static void test_bst_traverse_preorder();
+static void test_bst_fill();
+
+/* ***** Helper functions ***** */
+/* Traverse the bst in an in-order fashion, collecting all the node values into
+ * an array and then assert if the collected values match those given as
+ * arguments in the va_list. */
+static void h_traverse_inorder_int_assert(bst *b, int count, ...);
+
+/* Adds the data to the array. Used as a node visit function for bst traversal*/
+static void h_int_visit(void *data, array *a);
+
+/* Insert count number of ints in the bst */
+static void h_bst_insert_ints(bst *b, int count, ...);
 
 void run_all_bst_tests() {
 	test_bst_insert();
 	test_bst_search();
 	test_bst_search_count();
 	test_bst_min_max();
+
 	test_bst_traverse_inorder();
 	test_bst_traverse_preorder();
+
+	test_bst_fill();
 }
+
+static int test_bst_check_fill(void *node_data, void *elem_addr) {
+	int data = *(int*)node_data;
+	int newval = *(int*)elem_addr;
+
+	if (data+newval == 10)
+		return 0;
+	if (data+newval < 10)
+		return -1;
+	return 1;
+}
+#include <stdio.h>
+/* Fill function */
+static void h_bst_fill(void *node_data, void *elem_addr) {
+	if (node_data == NULL)
+		printf("No node found \n");
+	else {
+		int data = *(int*)node_data;
+		printf("Found node: %d\n", data);
+	}
+}
+
+static void test_bst_fill() {
+	bst b;
+	int node_values[] = {5, 7, 6, 9, 4};
+	int newval;
+
+	bst_init(&b, sizeof(int), comp_int_member);
+	
+	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
+		bst_insert(&b, &(node_values[i]));
+
+	newval = 2;
+	bst_fill(&b, test_bst_check_fill, h_bst_fill, &newval);
+}	
 
 static void test_bst_insert() {
 	bst b;
@@ -130,21 +181,64 @@ static void test_bst_min_max() {
 	assert(strcmp(c->name, "sibiu") == 0);
 }
 
-/* Each node visit adds the node data to the array. */
-void int_visit(void *data, array *a) {
+static void test_bst_traverse_inorder() {
+	bst b;
+
+	bst_init(&b, sizeof(int), comp_int_member);
+
+	/* Build the tree with five nodes:
+	           5
+		  / \
+                 3   7
+                / \
+               2   4
+	*/
+	h_bst_insert_ints(&b, 5,
+			  5, 3, 7, 4, 2);
+
+	/* This helper function already does an in-order traversal, so use it
+	   to test the correct traversal. */
+	h_traverse_inorder_int_assert(&b, 5,
+				      2, 3, 4, 5, 7);
+}
+
+static void test_bst_traverse_preorder() {
+	bst b;
+	array a;
+
+	bst_init(&b, sizeof(int), comp_int_member);
+	array_init(&a, sizeof(int));
+
+	/* Build the tree with five nodes:
+	           5
+		  / \
+                 3   7
+                / \
+               2   4
+	*/
+	h_bst_insert_ints(&b, 5,
+			  5, 3, 7, 4, 2);
+
+	// Traverse the tree and collect the data: [5 3 2 4 7]
+	bst_traverse_preorder(&b, (bst_visit_fn_t)h_int_visit, &a);
+	assert(*(int*)array_value(&a, 0) == 5);
+	assert(*(int*)array_value(&a, 1) == 3);
+	assert(*(int*)array_value(&a, 2) == 2);
+	assert(*(int*)array_value(&a, 3) == 4);
+	assert(*(int*)array_value(&a, 4) == 7);
+}
+
+static void h_int_visit(void *data, array *a) {
 	array_add(a, data);
 }
 
-/* Traverse the bst in an in-order fashion, collecting all the node values into
- * an array and then assert if the collected values match those given as
- * arguments in the va_list. */
-static h_traverse_inorder_int_assert(bst *b, int count, ...) {
+static void h_traverse_inorder_int_assert(bst *b, int count, ...) {
 	va_list ap;
 	array a;
 
 	array_init(&a, sizeof(int));
 	/* Collect the node values inorder in the array a */
-	bst_traverse_inorder(b, (bst_visit_fn_t)int_visit, &a);
+	bst_traverse_inorder(b, (bst_visit_fn_t)h_int_visit, &a);
 
 	/* The collected node values should match the ones given as arguments to
 	   this function */
@@ -155,52 +249,14 @@ static h_traverse_inorder_int_assert(bst *b, int count, ...) {
 	va_end(ap);
 }
 
-static void test_bst_traverse_inorder() {
-	bst b;
-	// The values to be added in the bst
-	int node_values[] = {5, 3, 7, 4, 2};
-	// And then visit and collect each node data in an array.
-	array a;
-	array_init(&a, sizeof(int));
-	bst_init(&b, sizeof(int), comp_int_member);
-	
-	/* Build the tree:
-	           5
-		  / \
-                 3   7
-                / \
-               2   4
-	*/
-	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
-		bst_insert(&b, &(node_values[i]));
+static void h_bst_insert_ints(bst *b, int count, ...) {
+	va_list ap;
+	int value;
 
-	h_traverse_inorder_int_assert(&b, 5, 2, 3, 4, 5, 7);
-}
-
-static void test_bst_traverse_preorder() {
-	bst b;
-	// The values to be added in the bst
-	int node_values[] = {5, 3, 7, 4, 2};
-	// And then visit and collect each node data in an array.
-	array a;
-	array_init(&a, sizeof(int));
-	bst_init(&b, sizeof(int), comp_int_member);
-	
-	/* Build the tree:
-	           5
-		  / \
-                 3   7
-                / \
-               2   4
-	*/
-	for (int i = 0; i < sizeof(node_values)/sizeof(node_values[0]); i++)
-		bst_insert(&b, &(node_values[i]));
-
-	// Traverse the tree and collect the data: [5 3 2 4 7]
-	bst_traverse_preorder(&b, (bst_visit_fn_t)int_visit, &a);
-	assert(*(int*)array_value(&a, 0) == 5);
-	assert(*(int*)array_value(&a, 1) == 3);
-	assert(*(int*)array_value(&a, 2) == 2);
-	assert(*(int*)array_value(&a, 3) == 4);
-	assert(*(int*)array_value(&a, 4) == 7);
+	va_start(ap, count);
+	for (int i = 0; i < count; i++) {
+		value = va_arg(ap, int);
+		bst_insert(b, &value);
+	}
+	va_end(ap);
 }
