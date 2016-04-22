@@ -139,18 +139,21 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) 
 	
 	int compres = comp(newnode->data, node->data);
 	if (compres < 0)
-		if (left == NULL)
+		if (left == NULL) {
 			node->left = newnode;
+			newnode->parent = node;
+		}
 		else
 			bst_insert_local(left, newnode, comp);
 	else if (compres > 0)
-		if (right == NULL)
+		if (right == NULL) {
 			node->right = newnode;
+			newnode->parent = node;
+		}
 		else
 			bst_insert_local(right, newnode, comp);
 	else
 		node->count++;
-	newnode->parent = node;
 }
 
 /* The order of the parameters for the visit function in bst traversal are
