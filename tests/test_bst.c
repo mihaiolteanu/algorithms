@@ -16,6 +16,7 @@ static void test_bst_search_count();
 static void test_bst_min_max();
 static void test_bst_traverse_inorder();
 static void test_bst_traverse_preorder();
+static void test_bst_traverse_breadth_first();
 static void test_bst_fill();
 
 /* ***** Helper functions ***** */
@@ -37,6 +38,7 @@ void run_all_bst_tests() {
 	test_bst_min_max();
 	test_bst_traverse_inorder();
 	test_bst_traverse_preorder();
+	test_bst_traverse_breadth_first();
 	test_bst_fill();
 }
 
@@ -246,6 +248,31 @@ static void test_bst_traverse_preorder() {
 	assert(*(int*)array_value(&a, 2) == 2);
 	assert(*(int*)array_value(&a, 3) == 4);
 	assert(*(int*)array_value(&a, 4) == 7);
+}
+
+static void test_bst_traverse_breadth_first() {
+	bst b;
+	array a;
+
+	bst_init(&b, sizeof(int), comp_int_member);
+	array_init(&a, sizeof(int));
+
+	/* Build the tree with five nodes:
+	           5
+		  / \
+                 3   7
+                / \
+               2   4
+	*/
+	h_bst_insert_ints(&b, 5,
+			  5, 3, 7, 4, 2);
+
+	bst_traverse_breadth_first(&b, (bst_visit_fn_t)h_int_visit, &a);
+	assert(*(int*)array_value(&a, 0) == 5);
+	assert(*(int*)array_value(&a, 1) == 3);
+	assert(*(int*)array_value(&a, 2) == 7);
+	assert(*(int*)array_value(&a, 3) == 2);
+	assert(*(int*)array_value(&a, 4) == 4);
 }
 
 static void h_int_visit(void *data, array *a) {

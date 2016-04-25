@@ -54,6 +54,10 @@ extern void bst_traverse_inorder(bst *b, bst_visit_fn_t visit, void *obj);
    and object as arguments. */
 extern void bst_traverse_preorder(bst *b, bst_visit_fn_t visit, void *obj);
 
+/* Traverse the tree in a breadth first fashion calling the visit function on
+ * each visited node. */
+extern void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj);
+
 /* Modify an existing node according to the fill function. Only create a new
    node if no other node can be modified to the fill function's liking.The
    affected node and all its children are reinserted in the tree to mantain

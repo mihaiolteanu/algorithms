@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bst.h"
+#include "queue.h"
 #include "system.h"
 
 /* Given a node from a binary search tree, insert a new node in the correct
@@ -120,6 +121,34 @@ void bst_traverse_preorder(bst *b,
 	bst_node *node = b->head;
 
 	bst_traverse_preorder_local(node, visit, obj);
+}
+
+static void traverse_breadth_first(queue *q,
+				   bst_visit_fn_t visit,
+				   void *obj) {
+	/* Extract the next node from the queue. */
+	bst_node *qnode = queue_dequeue(q);
+	if (qnode == NULL)
+		return; /* Empty queue. */
+	visit(qnode->data, obj);
+	/* Enqueue both node's children. */
+	if (qnode->left != NULL)
+		queue_enqueue(q, qnode->left);
+	if (qnode->right != NULL)
+		queue_enqueue(q, qnode->right);
+	/* Process the rest of the queue. */
+	traverse_breadth_first(q, visit, obj);
+}
+
+void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj) {
+	queue q;
+	size_t btsize = b->tsize;
+	bst_node *head = b->head;
+
+	/* Hold the nodes to be visited in a queue. */
+	queue_init(&q, sizeof(bst_node) + btsize);
+	queue_enqueue(&q, head);
+	traverse_breadth_first(&q, visit, obj);
 }
 
 static bst_node *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {
