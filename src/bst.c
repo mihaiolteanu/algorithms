@@ -87,7 +87,7 @@ void *bst_max(bst *b) {
 }
 
 static void bst_traverse_inorder_local(bst_node *node,
-				       void (*visit)(void *visited, void *obj),
+				       bst_visit_fn_t visit,
 				       void *obj) {
 	if (node == NULL)
 		return;
@@ -97,7 +97,7 @@ static void bst_traverse_inorder_local(bst_node *node,
 }
 
 void bst_traverse_inorder(bst *b,
-			  void (*visit)(void *visited, void *obj),
+			  bst_visit_fn_t visit,
 			  void *obj) {
 	bst_node *node = b->head;
 
@@ -105,7 +105,7 @@ void bst_traverse_inorder(bst *b,
 }
 
 static void bst_traverse_preorder_local(bst_node *node,
-					void (*visit)(void *visited, void *obj),
+					bst_visit_fn_t visit,
 					void *obj) {
 	if (node == NULL)
 		return;
@@ -116,7 +116,7 @@ static void bst_traverse_preorder_local(bst_node *node,
 }
 
 void bst_traverse_preorder(bst *b,
-			   void (*visit)(void *visited, void *obj),
+			   bst_visit_fn_t visit,
 			   void *obj) {
 	bst_node *node = b->head;
 
