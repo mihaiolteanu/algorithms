@@ -14,6 +14,7 @@ static void test_bst_insert();
 static void test_bst_search();
 static void test_bst_search_count();
 static void test_bst_min_max();
+static void test_bst_count();
 static void test_bst_traverse_inorder();
 static void test_bst_traverse_preorder();
 static void test_bst_traverse_breadth_first();
@@ -38,6 +39,7 @@ void run_all_bst_tests() {
 	test_bst_search();
 	test_bst_search_count();
 	test_bst_min_max();
+	test_bst_count();
 	test_bst_traverse_inorder();
 	test_bst_traverse_preorder();
 	test_bst_traverse_breadth_first();
@@ -203,6 +205,17 @@ static void test_bst_min_max() {
 
 	c = bst_max(&b);
 	assert(strcmp(c->name, "sibiu") == 0);
+}
+
+static void test_bst_count() {
+	bst b;
+	int count;
+
+	bst_init(&b, sizeof(int), comp_int_member);
+	h_bst_insert_ints(&b, 5,
+			  5, 3, 7, 4, 2);
+	count = bst_count(&b);
+	assert(count == 5);
 }
 
 /* The following test functions use the same tree, but traverses it in different

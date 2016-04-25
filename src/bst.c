@@ -86,6 +86,18 @@ void *bst_max(bst *b) {
 	return node->data;
 }
 
+/* Each node visit increases the result count. */
+static void visit_count(char *data, int *res) {
+	/* Ignore the data, don't need it. */
+	(*res)++;
+}
+
+int bst_count(bst *b) {
+	int res = 0;
+	bst_traverse_inorder(b, (bst_visit_fn_t)visit_count, &res);
+	return res;
+}
+
 static void bst_traverse_inorder_local(bst_node *node,
 				       bst_visit_fn_t visit,
 				       void *obj) {
