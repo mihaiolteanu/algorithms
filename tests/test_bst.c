@@ -20,10 +20,12 @@ static void test_bst_traverse_breadth_first();
 static void test_bst_fill();
 
 /* ***** Helper functions ***** */
-/* Traverse the bst in an in-order fashion, collecting all the node values into
- * an array and then assert if the collected values match those given as
- * arguments in the va_list. */
-static void h_traverse_inorder_int_assert(bst *b, int count, ...);
+/* Traverse the bst in the order specified by the traverse function, collecting
+ * all the node values into an array and then assert if the collected values 
+ * match those given as arguments in the va_list. */
+static void h_traverse_int_assert(bst *b,
+		  void (*traverse)(bst *b, bst_visit_fn_t visit, void *obj),
+		  int count, ...);
 
 /* Adds the data to the array. Used as a node visit function for bst traversal*/
 static void h_int_visit(void *data, array *a);
@@ -85,8 +87,8 @@ static void test_bst_fill() {
 	*/
 	fillval = 7;
 	bst_fill(&b, test_bst_check_fill, h_bst_fill, &fillval);
-	h_traverse_inorder_int_assert(&b, 5,
-				      2, 4, 5, 7, 10);
+	h_traverse_int_assert(&b, bst_traverse_inorder,
+			      5,  2, 4, 5, 7, 10);
 
 
 	/* Fill at 4.
@@ -98,8 +100,8 @@ static void test_bst_fill() {
 	*/
 	fillval = 6;
 	bst_fill(&b, test_bst_check_fill, h_bst_fill, &fillval);
-	h_traverse_inorder_int_assert(&b, 4,
-				      2, 5, 7, 10);
+	h_traverse_int_assert(&b, bst_traverse_inorder,
+			      4,  2, 5, 7, 10);
 }	
 
 static void test_bst_insert() {
@@ -203,89 +205,60 @@ static void test_bst_min_max() {
 	assert(strcmp(c->name, "sibiu") == 0);
 }
 
+/* The following test functions use the same tree, but traverses it in different
+ * fashions. The visiting function adds the node data (an int) to a resizable
+ * array. The traverse function decides in what order the nodes are visited. The
+ * arguments to the assert function reflect the expected data of the visited
+ * nodes based on the visiting order. 
+	           5
+		  / \
+                 3   7
+                / \
+               2   4
+*/
 static void test_bst_traverse_inorder() {
 	bst b;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-
-	/* Build the tree with five nodes:
-	           5
-		  / \
-                 3   7
-                / \
-               2   4
-	*/
 	h_bst_insert_ints(&b, 5,
 			  5, 3, 7, 4, 2);
-
-	/* This helper function already does an in-order traversal, so use it
-	   to test the correct traversal. */
-	h_traverse_inorder_int_assert(&b, 5,
-				      2, 3, 4, 5, 7);
+	h_traverse_int_assert(&b, bst_traverse_inorder,
+			      5,  2, 3, 4, 5, 7);
 }
 
 static void test_bst_traverse_preorder() {
 	bst b;
-	array a;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	array_init(&a, sizeof(int));
-
-	/* Build the tree with five nodes:
-	           5
-		  / \
-                 3   7
-                / \
-               2   4
-	*/
 	h_bst_insert_ints(&b, 5,
 			  5, 3, 7, 4, 2);
-
-	// Traverse the tree and collect the data: [5 3 2 4 7]
-	bst_traverse_preorder(&b, (bst_visit_fn_t)h_int_visit, &a);
-	assert(*(int*)array_value(&a, 0) == 5);
-	assert(*(int*)array_value(&a, 1) == 3);
-	assert(*(int*)array_value(&a, 2) == 2);
-	assert(*(int*)array_value(&a, 3) == 4);
-	assert(*(int*)array_value(&a, 4) == 7);
+	h_traverse_int_assert(&b, bst_traverse_preorder,
+			      5,  5, 3, 2, 4, 7);
 }
 
 static void test_bst_traverse_breadth_first() {
 	bst b;
-	array a;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	array_init(&a, sizeof(int));
-
-	/* Build the tree with five nodes:
-	           5
-		  / \
-                 3   7
-                / \
-               2   4
-	*/
 	h_bst_insert_ints(&b, 5,
 			  5, 3, 7, 4, 2);
-
-	bst_traverse_breadth_first(&b, (bst_visit_fn_t)h_int_visit, &a);
-	assert(*(int*)array_value(&a, 0) == 5);
-	assert(*(int*)array_value(&a, 1) == 3);
-	assert(*(int*)array_value(&a, 2) == 7);
-	assert(*(int*)array_value(&a, 3) == 2);
-	assert(*(int*)array_value(&a, 4) == 4);
+	h_traverse_int_assert(&b, bst_traverse_breadth_first,
+			      5,  5, 3, 7, 2, 4);
 }
 
 static void h_int_visit(void *data, array *a) {
 	array_add(a, data);
 }
 
-static void h_traverse_inorder_int_assert(bst *b, int count, ...) {
+static void h_traverse_int_assert(bst *b,
+		  void (*traverse)(bst *b, bst_visit_fn_t visit, void *obj),
+		  int count, ...) {
 	va_list ap;
 	array a;
 
 	array_init(&a, sizeof(int));
-	/* Collect the node values inorder in the array a */
-	bst_traverse_inorder(b, (bst_visit_fn_t)h_int_visit, &a);
+	/* Collect the node values. */
+	traverse(b, (bst_visit_fn_t)h_int_visit, &a);
 
 	/* The collected node values should match the ones given as arguments to
 	   this function */
