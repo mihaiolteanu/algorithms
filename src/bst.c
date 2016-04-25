@@ -185,17 +185,15 @@ static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) 
 		node->count++;
 }
 
-/* The order of the parameters for the visit function in bst traversal are
-   switched in the bst_insert. So make a wrapper. */
-static int bst_insert_switch_params(void *elem_addr, bst *b) {
+/* Visiting function that inserts the element into the bst. */
+static int h_bst_visit_insert(void *elem_addr, bst *b) {
+	/* Already have an insert function but with switched params. */
 	return bst_insert(b, elem_addr);
 }
 
 static void bst_insert_bst(bst *from, bst *to) {
-	bst_node *from_node = from->head;
-
 	/* Traverse the tree, adding each found node in the destination tree.*/
-	bst_traverse_inorder_local(from_node, bst_insert_switch_params, to);
+	bst_traverse_breadth_first(from, h_bst_visit_insert, to);
 }
 
 static bst_node *fill_find_node(bst_node *node,
@@ -253,6 +251,7 @@ void bst_fill(bst *b,
 		/* Reinsert the detached node and all of its children to the
 		 * initial tree. */
 		bst temp_bst;
+		bst_init(&temp_bst, b->tsize, b->comp);
 		temp_bst.head = node_tofill;
 		bst_insert_bst(&temp_bst, b);
 	}
