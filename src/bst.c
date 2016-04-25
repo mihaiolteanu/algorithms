@@ -21,27 +21,32 @@ int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 	return OK;
 }
 
-int bst_insert(bst *b, void *elem_addr) {
-	size_t tsize = b->tsize;
-	bst_node *node = b->head;
+/* Create a new node containing tsize bytes from the elem_addr. */
+static bst_node *new_node(size_t tsize, void *elem_addr) {
+	bst_node *newnode = malloc(sizeof(bst_node) + tsize);
 
-	// Initialize a new node with the given data.
-	bst_node *newnode = malloc(sizeof(bst_node) +
-				  tsize); // For node data (zero-length array)
 	if (newnode == NULL)
-		return ERROR;
+		return NULL;
 	memcpy(newnode->data, elem_addr, tsize);
 	newnode->left = NULL;
 	newnode->right = NULL;
 	newnode->parent = NULL;
 	newnode->count = 1;
+	return newnode;
+}
 
-	// Now find a place to link it.
-	if (node == NULL) {
-		b->head = newnode; // First node in the tree.
+int bst_insert(bst *b, void *elem_addr) {
+	size_t tsize = b->tsize;
+	bst_node *head = b->head;
+	bst_node *newnode = new_node(tsize, elem_addr);
+
+	if (newnode == NULL)
+		return ERROR;
+	if (head == NULL) {
+		b->head = newnode; /* Newnode becomes the head. */
 		return OK;
 	}
-	bst_insert_local(node, newnode, b->comp);
+	bst_insert_local(head, newnode, b->comp);
 }
 
 void *bst_search(bst *b, void *elem_addr) {
