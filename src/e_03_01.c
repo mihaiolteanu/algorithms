@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "ex_ch03.h"
+#include "e_03.h"
 #include "stack.h"
 
-void ex_03_01(char *parens) {
+void e_03_01(char *parens) {
 	stack s;
 	char c;
 	int pos = 0;
