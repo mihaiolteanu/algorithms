@@ -19,5 +19,8 @@ int main(void) {
 	printf("All binary search tree tests passed\n");
 	printf("All linked list tests passed\n");
 
+	run_all_e_03_tests();
+	printf("All chapter 3 exercises are still valid\n");
+
 	return 0;
 }
