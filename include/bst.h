@@ -61,16 +61,21 @@ extern void bst_traverse_preorder(bst *b, bst_visit_fn_t visit, void *obj);
  * each visited node. */
 extern void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj);
 
+/* Checks if the current node data from the tree can be filled with the data at 
+   elem_addr. Returns 0 if fill is 100%, -1 if underfill and 1 if overfill. */
+typedef int (*bst_check_fill_fn_t)(void *node_data, void *elem_addr);
+
+/* Fills the node data with the contents at elem_addr. */
+typedef int (*bst_fill_fn_t)(void *node_data, void *elem_addr);
+
 /* Modify an existing node according to the fill function. Only create a new
-   node if no other node can be modified to the fill function's liking.The
+   node if no other node can be modified to the fill function's liking. The
    affected node and all its children are reinserted in the tree to mantain
-   the bst invariant.
-   check_fill function checks if the current node data from the tree can be
-   filled with the data at elem_addr. Returns 0 if fill is 100%, -1 if
-   underfill and 1 if overfill.*/
+   the bst invariant. First used for the best-fit heuristic for the bin packing
+   problem (3-10) */
 extern void bst_fill(bst *b,
-		     int (*check_fill)(void *node_data, void *elem_addr),
-		     void (*fill)(void *node_data, void *elem_addr),
+		     bst_check_fill_fn_t check_fill,
+		     bst_fill_fn_t fill,
 		     void *elem_addr);
 
 // ***** Functions mostly used for tests *****

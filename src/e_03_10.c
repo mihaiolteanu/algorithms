@@ -16,18 +16,14 @@ static int comp_bucket(const void *a, const void *b) {
 	return afill > bfill;
 }
 
-static void bucket_fill(const void *data, const void *weight) {
-	bucket *b = (bucket*)data;
-
-	b->fill += *(int*)weight;
+static void bucket_fill(bucket *b, int *weight) {
+	b->fill += *weight;
 }
 
-static int bucket_check_fill(void *node_data, void *elem_addr) {
-	bucket *b = (bucket*)node_data;
+static int bucket_check_fill(bucket *b, int *weight) {
 	int fill = b->fill;
 	int cap = b->cap;
-	int weight = *(int*)elem_addr; /* To be added to the bucket. */
-	int newweight = fill + weight;
+	int newweight = fill + *weight;
 
 	if (newweight < cap)
 		return -1; /* Underfill. */
@@ -53,7 +49,10 @@ int e_03_10_best_fit(int nobjects, ...) {
 
 	for (int i = 0; i < nobjects; i++) {
 		weight = va_arg(ap, int);
-		bst_fill(&b, bucket_check_fill, bucket_fill, &weight);
+		bst_fill(&b,
+			 (bst_check_fill_fn_t)bucket_check_fill,
+			 (bst_fill_fn_t)bucket_fill,
+			 &weight);
 	}
 	va_end(ap);
 

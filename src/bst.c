@@ -214,8 +214,8 @@ static void bst_insert_bst(bst *from, bst *to) {
 }
 
 static bst_node *fill_find_node(bst_node *node,
-			int (*check_fill)(void *node_data, void *elem_addr),
-			void *elem_addr) {
+				bst_check_fill_fn_t check_fill,
+				void *elem_addr) {
 	bst_node *tmp_node = NULL;
 
 	if (node == NULL)
@@ -241,8 +241,8 @@ static bst_node *fill_find_node(bst_node *node,
 }
 
 void bst_fill(bst *b,
-	      int (*check_fill)(void *node_data, void *elem_addr),
-	      void (*fill)(void *node_data, void *elem_addr),
+	      bst_check_fill_fn_t check_fill,
+	      bst_fill_fn_t fill,
 	      void *elem_addr) {
 	bst_node *node = b->head;
 	bst_node *node_tofill = NULL;
