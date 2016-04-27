@@ -1,7 +1,13 @@
 #include <assert.h>
 #include "e_03.h"
 
+static void test_e_03_10_best_fit();
+
 void run_all_e_03_tests() {
+	test_e_03_10_best_fit();
+}
+
+static void test_e_03_10_best_fit() {
 	int res;
 
 	res = e_03_10_best_fit(10, 3, 6, 2, 1, 5, 7, 2, 4, 1, 9);
@@ -16,3 +22,4 @@ void run_all_e_03_tests() {
 	*/
 	assert(res == 5);
 }
+	
