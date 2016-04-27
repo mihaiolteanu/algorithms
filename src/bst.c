@@ -91,34 +91,47 @@ void *bst_max(bst *b) {
 	return node->data;
 }
 
-/* Each node visit increases the result count. */
-static void visit_count(char *data, int *res) {
-	/* Ignore the data, don't need it. */
-	(*res)++;
+/* Traverse the tree, visiting the node structure. */
+static void traverse_inorder_visit_node(bst_node *node,
+				bst_visit_fn_t visit,
+				void *obj) {
+	if (node == NULL)
+		return;
+	traverse_inorder_visit_node(node->left, visit, obj);
+	visit(node, obj);
+	traverse_inorder_visit_node(node->right, visit, obj);
 }
 
-int bst_count(bst *b) {
-	int res = 0;
-	bst_traverse_inorder(b, (bst_visit_fn_t)visit_count, &res);
-	return res;
-}
-
-static void bst_traverse_inorder_local(bst_node *node,
+/* Traverse the tree, visiting the node data. */
+static void traverse_inorder_visit_node_data(bst_node *node,
 				       bst_visit_fn_t visit,
 				       void *obj) {
 	if (node == NULL)
 		return;
-	bst_traverse_inorder_local(node->left, visit, obj);
+	traverse_inorder_visit_node_data(node->left, visit, obj);
 	visit(node->data, obj);
-	bst_traverse_inorder_local(node->right, visit, obj);
+	traverse_inorder_visit_node_data(node->right, visit, obj);
 }
+
+
+/* Each node visit increases the result count. */
+static void visit_count(bst_node *node, int *res) {
+	*res += node->count;
+}
+
+int bst_count(bst *b) {
+	int res = 0;
+	traverse_inorder_visit_node(b->head, (bst_visit_fn_t)visit_count, &res);
+	return res;
+}
+
 
 void bst_traverse_inorder(bst *b,
 			  bst_visit_fn_t visit,
 			  void *obj) {
 	bst_node *node = b->head;
 
-	bst_traverse_inorder_local(node, visit, obj);
+	traverse_inorder_visit_node_data(node, visit, obj);
 }
 
 static void bst_traverse_preorder_local(bst_node *node,
@@ -244,32 +257,36 @@ void bst_fill(bst *b,
 	      bst_check_fill_fn_t check_fill,
 	      bst_fill_fn_t fill,
 	      void *elem_addr) {
-	bst_node *node = b->head;
-	bst_node *node_tofill = NULL;
-	bst_node *parent = NULL;
+	bst_node *candidate, *parent; /* Node to be filled and it's parent. */
 
-	node_tofill = fill_find_node(node, check_fill, elem_addr);
-
-	if (node_tofill == NULL)
-		/* No suitable position found, so add a new node with the given
-		 * data. */
+	if ((candidate = fill_find_node(b->head, check_fill,elem_addr)) == NULL)
+		/* All buckets would overfill, create a new bucket. */
 		bst_insert(b, elem_addr);
 	else {
-		/* Update the node with the given data. */
-		fill(node_tofill->data, elem_addr);
-		parent = node_tofill->parent;
-		/* Find if the filled node was left or right sibbling and
-		 * detach the filled node from the tree. */
-		if (parent->left == node_tofill)
-			parent->left = NULL;
-		else
-			parent->right = NULL;
-
+		/* There might be multiple nodes with the same key. */
+		if (candidate->count > 1) {
+			/* Take out an instance of a node. */
+			candidate->count--;
+			candidate = new_node(b->tsize, candidate->data);
+			fill(candidate->data, elem_addr);
+			bst_insert(b, candidate->data);
+			return;
+		}
+		fill(candidate->data, elem_addr);
+		if ((parent = candidate->parent) != NULL) { /* Not the root. */
+			/* Find if the filled node was left or right sibbling
+			 * and detach the filled node from the tree. */
+			if (parent->left == candidate)
+				parent->left = NULL;
+			else
+				parent->right = NULL;
+		} else
+			b->head = NULL; /* Detach the whole tree. */
 		/* Reinsert the detached node and all of its children to the
 		 * initial tree. */
 		bst temp_bst;
 		bst_init(&temp_bst, b->tsize, b->comp);
-		temp_bst.head = node_tofill;
+		temp_bst.head = candidate;
 		bst_insert_bst(&temp_bst, b);
 	}
 }

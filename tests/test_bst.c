@@ -212,10 +212,10 @@ static void test_bst_count() {
 	int count;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	h_bst_insert_ints(&b, 5,
-			  5, 3, 7, 4, 2);
+	h_bst_insert_ints(&b, 6,
+			  5, 3, 7, 4, 2, 3);
 	count = bst_count(&b);
-	assert(count == 5);
+	assert(count == 6);
 }
 
 /* The following test functions use the same tree, but traverses it in different

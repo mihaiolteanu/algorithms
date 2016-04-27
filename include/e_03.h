@@ -25,6 +25,10 @@ and outputting the number of bins used) in O(n log n) time.
 • Repeat the above using the worst-fit heuristic, where we put the next 
 object in the partially filled bin with the largest amount of extra room after 
 the object is inserted. */
-extern int e_03_10(int nobjects, ...);
+
+/* Take a number of objects and return the number of buckets filled with a
+ * best-fit heuristic  For ease of implementation, consider the weights between
+ * 1 and 10 units, not between 0 and 1. */
+extern int e_03_10_best_fit(int nobjects, ...);
 
 #endif // EX_CH03_H
