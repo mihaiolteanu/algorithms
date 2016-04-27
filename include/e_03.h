@@ -28,7 +28,11 @@ the object is inserted. */
 
 /* Take a number of objects and return the number of buckets filled with a
  * best-fit heuristic  For ease of implementation, consider the weights between
- * 1 and 10 units, not between 0 and 1. */
+ * 1 and 10 units, not between 0 and 1. The implementation uses a normal bst
+ * (non-balanced) and looks for the node to be filled. If no node is found, a
+ * new node is inserted. If a node is found and filled, the found node and all
+ * its children is detached from the tree and each node is reinserted into the
+ * tree in a breadth-first order. */
 extern int e_03_10_best_fit(int nobjects, ...);
 
 #endif // EX_CH03_H
