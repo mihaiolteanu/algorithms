@@ -35,4 +35,20 @@ the object is inserted. */
  * tree in a breadth-first order. */
 extern int e_03_10_best_fit(int nobjects, ...);
 
+/* 3-11. [5] Suppose that we are given a sequence of n values x1, x2, ..., xn
+ * and seek to quickly answer repeated queries of the form: given i and j, find
+ * the smallest value in xi, . . . , xj. 
+ 
+ (a) Design a data structure that uses O(n2) space and answers queries in O(1) 
+ time.
+ (b) Design a data structure that uses O(n) space and answers queries in 
+ O(log n) time. For partial credit, your data structure can use O(n log n) space
+ and have O(log n) query time. */
+
+/* Use a matrix. */
+extern int e_03_11_a(int i, int j, int count, ...);
+
+/* Use an interval bst. */
+extern int e_03_11_b(int i, int j, int count, ...);
+
 #endif // EX_CH03_H
