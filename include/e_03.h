@@ -3,6 +3,8 @@
 #ifndef EX_CH03_H
 #define EX_CH03_H
 
+#include "bst.h"
+
 /* 3-1. [3] A common problem for compilers and text editors is determining 
 whether the parentheses in a string are balanced and properly nested. For 
 example, the string ((())())() contains properly nested pairs of parentheses, 
@@ -51,4 +53,16 @@ extern int e_03_11_a(int i, int j, int count, ...);
 /* Use an interval bst. */
 extern int e_03_11_b(int i, int j, int count, ...);
 
+
+/* 3-13. [5] Let A[1..n] be an array of real numbers. Design an algorithm to
+ * perform any sequence of the following operations:
+ • Add(i,y) – Add the value y to the ith number.
+ • Partial-sum(i) – Return the sum of the first i numbers, i.e.
+ There are no insertions or deletions; the only change is to the values of the
+ numbers. Each operation should take O(log n) steps. You may use one additional
+ array of size n as a work space. */
+
+extern void e_03_13_init(bst *b, int count, ...);
+extern void e_03_13_add(bst *b, int y, int n);
+extern int e_03_13_partial_sum(bst *b, int n);
 #endif // EX_CH03_H
