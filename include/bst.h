@@ -32,6 +32,12 @@ given in the init function is used to decide when two items from the tree
 are equal. Returns the node address from the tree if found, NULL othrwise.*/
 extern void *bst_search(bst *b, void *elem_addr);
 
+/* Search using a different comparison function than the one from the init
+   and return the bst_node, NOT the node data.
+   Hackish. First used in e_03_13 to traverse the tree from a leaf node up to
+   the root of the tree.*/
+extern void *bst_search_with_comp(bst *b, void *elem_addr, comp_fn_t comp);
+
 /* Search for the item at elem_address in the tree. Return the number of nodes
    that have the same key as the searched item, -1 if not found. */
 extern int bst_search_count(bst *b, void *elem_addr);

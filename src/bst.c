@@ -60,6 +60,16 @@ void *bst_search(bst *b, void *elem_addr) {
 	return res;
 }
 
+void *bst_search_with_comp(bst *b, void *elem_addr, comp_fn_t comp) {
+	bst_node *root = b->head;
+	bst_node *res = NULL;
+
+	res = bst_search_local(root, elem_addr, comp);
+	if (res != NULL)
+		return res;
+	return res;
+}
+
 int bst_search_count(bst *b, void *elem_addr) {
 	bst_node *root = b->head;
 	bst_node *res = NULL;
@@ -305,4 +315,8 @@ bst_node *bst_node_left(bst_node *node) {
 
 bst_node *bst_node_right(bst_node *node) {
 	return node->right;
+}
+
+bst_node *bst_node_parent(bst_node *node) {
+	return node->parent;
 }
