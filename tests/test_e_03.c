@@ -68,10 +68,20 @@ static void test_e_03_13() {
 
 	e_03_13_init(&b, count,
 		     3, 5, 1, 9, 4, 2);
-	int expected_part_sums[] = {3, 8, 9, 18, 22, 24};
+	int expected[] = {3, 8, 9, 18, 22, 24};
 
+	/* Add to each position and retest the partial sum for each such
+	   addition. */
+	int to_add = 2;
 	for (int i = 0; i < count; i++) {
-		int part_sum = e_03_13_partial_sum(&b, i);
-		assert(part_sum == expected_part_sums[i]);
+		/* Test the partial sum. */
+		for (int j = 0; j < count; j++) {
+			int part_sum = e_03_13_partial_sum(&b, j);
+			assert(part_sum == expected[j]);
+		}
+		e_03_13_add(&b, to_add, i);
+		for (int j = i; j < count; j++)
+			expected[j] += to_add;
 	}
 }
+
