@@ -10,7 +10,7 @@ static int elem_compare(void *src_addr, list_node *node, size_t struct_pos, size
 static void node_free(list_node *node);
 // Helper function to recursively reverse a linked list. To be used in a helper
 // function
-static void list_reverse_rec_local(list *l, list_node *prev, list_node *node);
+static void reverse_rec(list *l, list_node *prev, list_node *node);
 // Given a node, deallocate it and all the nodes that are linked to it.
 static void deallocate_all_nodes(list_node *node);
 
@@ -90,19 +90,19 @@ static void deallocate_all_nodes(list_node *node) {
 	free(node);
 }
 
-static void list_reverse_rec_local(list *l, list_node *prev, list_node *node) {
+static void reverse_rec(list *l, list_node *prev, list_node *node) {
 	if (node == NULL)
 		return; // Nothing to reverse
 	l->head = node;
 	if (node->next != NULL)
-		list_reverse_rec_local(l, node, node->next);
+		reverse_rec(l, node, node->next);
 	node->next = prev;
 }
 
 /* 3-2.
    recursive solution for exercise 3-2 */
 void list_reverse_rec(list *l) {
-	list_reverse_rec_local(l, NULL, l->head);
+	reverse_rec(l, NULL, l->head);
 }
 
 static void node_free(list_node *node) {

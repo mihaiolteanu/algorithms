@@ -42,12 +42,17 @@ static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp) {
 	return search(node->right, elem_addr, comp);
 }
 
+/* Visiting function that inserts the element into the bst. */
+static int h_bst_visit_insert(void *elem_addr, bst *b) {
+	/* Already have an insert function but with switched params. */
+	return bst_insert(b, elem_addr);
+}
+
 /* Insert all the nodes from one tree into another. */
 static void insert_bst(bst *from, bst *to) {
 	/* Traverse the tree, adding each found node in the destination tree.*/
 	bst_traverse_breadth_first(from, h_bst_visit_insert, to);
 }
-
 	
 int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 	b->tsize = elem_size;
@@ -180,15 +185,15 @@ void bst_traverse_inorder(bst *b,
 	traverse_inorder_visit_node_data(node, visit, obj);
 }
 
-static void bst_traverse_preorder_local(bst_node *node,
+static void traverse_preorder(bst_node *node,
 					bst_visit_fn_t visit,
 					void *obj) {
 	if (node == NULL)
 		return;
 
 	visit(node->data, obj);
-	bst_traverse_preorder_local(node->left, visit, obj);
-	bst_traverse_preorder_local(node->right, visit, obj);
+	traverse_preorder(node->left, visit, obj);
+	traverse_preorder(node->right, visit, obj);
 }
 
 void bst_traverse_preorder(bst *b,
@@ -196,7 +201,7 @@ void bst_traverse_preorder(bst *b,
 			   void *obj) {
 	bst_node *node = b->head;
 
-	bst_traverse_preorder_local(node, visit, obj);
+	traverse_preorder(node, visit, obj);
 }
 
 static void traverse_breadth_first(queue *q,
@@ -225,12 +230,6 @@ void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj) {
 	queue_init(&q, sizeof(bst_node) + btsize);
 	queue_enqueue(&q, head);
 	traverse_breadth_first(&q, visit, obj);
-}
-
-/* Visiting function that inserts the element into the bst. */
-static int h_bst_visit_insert(void *elem_addr, bst *b) {
-	/* Already have an insert function but with switched params. */
-	return bst_insert(b, elem_addr);
 }
 
 static bst_node *fill_find_node(bst_node *node,
