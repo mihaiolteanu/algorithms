@@ -6,12 +6,48 @@
 
 /* Given a node from a binary search tree, insert a new node in the correct
    location given by the comparison function */
-static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp);
+static void insert(bst_node *node, bst_node *newnode, comp_fn_t comp) {
+	bst_node *left = node->left;
+	bst_node *right = node->right;
+	
+	int compres = comp(newnode->data, node->data);
+	if (compres < 0)
+		if (left == NULL) {
+			node->left = newnode;
+			newnode->parent = node;
+		}
+		else
+			insert(left, newnode, comp);
+	else if (compres > 0)
+		if (right == NULL) {
+			node->right = newnode;
+			newnode->parent = node;
+		}
+		else
+			insert(right, newnode, comp);
+	else
+		node->count++;
+}
+
 /* Given a node and a data address, search the tree for a node that contains
    the same data. */
-static bst_node *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp);
+static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp) {
+	if (node == NULL)
+		return NULL;
+	int compres = comp(node->data, elem_addr);
+	if ( compres == 0)
+		return node; // found
+	if (compres > 0)
+		return search(node->left, elem_addr, comp);
+	return search(node->right, elem_addr, comp);
+}
+
 /* Insert all the nodes from one tree into another. */
-static void bst_insert_bst(bst *from, bst *to);
+static void insert_bst(bst *from, bst *to) {
+	/* Traverse the tree, adding each found node in the destination tree.*/
+	bst_traverse_breadth_first(from, h_bst_visit_insert, to);
+}
+
 	
 int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 	b->tsize = elem_size;
@@ -46,7 +82,7 @@ int bst_insert(bst *b, void *elem_addr) {
 		b->head = newnode; /* Newnode becomes the head. */
 		return OK;
 	}
-	bst_insert_local(head, newnode, b->comp);
+	insert(head, newnode, b->comp);
 }
 
 void *bst_search(bst *b, void *elem_addr) {
@@ -54,7 +90,7 @@ void *bst_search(bst *b, void *elem_addr) {
 	bst_node *res = NULL;
 	comp_fn_t comp = b->comp;
 
-	res = bst_search_local(root, elem_addr, comp);
+	res = search(root, elem_addr, comp);
 	if (res != NULL)
 		return res->data;
 	return res;
@@ -64,7 +100,7 @@ void *bst_search_with_comp(bst *b, void *elem_addr, comp_fn_t comp) {
 	bst_node *root = b->head;
 	bst_node *res = NULL;
 
-	res = bst_search_local(root, elem_addr, comp);
+	res = search(root, elem_addr, comp);
 	if (res != NULL)
 		return res;
 	return res;
@@ -75,7 +111,7 @@ int bst_search_count(bst *b, void *elem_addr) {
 	bst_node *res = NULL;
 	comp_fn_t comp = b->comp;
 
-	res = bst_search_local(root, elem_addr, comp);
+	res = search(root, elem_addr, comp);
 	if (res != NULL)
 		return res->count;
 	return -1;
@@ -191,49 +227,10 @@ void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj) {
 	traverse_breadth_first(&q, visit, obj);
 }
 
-static bst_node *bst_search_local(bst_node *node, void *elem_addr, comp_fn_t comp) {
-	if (node == NULL)
-		return NULL;
-	int compres = comp(node->data, elem_addr);
-	if ( compres == 0)
-		return node; // found
-	if (compres > 0)
-		return bst_search_local(node->left, elem_addr, comp);
-	return bst_search_local(node->right, elem_addr, comp);
-}
-
-static void bst_insert_local(bst_node *node, bst_node *newnode, comp_fn_t comp) {
-	bst_node *left = node->left;
-	bst_node *right = node->right;
-	
-	int compres = comp(newnode->data, node->data);
-	if (compres < 0)
-		if (left == NULL) {
-			node->left = newnode;
-			newnode->parent = node;
-		}
-		else
-			bst_insert_local(left, newnode, comp);
-	else if (compres > 0)
-		if (right == NULL) {
-			node->right = newnode;
-			newnode->parent = node;
-		}
-		else
-			bst_insert_local(right, newnode, comp);
-	else
-		node->count++;
-}
-
 /* Visiting function that inserts the element into the bst. */
 static int h_bst_visit_insert(void *elem_addr, bst *b) {
 	/* Already have an insert function but with switched params. */
 	return bst_insert(b, elem_addr);
-}
-
-static void bst_insert_bst(bst *from, bst *to) {
-	/* Traverse the tree, adding each found node in the destination tree.*/
-	bst_traverse_breadth_first(from, h_bst_visit_insert, to);
 }
 
 static bst_node *fill_find_node(bst_node *node,
@@ -297,7 +294,7 @@ void bst_fill(bst *b,
 		bst temp_bst;
 		bst_init(&temp_bst, b->tsize, b->comp);
 		temp_bst.head = candidate;
-		bst_insert_bst(&temp_bst, b);
+		insert_bst(&temp_bst, b);
 	}
 }
 
