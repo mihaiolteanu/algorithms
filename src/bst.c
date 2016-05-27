@@ -51,7 +51,7 @@ static int h_bst_visit_insert(void *elem_addr, bst *b) {
 /* Insert all the nodes from one tree into another. */
 static void insert_bst(bst *from, bst *to) {
 	/* Traverse the tree, adding each found node in the destination tree.*/
-	bst_traverse_breadth_first(from, h_bst_visit_insert, to);
+	bst_traverse_breadth_first(from, (bst_visit_fn_t)h_bst_visit_insert, to);
 }
 	
 int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {

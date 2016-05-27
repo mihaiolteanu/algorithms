@@ -97,4 +97,7 @@ extern bst_node *bst_node_left(bst_node *node);
 /* Get the right node of the given node. */
 extern bst_node *bst_node_right(bst_node *node);
 
+/* Get the parent of the given node. */
+extern bst_node *bst_node_parent(bst_node *node);
+
 #endif // BST_H

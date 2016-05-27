@@ -88,7 +88,7 @@ static void test_bst_fill() {
                   4  10
 	*/
 	fillval = 7;
-	bst_fill(&b, test_bst_check_fill, h_bst_fill, &fillval);
+	bst_fill(&b, test_bst_check_fill, (bst_fill_fn_t)h_bst_fill, &fillval);
 	h_traverse_int_assert(&b, bst_traverse_inorder,
 			      5,  2, 4, 5, 7, 10);
 
@@ -101,7 +101,7 @@ static void test_bst_fill() {
                      10(2)
 	*/
 	fillval = 6;
-	bst_fill(&b, test_bst_check_fill, h_bst_fill, &fillval);
+	bst_fill(&b, test_bst_check_fill, (bst_fill_fn_t)h_bst_fill, &fillval);
 	h_traverse_int_assert(&b, bst_traverse_inorder,
 			      4,  2, 5, 7, 10);
 }	

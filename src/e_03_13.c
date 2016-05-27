@@ -131,11 +131,11 @@ int e_03_13_partial_sum(bst *b, int n) {
 void e_03_13_add(bst *b, int y, int n) {
 	/* Search for a leaf node (a node with same start and stop.) */
 	e_03_13_node node = {.start = n, .stop = n, .sum = -1};
-	bst_node *res = bst_search_with_comp(b, &node, search_comp);
+	bst_node *res = bst_search_with_comp(b, &node, (comp_fn_t)search_comp);
 
 	/* Add the new value to the node itself and to all of its parents. */
 	while (res != NULL) {
-		e_03_13_node *node = res->data;
+		e_03_13_node *node = (e_03_13_node*)res->data;
 		node->sum += y;
 		res = bst_node_parent(res);
 	}

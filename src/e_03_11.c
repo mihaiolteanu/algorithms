@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <stdio.h>
 #include "bst.h"
 
 int e_03_11_a(int m, int n, int count, ...) {
