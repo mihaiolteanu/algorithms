@@ -1,9 +1,9 @@
 #include <stdlib.h>
-#include "array_sorted.h"
+#include "sarray.h"
 #include "array.h"
 #include "system.h"
 
-int array_sorted_init(array_sorted *as, size_t elem_size, comp_fn_t comp) {
+int sarray_init(sarray *as, size_t elem_size, comp_fn_t comp) {
 	array *a = malloc(sizeof(array));
 	if (a == NULL)
 		return ERROR;
@@ -12,7 +12,7 @@ int array_sorted_init(array_sorted *as, size_t elem_size, comp_fn_t comp) {
 	return array_init(as->a, elem_size);
 }
 
-int array_sorted_add(array_sorted *as, void *elem_addr) {
+int sarray_add(sarray *as, void *elem_addr) {
 	array *a = as->a;
 
 	// First element
@@ -31,34 +31,34 @@ int array_sorted_add(array_sorted *as, void *elem_addr) {
 	return array_add(a, elem_addr);
 }
 
-void *array_sorted_value(array_sorted *as, size_t index) {
+void *sarray_value(sarray *as, size_t index) {
 	array *a = as->a;
 
 	return array_value(a, index);
 }
 
-void *array_sorted_search(array_sorted *as, void *elem_addr) {
+void *sarray_search(sarray *as, void *elem_addr) {
 	array *a = as->a;
 
 	char *data = bsearch(elem_addr, a->data, a->size, a->tsize, as->comp);
 	return data;
 }	
 
-int array_sorted_remove_byindex(array_sorted *as, size_t index) {
+int sarray_remove_byindex(sarray *as, size_t index) {
 	return array_remove_byindex(as->a, index);
 }
 
-int array_sorted_remove_byaddr(array_sorted *as, void *elem_addr) {
+int sarray_remove_byaddr(sarray *as, void *elem_addr) {
 	return array_remove_byaddr(as->a, elem_addr);
 }
 
-int array_sorted_size(array_sorted *as) {
+int sarray_size(sarray *as) {
 	array *a = as->a;
 	
 	return array_size(a);
 }
 	
-void array_sorted_destroy(array_sorted *as) {
+void sarray_destroy(sarray *as) {
 	array *a = as->a;
 
 	array_destroy(a);

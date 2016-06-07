@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "array.h"
-#include "array_sorted.h"
+#include "sarray.h"
 #include "stack.h"
 #include "list.h"
 #include "queue.h"

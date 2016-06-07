@@ -5,11 +5,11 @@
 #define DICT_H
 
 #include <stddef.h>
-#include "array_sorted.h"
+#include "sarray.h"
 #include "system.h"
 
 typedef struct {
-	array_sorted *as;
+	sarray *as;
 } dict;
 
 /* Initialize a new dictionary. The comparison function decides when two
