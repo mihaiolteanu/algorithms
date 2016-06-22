@@ -7,6 +7,7 @@ extern void run_all_queue_tests();
 extern void run_all_stack_tests();
 extern void run_all_dict_tests();
 extern void run_all_bst_tests();
+extern void run_all_bbst_tests();
 extern void run_all_list_tests();
 
 /* Exercises tests - maybe this should not form a part of the testing, but as
