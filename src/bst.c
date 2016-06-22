@@ -43,9 +43,9 @@ static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp) {
 }
 
 /* Visiting function that inserts the element into the bst. */
-static int h_bst_visit_insert(void *elem_addr, bst *b) {
+static void h_bst_visit_insert(void *elem_addr, bst *b) {
 	/* Already have an insert function but with switched params. */
-	return bst_insert(b, elem_addr);
+	bst_insert(b, elem_addr);
 }
 
 /* Insert all the nodes from one tree into another. */
@@ -76,18 +76,19 @@ static bst_node *new_node(size_t tsize, void *elem_addr) {
 	return newnode;
 }
 
-int bst_insert(bst *b, void *elem_addr) {
+bst_node *bst_insert(bst *b, void *elem_addr) {
 	size_t tsize = b->tsize;
 	bst_node *head = b->head;
 	bst_node *newnode = new_node(tsize, elem_addr);
 
 	if (newnode == NULL)
-		return ERROR;
+		return NULL;
 	if (head == NULL) {
 		b->head = newnode; /* Newnode becomes the head. */
-		return OK;
+		return newnode;
 	}
 	insert(head, newnode, b->comp);
+	return newnode;
 }
 
 void *bst_search(bst *b, void *elem_addr) {

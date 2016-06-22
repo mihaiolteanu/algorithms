@@ -24,8 +24,9 @@ typedef struct {
 extern int bst_init(bst *b, size_t elem_size, comp_fn_t comp);
 
 /* Insert the contents at elem_addr in the binary tree. The number of bytes
-   copied are equal to the elem_size given in the init function. */
-extern int bst_insert(bst *b, void *elem_addr);
+   copied are equal to the elem_size given in the init function. Returns the
+   newly created node containing the data from elem_addr. */
+extern bst_node *bst_insert(bst *b, void *elem_addr);
 
 /* Search for the item at elem_address in the tree. The comparison function
 given in the init function is used to decide when two items from the tree
