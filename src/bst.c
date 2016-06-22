@@ -91,6 +91,19 @@ bst_node *bst_insert(bst *b, void *elem_addr) {
 	return newnode;
 }
 
+bst_node *bst_insert_node(bst *b, bst_node *node, comp_fn_t node_comp) {
+	bst_node *head = b->head;
+
+	if (node == NULL)
+		return NULL; /* Nothing to do. */
+	if (head == NULL) {
+		b->head = node; /* First node. */
+		return node;
+	}
+	insert(head, node, node_comp);
+	return node;
+}
+
 void *bst_search(bst *b, void *elem_addr) {
 	bst_node *root = b->head;
 	bst_node *res = NULL;

@@ -28,6 +28,10 @@ extern int bst_init(bst *b, size_t elem_size, comp_fn_t comp);
    newly created node containing the data from elem_addr. */
 extern bst_node *bst_insert(bst *b, void *elem_addr);
 
+/* Insert an already existing node into the bst using the node comparison
+ * function to decide the node location. */
+extern bst_node *bst_insert_node(bst *b, bst_node *node, comp_fn_t node_comp);
+
 /* Search for the item at elem_address in the tree. The comparison function
 given in the init function is used to decide when two items from the tree
 are equal. Returns the node address from the tree if found, NULL othrwise.*/
