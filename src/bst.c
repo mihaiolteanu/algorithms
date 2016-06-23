@@ -64,10 +64,13 @@ int bst_init(bst *b, size_t elem_size, comp_fn_t comp) {
 
 /* Create a new node containing tsize bytes from the elem_addr. */
 static bst_node *new_node(size_t tsize, void *elem_addr) {
-	bst_node *newnode = malloc(sizeof(bst_node) + tsize);
+	bst_node *newnode = malloc(sizeof(bst_node));
 
 	if (newnode == NULL)
 		return NULL;
+	if ((newnode->data = malloc(sizeof(tsize))) == NULL)
+		return NULL;
+
 	memcpy(newnode->data, elem_addr, tsize);
 	newnode->left = NULL;
 	newnode->right = NULL;

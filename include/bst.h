@@ -10,7 +10,7 @@ typedef struct bst_node_t {
 	struct bst_node_t *right;
 	struct bst_node_t *parent;
 	int count;    /* Number of nodes with the same key. */
-	char data[0]; // GCC zero-length array
+	char *data;
 } bst_node;
 
 typedef struct {
