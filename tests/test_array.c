@@ -12,12 +12,8 @@ static void test_array_remove_byindex();
 static void test_array_remove_byaddr();
 static void test_array_add_at_index();
 
-// ***** Helper functions *****
-// Add n elements to the array a
-static void helper_array_add_elements(array *a, size_t n) {
-	for (int i = 0; i < n; i++)
-		array_add(a, &i);
-}
+/* Add n elements to the array a */
+static void add_elements(array *a, size_t n);
 
 void run_all_array_tests() {
 	test_array_size();
@@ -34,7 +30,7 @@ static void test_array_search() {
 	array_init(&a, sizeof(int));
 
 	// 0 1 2 3 4
-	helper_array_add_elements(&a, 5);
+	add_elements(&a, 5);
 	int tosearch = 2;
 	int *res = array_search(&a, &tosearch, comp_int_member);
 	assert(*res == tosearch);
@@ -53,7 +49,7 @@ static void test_array_add_at_index() {
 	array_init(&a, sizeof(int));
 
 	// 0 1 2 3
-	helper_array_add_elements(&a, 4);
+	add_elements(&a, 4);
 
 	// Add new element between 0 and 1
 	int newelem = 5;
@@ -78,7 +74,7 @@ static void test_array_remove_byindex() {
 	assert(array_size(&a) == 0);
 
 	// Add 3 random elements to the array.
-	helper_array_add_elements(&a, 3);
+	add_elements(&a, 3);
 
 	// Removing an element decreases the size of the array by one.
 	assert(array_size(&a) == 3);
@@ -97,7 +93,7 @@ static void test_array_remove_byaddr() {
 	array_init(&a, sizeof(int));
 
 	// [0 1 2 3 4]
-	helper_array_add_elements(&a, 5);
+	add_elements(&a, 5);
 
 	// Search and remove an element, if found.
 	int tosearch = 2;
@@ -155,7 +151,7 @@ static void test_array_capacity() {
 	assert(array_cap(&a) == INIT_CAP);
 
 	// Does the capacity double if the array is full?
-	helper_array_add_elements(&a, INIT_CAP + 1);
+	add_elements(&a, INIT_CAP + 1);
 	assert(array_cap(&a) == 2*INIT_CAP);
 
 	// Does the capacity shrinks if the array is half-full?
@@ -173,7 +169,7 @@ static void test_array_size() {
 	assert(array_size(&a) == 0);
 
 	// Add some elements
-	helper_array_add_elements(&a, asize);
+	add_elements(&a, asize);
 	assert(array_size(&a) == asize);
 }
 
@@ -183,8 +179,14 @@ static void test_array_value() {
 	array_init(&a, sizeof(int));
 
 	// Check if elements are added at the expected position
-	helper_array_add_elements(&a, asize);
+	add_elements(&a, asize);
 
 	for  (int i = 0; i < asize; i++)
 		assert(*(int *)array_value(&a, i) == i);
+}
+
+
+static void add_elements(array *a, size_t n) {
+	for (int i = 0; i < n; i++)
+		array_add(a, &i);
 }

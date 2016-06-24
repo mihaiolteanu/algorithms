@@ -24,15 +24,15 @@ static void test_bst_fill();
 /* Traverse the bst in the order specified by the traverse function, collecting
  * all the node values into an array and then assert if the collected values 
  * match those given as arguments in the va_list. */
-static void h_traverse_int_assert(bst *b,
+static void traverse_int_assert(bst *b,
 		  void (*traverse)(bst *b, bst_visit_fn_t visit, void *obj),
 		  int count, ...);
 
 /* Adds the data to the array. Used as a node visit function for bst traversal*/
-static void h_int_visit(void *data, array *a);
+static void int_visit(void *data, array *a);
 
 /* Insert count number of ints in the bst */
-static void h_bst_insert_ints(bst *b, int count, ...);
+static void insert_ints(bst *b, int count, ...);
 
 void run_all_bst_tests() {
 	test_bst_insert();
@@ -76,9 +76,8 @@ static void test_bst_fill() {
                 / \
                2   4
 	*/
-	h_bst_insert_ints(&b, 5,
-			  5, 3, 7, 4, 2);
-
+	insert_ints(&b, 5,
+		    5, 3, 7, 4, 2);
 
 	/* Fill at 3.
 	          5
@@ -89,9 +88,8 @@ static void test_bst_fill() {
 	*/
 	fillval = 7;
 	bst_fill(&b, test_bst_check_fill, (bst_fill_fn_t)h_bst_fill, &fillval);
-	h_traverse_int_assert(&b, bst_traverse_inorder,
-			      5,  2, 4, 5, 7, 10);
-
+	traverse_int_assert(&b, bst_traverse_inorder,
+			    5,  2, 4, 5, 7, 10);
 
 	/* Fill at 4.
 	          5
@@ -102,8 +100,8 @@ static void test_bst_fill() {
 	*/
 	fillval = 6;
 	bst_fill(&b, test_bst_check_fill, (bst_fill_fn_t)h_bst_fill, &fillval);
-	h_traverse_int_assert(&b, bst_traverse_inorder,
-			      4,  2, 5, 7, 10);
+	traverse_int_assert(&b, bst_traverse_inorder,
+			    4,  2, 5, 7, 10);
 }	
 
 static void test_bst_insert() {
@@ -175,8 +173,8 @@ static void test_bst_search_count() {
 	int search_elem, search_res;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	h_bst_insert_ints(&b, 8,
-			  5, 3, 7, 4, 2, 7, 7, 4);
+	insert_ints(&b, 8,
+		    5, 3, 7, 4, 2, 7, 7, 4);
 
 	search_elem = 7;
 	search_res = bst_search_count(&b, &search_elem);
@@ -212,8 +210,8 @@ static void test_bst_count() {
 	int count;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	h_bst_insert_ints(&b, 6,
-			  5, 3, 7, 4, 2, 3);
+	insert_ints(&b, 6,
+		    5, 3, 7, 4, 2, 3);
 	count = bst_count(&b);
 	assert(count == 6);
 }
@@ -233,37 +231,37 @@ static void test_bst_traverse_inorder() {
 	bst b;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	h_bst_insert_ints(&b, 5,
-			  5, 3, 7, 4, 2);
-	h_traverse_int_assert(&b, bst_traverse_inorder,
-			      5,  2, 3, 4, 5, 7);
+	insert_ints(&b, 5,
+		    5, 3, 7, 4, 2);
+	traverse_int_assert(&b, bst_traverse_inorder,
+			    5,  2, 3, 4, 5, 7);
 }
 
 static void test_bst_traverse_preorder() {
 	bst b;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	h_bst_insert_ints(&b, 5,
-			  5, 3, 7, 4, 2);
-	h_traverse_int_assert(&b, bst_traverse_preorder,
-			      5,  5, 3, 2, 4, 7);
+	insert_ints(&b, 5,
+		    5, 3, 7, 4, 2);
+	traverse_int_assert(&b, bst_traverse_preorder,
+			    5,  5, 3, 2, 4, 7);
 }
 
 static void test_bst_traverse_breadth_first() {
 	bst b;
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	h_bst_insert_ints(&b, 5,
-			  5, 3, 7, 4, 2);
-	h_traverse_int_assert(&b, bst_traverse_breadth_first,
-			      5,  5, 3, 7, 2, 4);
+	insert_ints(&b, 5,
+		    5, 3, 7, 4, 2);
+	traverse_int_assert(&b, bst_traverse_breadth_first,
+			    5,  5, 3, 7, 2, 4);
 }
 
-static void h_int_visit(void *data, array *a) {
+static void int_visit(void *data, array *a) {
 	array_add(a, data);
 }
 
-static void h_traverse_int_assert(bst *b,
+static void traverse_int_assert(bst *b,
 		  void (*traverse)(bst *b, bst_visit_fn_t visit, void *obj),
 		  int count, ...) {
 	va_list ap;
@@ -271,7 +269,7 @@ static void h_traverse_int_assert(bst *b,
 
 	array_init(&a, sizeof(int));
 	/* Collect the node values. */
-	traverse(b, (bst_visit_fn_t)h_int_visit, &a);
+	traverse(b, (bst_visit_fn_t)int_visit, &a);
 
 	/* The collected node values should match the ones given as arguments to
 	   this function */
@@ -282,7 +280,7 @@ static void h_traverse_int_assert(bst *b,
 	va_end(ap);
 }
 
-static void h_bst_insert_ints(bst *b, int count, ...) {
+static void insert_ints(bst *b, int count, ...) {
 	va_list ap;
 	int value;
 
