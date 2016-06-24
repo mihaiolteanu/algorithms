@@ -11,7 +11,6 @@ extern int bbst_init(bbst *bb, size_t elem_size,
 		     comp_fn_t node_comp) {
 	bst *b = &bb->b;
 	sarray *sa = &bb->sa;
-	bb->node_comp = node_comp;
 
 	bst_init(b, elem_size, comp);
 	sarray_init(sa, sizeof(bst_node) + sizeof(int), node_comp);
@@ -47,7 +46,7 @@ static void reinsert(bbst *bb, bst *b, sarray *sa, size_t m, size_t n) {
 	bst_node *middle_node = sarray_value(sa, middle_index);
 
 	middle_node->left = middle_node->right = NULL;
-	bst_insert_node(b, middle_node, bb->node_comp);
+	bst_insert_node(b, middle_node);
 	if (middle_index > 0)
 		reinsert(bb, b, sa, m, middle_index - 1); /* Insert the left. */
 	reinsert(bb, b, sa, middle_index + 1, n); /* Insert the right. */

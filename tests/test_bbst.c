@@ -48,14 +48,14 @@ void test_bbst_balancing() {
                    1   3   5   7
 	*/
 
-//	bst_traverse_breadth_first(b, (bst_visit_fn_t)node_visit, &a);
+	bst_traverse_breadth_first(b, (bst_visit_fn_t)node_visit, &a);
 
 	/* After breadth first traversal, the collected values should be: */
 	int expected[] = {4, 2, 6, 1, 3, 5, 7};
 
 	for (int i = 0; i < size; i++) {
 		int *value = (int *)array_value(&a, i);
-//		assert(value == expected[i]);
+		assert(*value == expected[i]);
 	}
 }
 
