@@ -11,7 +11,7 @@ static void insert(bst_node *node, bst_node *newnode, comp_fn_t comp);
    the same data. */
 static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp);
 /* Visiting function that inserts the element into the bst. */
-static void h_bst_visit_insert(void *elem_addr, bst *b);
+static void visit_insert(void *elem_addr, bst *b);
 /* Insert all the nodes from one tree into another. */
 static void insert_bst(bst *from, bst *to);
 /* Create a new node containing tsize bytes from the elem_addr. */
@@ -128,14 +128,11 @@ void *bst_max(bst *b) {
 	return node->data;
 }
 
-
-
 int bst_count(bst *b) {
 	int res = 0;
 	traverse_inorder_visit_node(b->head, (bst_visit_fn_t)visit_count, &res);
 	return res;
 }
-
 
 void bst_traverse_inorder(bst *b,
 			  bst_visit_fn_t visit,
@@ -145,8 +142,6 @@ void bst_traverse_inorder(bst *b,
 	traverse_inorder_visit_node_data(node, visit, obj);
 }
 
-
-
 void bst_traverse_preorder(bst *b,
 			   bst_visit_fn_t visit,
 			   void *obj) {
@@ -154,7 +149,6 @@ void bst_traverse_preorder(bst *b,
 
 	traverse_preorder(node, visit, obj);
 }
-
 
 void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj) {
 	queue q;
@@ -166,7 +160,6 @@ void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj) {
 	queue_enqueue(&q, head);
 	traverse_breadth_first(&q, visit, obj);
 }
-
 
 void bst_fill(bst *b,
 	      bst_check_fill_fn_t check_fill,
@@ -226,6 +219,7 @@ bst_node *bst_node_parent(bst_node *node) {
 	return node->parent;
 }
 
+
 static void insert(bst_node *node, bst_node *newnode, comp_fn_t comp) {
 	bst_node *left = node->left;
 	bst_node *right = node->right;
@@ -249,8 +243,6 @@ static void insert(bst_node *node, bst_node *newnode, comp_fn_t comp) {
 		node->count++;
 }
 
-/* Given a node and a data address, search the tree for a node that contains
-   the same data. */
 static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp) {
 	if (node == NULL)
 		return NULL;
@@ -262,17 +254,16 @@ static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp) {
 	return search(node->right, elem_addr, comp);
 }
 
-static void h_bst_visit_insert(void *elem_addr, bst *b) {
+static void visit_insert(void *elem_addr, bst *b) {
 	/* Already have an insert function but with switched params. */
 	bst_insert(b, elem_addr);
 }
 
 static void insert_bst(bst *from, bst *to) {
 	/* Traverse the tree, adding each found node in the destination tree.*/
-	bst_traverse_breadth_first(from, (bst_visit_fn_t)h_bst_visit_insert, to);
+	bst_traverse_breadth_first(from, (bst_visit_fn_t)visit_insert, to);
 }
 
-/* Create a new node containing tsize bytes from the elem_addr. */
 static bst_node *new_node(size_t tsize, void *elem_addr) {
 	bst_node *newnode = malloc(sizeof(bst_node));
 
