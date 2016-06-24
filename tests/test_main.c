@@ -11,18 +11,8 @@ int main(void) {
 	run_all_bbst_tests();
  	run_all_list_tests();
 
-	printf("-----------------\n\n");
-	printf("All array tests passed\n");
-	printf("All sorted array tests passed\n");
-	printf("All queue tests passed\n");
-	printf("All stack tests passed\n");
-	printf("All dictionary tests passed\n");
-	printf("All binary search tree tests passed\n");
-	printf("All balanced binary search tree tests passed\n");
-	printf("All linked list tests passed\n");
-
 	run_all_e_03_tests();
-//	printf("All chapter 3 exercises are still valid\n");
 
+	printf("\n***** All tests passed *****\n\n");
 	return 0;
 }
