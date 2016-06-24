@@ -3,8 +3,8 @@
 #include "sarray.h"
 
 /* Insert all the elements from the sorted array, from index m to index n
-   into the bst with node as root. */
-static void reinsert(bbst *bb, bst *b, sarray *sa, size_t m, size_t n);
+   into the bst. The sorted array elements are bst nodes. */
+static void reinsert(bst *b, sarray *sa, size_t m, size_t n);
 
 extern int bbst_init(bbst *bb, size_t elem_size,
 		     comp_fn_t comp,
@@ -32,13 +32,13 @@ int bbst_insert(bbst *bb, void *elem_addr) {
 		 * bst to keep the tree balanced. */
 		b->head = NULL;
 		int sa_size = sarray_size(sa);
-		reinsert(bb, b, sa, 0, sa_size-1);
+		reinsert(b, sa, 0, sa_size-1);
 	}
 	else
 		; /* This was the first element, so nothing to do. */
 }
 
-static void reinsert(bbst *bb, bst *b, sarray *sa, size_t m, size_t n) {
+static void reinsert(bst *b, sarray *sa, size_t m, size_t n) {
 	if (m > n)
 		return;
 
@@ -48,6 +48,6 @@ static void reinsert(bbst *bb, bst *b, sarray *sa, size_t m, size_t n) {
 	middle_node->left = middle_node->right = NULL;
 	bst_insert_node(b, middle_node);
 	if (middle_index > 0)
-		reinsert(bb, b, sa, m, middle_index - 1); /* Insert the left. */
-	reinsert(bb, b, sa, middle_index + 1, n); /* Insert the right. */
+		reinsert(b, sa, m, middle_index - 1); /* Insert the left. */
+	reinsert(b, sa, middle_index + 1, n); /* Insert the right. */
 }
