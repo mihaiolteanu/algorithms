@@ -30,7 +30,7 @@ extern bst_node *bst_insert(bst *b, void *elem_addr);
 
 /* Insert an already existing node into the bst using the node comparison
  * function to decide the node location. */
-extern bst_node *bst_insert_node(bst *b, bst_node *node, comp_fn_t node_comp);
+extern bst_node *bst_insert_node(bst *b, bst_node *node);
 
 /* Search for the item at elem_address in the tree. The comparison function
 given in the init function is used to decide when two items from the tree
