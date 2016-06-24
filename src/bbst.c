@@ -42,12 +42,12 @@ static void reinsert(bst *b, sarray *sa, size_t m, size_t n) {
 	if (m > n)
 		return;
 
-	size_t middle_index = (m + n) / 2;
-	bst_node *middle_node = sarray_value(sa, middle_index);
+	size_t middle = (m + n) / 2;                /* Middle index */
+	bst_node *node = sarray_value(sa, middle);  /* Middle node */
 
-	middle_node->left = middle_node->right = NULL;
-	bst_insert_node(b, middle_node);
-	if (middle_index > 0)
-		reinsert(b, sa, m, middle_index - 1); /* Insert the left. */
-	reinsert(b, sa, middle_index + 1, n); /* Insert the right. */
+	node->left = node->right = NULL;
+	bst_insert_node(b, node);
+	if (middle > 0)
+		reinsert(b, sa, m, middle - 1);     /* Insert the left nodes */
+	reinsert(b, sa, middle + 1, n);             /* Insert the right nodes */
 }
