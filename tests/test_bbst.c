@@ -9,15 +9,7 @@
 static void test_bbst_balancing();
 
 static int node_comp(const bst_node *a, const bst_node *b) {
-	int aval = *(int*)a->data;
-	int bval = *(int*)b->data;
-
-	if (aval == bval)
-		return 0;
-	if (aval < bval)
-		return -1;
-	if (aval > bval)
-		return 1;
+	return comp_int_member(a->data, b->data);
 }
 
 static void node_visit(int *visited, array *a) {
