@@ -32,6 +32,10 @@ extern int array_add_at_index(array *a, void *elem_addr, size_t index) {
 	size_t size = a->size;
 	size_t tsize = a->tsize;
 
+	/* What should the missing indexes be filled with?! */
+	if (index > size)
+		return -1;
+
 	increment_size(a);
 	// Shift one position to the right, starting from the index, to make
 	// room for the new element.
