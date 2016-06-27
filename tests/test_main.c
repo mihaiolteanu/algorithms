@@ -13,6 +13,7 @@ int main(void) {
 
 	run_all_e_03_tests();
 
-	printf("\n***** All tests passed *****\n\n");
+/* http://stackoverflow.com/questions/3219393/stdlib-and-colored-output-in-c */
+	printf("\n\x1b[32m All tests passed \x1b[0m\n\n");
 	return 0;
 }
