@@ -1,7 +1,10 @@
 #include <assert.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include "array.h"
 #include "common_int_member.h"
+
+#define ARRAY_SIZE(a) ((sizeof(a))/(sizeof(a[0])))
 
 // Test functions
 static void test_array_size();
@@ -14,6 +17,12 @@ static void test_array_add_at_index();
 
 /* Add n elements to the array a */
 static void add_elements(array *a, size_t n);
+/* Insert counts ints into the array. */
+static void insert_ints(array *a, int *ints, int count);
+/* Assert if the count values are in the array, in the given order. */
+static void assert_ints(array *a, int *ints, int count);
+/* Assert that the count number of ints are not in the array. */
+static void assert_ints_null(array *a, int *ints, int count);
 
 void run_all_array_tests() {
 	test_array_size();
@@ -27,41 +36,39 @@ void run_all_array_tests() {
 
 static void test_array_search() {
 	array a;
+	/* Expected values, used for both insertion and assertion. */
+	int exp[] = {2, 5, 3, 10, 1}; 
+	/* Values that should not be found in the array. */
+	int not_exp[] = {4, 9, 12};
+
 	array_init(&a, sizeof(int));
+	insert_ints(&a, exp, ARRAY_SIZE(exp));
 
-	// 0 1 2 3 4
-	add_elements(&a, 5);
-	int tosearch = 2;
-	int *res = array_search(&a, &tosearch, comp_int_member);
-	assert(*res == tosearch);
-	
-	tosearch = 0;
-	res = array_search(&a, &tosearch, comp_int_member);
-	assert(*res == tosearch);
-
-	tosearch = 4;
-	res = array_search(&a, &tosearch, comp_int_member);
-	assert(*res == tosearch);
+	/* Search existing and non-existing elements. */
+	assert_ints(&a, exp, ARRAY_SIZE(exp));
+	assert_ints_null(&a, not_exp, ARRAY_SIZE(not_exp));
 }
 
 static void test_array_add_at_index() {
 	array a;
+	/* Initial elements added to the array. */
+	int init[] = {2, 5, 3, 10, 1};
+
 	array_init(&a, sizeof(int));
+	insert_ints(&a, init, ARRAY_SIZE(init));
 
-	// 0 1 2 3
-	add_elements(&a, 4);
+	/* Add elements at specific indexes. */
+	int exp[] = {0, 2, 4, 5, 3, 10, 1, 11};
+	/*           ^     ^               ^ */
+	array_add_at_index(&a, &exp[0], 0); /* Start of array. */
+	array_add_at_index(&a, &exp[2], 2);
+	array_add_at_index(&a, &exp[7], 7); /* End of array. */
+	assert_ints(&a, exp, ARRAY_SIZE(exp));
 
-	// Add new element between 0 and 1
-	int newelem = 5;
-	array_add_at_index(&a, &newelem, 1);
-	// Check correct adding and shifting of the rest of elements
-	// leaving the rest of elements intact.
-	// 0 5 1 2 3
-	assert(*(int *)array_value(&a, 0) == 0);
-	assert(*(int *)array_value(&a, 1) == 5);
-	assert(*(int *)array_value(&a, 2) == 1);
-	assert(*(int *)array_value(&a, 3) == 2);
-	assert(*(int *)array_value(&a, 4) == 3);
+	/* Add elements at non-existend index - should not be possible. */
+	array_add_at_index(&a, &exp[0], ARRAY_SIZE(exp) + 2);
+	/* The array has not been changed. */
+	assert(array_size(&a) == ARRAY_SIZE(exp));
 }
 
 static void test_array_remove_byindex() {
@@ -189,4 +196,23 @@ static void test_array_value() {
 static void add_elements(array *a, size_t n) {
 	for (int i = 0; i < n; i++)
 		array_add(a, &i);
+}
+
+static void insert_ints(array *a, int *ints, int count) {
+	for (int i = 0; i < count; i++)
+		array_add(a, &ints[i]);
+}
+
+static void assert_ints(array *a, int *ints, int count) {
+	for (int i = 0; i < count; i++) {
+		int *res = array_search(a, &ints[i], comp_int_member);
+		assert (*res == ints[i]);
+	}
+}
+
+static void assert_ints_null(array *a, int *ints, int count) {
+	for (int i = 0; i < count; i++) {
+		int *res = array_search(a, &ints[i], comp_int_member);
+		assert (res == NULL);
+	}
 }
