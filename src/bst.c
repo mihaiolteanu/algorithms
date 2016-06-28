@@ -10,6 +10,9 @@ static void insert(bst_node *node, bst_node *newnode, comp_fn_t comp);
 /* Given a node and a data address, search the tree for a node that contains
    the same data. */
 static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp);
+/* Search for a node in the bst. If comp_param is not null, use it instead of
+ * the default comparison function. */
+static bst_node *search_node(bst *b, void *elem_addr, comp_fn_t comp_param);
 /* Visiting function that inserts the element into the bst. */
 static void visit_insert(void *elem_addr, bst *b);
 /* Insert all the nodes from one tree into another. */
@@ -77,32 +80,18 @@ bst_node *bst_insert_node(bst *b, bst_node *newnode) {
 }
 
 void *bst_search(bst *b, void *elem_addr) {
-	bst_node *root = b->head;
-	bst_node *res = NULL;
-	comp_fn_t comp = b->comp;
-
-	res = search(root, elem_addr, comp);
+	bst_node *res = search_node(b, elem_addr, NULL);
 	if (res != NULL)
 		return res->data;
 	return res;
 }
 
 void *bst_search_with_comp(bst *b, void *elem_addr, comp_fn_t comp) {
-	bst_node *root = b->head;
-	bst_node *res = NULL;
-
-	res = search(root, elem_addr, comp);
-	if (res != NULL)
-		return res;
-	return res;
+	return search_node(b, elem_addr, comp);
 }
 
 int bst_search_count(bst *b, void *elem_addr) {
-	bst_node *root = b->head;
-	bst_node *res = NULL;
-	comp_fn_t comp = b->comp;
-
-	res = search(root, elem_addr, comp);
+	bst_node *res = search_node(b, elem_addr, NULL);
 	if (res != NULL)
 		return res->count;
 	return -1;
@@ -252,6 +241,13 @@ static bst_node *search(bst_node *node, void *elem_addr, comp_fn_t comp) {
 	if (compres > 0)
 		return search(node->left, elem_addr, comp);
 	return search(node->right, elem_addr, comp);
+}
+
+static bst_node *search_node(bst *b, void *elem_addr, comp_fn_t comp_param) {
+	bst_node *root = b->head;
+	comp_fn_t comp = comp_param == NULL ? b->comp : comp_param;
+
+	return search(root, elem_addr, comp);
 }
 
 static void visit_insert(void *elem_addr, bst *b) {
