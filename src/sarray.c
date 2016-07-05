@@ -9,7 +9,7 @@ int sarray_init(sarray *as, size_t elem_size, comp_fn_t comp) {
 		return ERROR;
 	as->a = a;
 	as->comp = comp;
-	return array_init(as->a, elem_size);
+	return array_init(as->a, elem_size, NULL);
 }
 
 int sarray_add(sarray *as, void *elem_addr) {

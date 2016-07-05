@@ -28,7 +28,7 @@ void test_bbst_balancing() {
 	array a;
 
 	bbst_init(&bb, sizeof(int), comp_int_member, (comp_fn_t)node_comp);
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), NULL);
 	/* Insert 1, 2, 3, 4, 5, 6, 7 into the tree. */
 	for (int i = 1; i < size+1; i++)
 		bbst_insert(&bb, &i);

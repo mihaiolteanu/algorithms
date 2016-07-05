@@ -10,10 +10,11 @@ static int downsize_if_needed(array *a);
 // increment the array size and double tha array capacity, if needed
 static int increment_size(array *a);
 
-int array_init(array *a, size_t elem_size) {
+int array_init(array *a, size_t elem_size, comp_fn_t comp) {
 	a->size = 0;
 	a->cap = INIT_CAP;
 	a->tsize = elem_size;
+	a->comp = comp;
 	a->data = malloc(INIT_CAP*elem_size);
 	if (a->data == NULL)
 		return ERROR;
@@ -59,7 +60,10 @@ void *array_value(array *a, size_t index) {
 	return data + index*tsize;
 }
 
-void *array_search(array *a, void *elem_addr, comp_fn_t comp) {
+void *array_search(array *a, void *elem_addr) {
+	comp_fn_t comp = a->comp;
+	if (comp == NULL)
+		return NULL;
 	for (int i = 0; i < array_size(a); i++) {
 		void *elem = array_value(a, i);
 		if (comp(elem_addr, elem) == 0)

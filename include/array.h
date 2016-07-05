@@ -33,13 +33,15 @@ typedef struct {
 	size_t size;  // number of elements currently in the array
 	size_t cap;   // maximum number of elements allowed
 	size_t tsize; // size of one data element
+	comp_fn_t comp; // Comparison function
 	char *data;   // array elements
 } array;
 
 /* Initialize the array with sizeof of one of the elements
 that it will hold. Returns ERROR if array could not be initialized,
-OK otherwise*/
-extern int array_init(array *a, size_t elem_size);
+OK otherwise. The comparison function is used to search the array.
+If searching the array is not needed, the comp function can be NULL. */
+extern int array_init(array *a, size_t elem_size, comp_fn_t comp);
 
 /* Add the contents at the specified address, elem_address, to
 the end of the array and increases the array size. The number of bytes 
@@ -61,31 +63,9 @@ at the return address is equal to the elem_size specified
 when array_init was called. */
 extern void *array_value(array *a, size_t index);
 
-/* Search the array for the element at the elem_addr. Use the compare
-function, comp, to decide the comparing algorithm. The comparison function 
-must return an integer less than, equal to, or greater than zero if the first
-argument is considered to be respectively less than, equal to, or greater
-than the second. Returns the address of the found element in the array, NULL
-otherwise.
-
-Example comp function for a city struct, for searching a city with a given
-size:
-typedef struct {
-	char *name;
-	size_t size;
-} city;
-
-int citycomp(void *x, void *y) {
-	city *xcity = (city *)x;
-	city *ycity = (city *)y;
-	size_t xsize = xcity->size;
-	size_t ysize = ycity->size;
-
-	if (xsize < ysize)
-		return -1;
-	return (xsize > ysize);
-} */
-extern void *array_search(array *a, void *elem_addr, comp_fn_t comp);
+/* Search the array for the element at the elem_addr using the comparison
+function. If the comp parameter in the init function was NULL, return NULL.*/
+extern void *array_search(array *a, void *elem_addr);
 
 /* Remove element at index from the array. Downsize the array
 if needed. The array capacity will not get lower than the initial

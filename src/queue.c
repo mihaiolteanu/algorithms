@@ -9,7 +9,7 @@ int queue_init(queue *q, size_t tsize) {
 	a = q->a = malloc(sizeof(array));
 	if (a == NULL)
 		return ERROR;
-	return array_init(a, tsize);
+	return array_init(a, tsize, NULL);
 }
 
 int queue_enqueue(queue *q, void *x) {

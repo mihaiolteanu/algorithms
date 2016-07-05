@@ -10,7 +10,7 @@ int stack_init(stack *s, size_t tsize) {
 	if (a == NULL)
 		return ERROR;
 
-	return array_init(a, tsize);
+	return array_init(a, tsize, NULL);
 }
 
 int stack_push(stack *s, void *x) {

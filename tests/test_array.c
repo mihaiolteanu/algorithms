@@ -37,7 +37,7 @@ static void test_array_search() {
 	/* Values that should not be found in the array. */
 	int not_exp[] = {4, 9, 12};
 
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), comp_int_member);
 	insert_ints(&a, (add_fn_t)array_add, exp, ARRAY_SIZE(exp));
 
 	/* Search existing and non-existing elements. */
@@ -50,7 +50,7 @@ static void test_array_add_at_index() {
 	/* Initial elements added to the array. */
 	int init[] = {2, 5, 3, 10, 1};
 
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), comp_int_member);
 	insert_ints(&a, (add_fn_t)array_add, init, ARRAY_SIZE(init));
 
 	/* Add elements at specific indexes. */
@@ -69,7 +69,7 @@ static void test_array_add_at_index() {
 
 static void test_array_remove_byindex() {
 	array a;
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), comp_int_member);
 
 	// Removing from an empty array does not modify the array.
 	assert(array_size(&a) == 0);
@@ -93,14 +93,14 @@ static void test_array_remove_byindex() {
 
 static void test_array_remove_byaddr() {
 	array a;
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), comp_int_member);
 
 	// [0 1 2 3 4]
 	add_elements(&a, 5);
 
 	// Search and remove an element, if found.
 	int tosearch = 2;
-	int *res = array_search(&a, &tosearch, comp_int_member);
+	int *res = array_search(&a, &tosearch);
 	if (res != NULL) {
 		array_remove_byaddr(&a, res);
 		// [0 1 3 4]
@@ -114,7 +114,7 @@ static void test_array_remove_byaddr() {
 
 	// Remove the first element.
 	tosearch = 0;
-	res = array_search(&a, &tosearch, comp_int_member);
+	res = array_search(&a, &tosearch);
 	if (res != NULL) {
 		array_remove_byaddr(&a, res);
 		// [1 3 4]
@@ -125,7 +125,7 @@ static void test_array_remove_byaddr() {
 
 	// Remove the last element.
 	tosearch = 4;
-	res = array_search(&a, &tosearch, comp_int_member);
+	res = array_search(&a, &tosearch);
 	if (res != NULL) {
 		array_remove_byaddr(&a, res);
 		// [1 3]
@@ -148,7 +148,7 @@ static void test_array_remove_byaddr() {
 
 static void test_array_capacity() {
 	array a;
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), comp_int_member);
 
 	// Initial capacity as expected?
 	assert(array_cap(&a) == INIT_CAP);
@@ -166,7 +166,7 @@ static void test_array_capacity() {
 static void test_array_size() {
 	array a;
 	size_t asize = 3;
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), comp_int_member);
 
 	// Nothing added yet
 	assert(array_size(&a) == 0);
@@ -179,7 +179,7 @@ static void test_array_size() {
 static void test_array_value() {
 	array a;
 	size_t asize = 3;
-	array_init(&a, sizeof(int));
+	array_init(&a, sizeof(int), comp_int_member);
 
 	// Check if elements are added at the expected position
 	add_elements(&a, asize);
@@ -196,14 +196,14 @@ static void add_elements(array *a, size_t n) {
 
 static void assert_ints(array *a, int *ints, int count) {
 	for (int i = 0; i < count; i++) {
-		int *res = array_search(a, &ints[i], comp_int_member);
+		int *res = array_search(a, &ints[i]);
 		assert (*res == ints[i]);
 	}
 }
 
 static void assert_ints_null(array *a, int *ints, int count) {
 	for (int i = 0; i < count; i++) {
-		int *res = array_search(a, &ints[i], comp_int_member);
+		int *res = array_search(a, &ints[i]);
 		assert (res == NULL);
 	}
 }
