@@ -17,8 +17,6 @@ static void test_array_add_at_index();
 
 /* Add n elements to the array a */
 static void add_elements(array *a, size_t n);
-/* Insert counts ints into the array. */
-static void insert_ints(array *a, int *ints, int count);
 /* Assert if the count values are in the array, in the given order. */
 static void assert_ints(array *a, int *ints, int count);
 /* Assert that the count number of ints are not in the array. */
@@ -42,7 +40,7 @@ static void test_array_search() {
 	int not_exp[] = {4, 9, 12};
 
 	array_init(&a, sizeof(int));
-	insert_ints(&a, exp, ARRAY_SIZE(exp));
+	insert_ints(&a, (add_fn_t)array_add, exp, ARRAY_SIZE(exp));
 
 	/* Search existing and non-existing elements. */
 	assert_ints(&a, exp, ARRAY_SIZE(exp));
@@ -55,7 +53,7 @@ static void test_array_add_at_index() {
 	int init[] = {2, 5, 3, 10, 1};
 
 	array_init(&a, sizeof(int));
-	insert_ints(&a, init, ARRAY_SIZE(init));
+	insert_ints(&a, (add_fn_t)array_add, init, ARRAY_SIZE(init));
 
 	/* Add elements at specific indexes. */
 	int exp[] = {0, 2, 4, 5, 3, 10, 1, 11};
@@ -196,11 +194,6 @@ static void test_array_value() {
 static void add_elements(array *a, size_t n) {
 	for (int i = 0; i < n; i++)
 		array_add(a, &i);
-}
-
-static void insert_ints(array *a, int *ints, int count) {
-	for (int i = 0; i < count; i++)
-		array_add(a, &ints[i]);
 }
 
 static void assert_ints(array *a, int *ints, int count) {
