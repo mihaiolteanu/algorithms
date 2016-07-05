@@ -24,9 +24,8 @@ static void test_bst_fill();
 /* Traverse the bst in the order specified by the traverse function, collecting
  * all the node values into an array and then assert if the collected values 
  * match those given as arguments in the va_list. */
-static void traverse_int_assert(bst *b,
-		  void (*traverse)(bst *b, bst_visit_fn_t visit, void *obj),
-		  int count, ...);
+typedef void (*traverse_fn)(bst *b, bst_visit_fn_t visit, void *obj);
+static void traverse_int_assert(bst *b, traverse_fn traverse, int count, ...);
 
 /* Adds the data to the array. Used as a node visit function for bst traversal*/
 static void int_visit(void *data, array *a);
@@ -265,9 +264,7 @@ static void int_visit(void *data, array *a) {
 	array_add(a, data);
 }
 
-static void traverse_int_assert(bst *b,
-		  void (*traverse)(bst *b, bst_visit_fn_t visit, void *obj),
-		  int count, ...) {
+static void traverse_int_assert(bst *b, traverse_fn traverse, int count, ...) {
 	va_list ap;
 	array a;
 
