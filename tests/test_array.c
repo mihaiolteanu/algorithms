@@ -4,8 +4,6 @@
 #include "array.h"
 #include "common_int_member.h"
 
-#define ARRAY_SIZE(a) ((sizeof(a))/(sizeof(a[0])))
-
 // Test functions
 static void test_array_size();
 static void test_array_value();

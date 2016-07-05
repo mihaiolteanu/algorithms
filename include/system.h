@@ -3,6 +3,8 @@
 #define OK 1
 #define ERROR 0
 
+#define ARRAY_SIZE(a) ((sizeof(a))/(sizeof(a[0])))
+
 /* Comparison function type. 
    The funtion should return an integer less than, equal to, or greater than 
    zero if a is found, respectively, to be less than, to mach, or be greater
