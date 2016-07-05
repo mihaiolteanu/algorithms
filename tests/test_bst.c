@@ -31,8 +31,6 @@ static void traverse_int_assert(bst *b,
 /* Adds the data to the array. Used as a node visit function for bst traversal*/
 static void int_visit(void *data, array *a);
 
-/* Insert count number of ints in the bst */
-static void insert_ints_bst(bst *b, int count, ...);
 
 void run_all_bst_tests() {
 	test_bst_insert();
@@ -66,6 +64,8 @@ static void h_bst_fill(void *node_data, void *elem_addr) {
 static void test_bst_fill() {
 	bst b;
 	int fillval;
+	int ints[] = {5, 3, 7, 4, 2};
+	int ints_size = ARRAY_SIZE(ints);
 
 	bst_init(&b, sizeof(int), comp_int_member);
 
@@ -76,8 +76,7 @@ static void test_bst_fill() {
                 / \
                2   4
 	*/
-	insert_ints_bst(&b, 5,
-		    5, 3, 7, 4, 2);
+	insert_ints(&b, (add_fn_t)bst_insert, ints, ints_size);
 
 	/* Fill at 3.
 	          5
@@ -171,10 +170,11 @@ static void test_bst_search() {
 static void test_bst_search_count() {
 	bst b;
 	int search_elem, search_res;
+	int ints[] = {5, 3, 7, 4, 2, 7, 7, 4};
+	int ints_size = ARRAY_SIZE(ints);
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	insert_ints_bst(&b, 8,
-		    5, 3, 7, 4, 2, 7, 7, 4);
+	insert_ints(&b, (add_fn_t)bst_insert, ints, ints_size);
 
 	search_elem = 7;
 	search_res = bst_search_count(&b, &search_elem);
@@ -208,10 +208,11 @@ static void test_bst_min_max() {
 static void test_bst_count() {
 	bst b;
 	int count;
+	int ints[] = {5, 3, 7, 4, 2, 3};
+	int ints_size = ARRAY_SIZE(ints);
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	insert_ints_bst(&b, 6,
-		    5, 3, 7, 4, 2, 3);
+	insert_ints(&b, (add_fn_t)bst_insert, ints, ints_size);
 	count = bst_count(&b);
 	assert(count == 6);
 }
@@ -229,30 +230,33 @@ static void test_bst_count() {
 */
 static void test_bst_traverse_inorder() {
 	bst b;
+	int ints[] = {5, 3, 7, 4, 2};
+	int ints_size = ARRAY_SIZE(ints);
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	insert_ints_bst(&b, 5,
-		    5, 3, 7, 4, 2);
+	insert_ints(&b, (add_fn_t)bst_insert, ints, ints_size);
 	traverse_int_assert(&b, bst_traverse_inorder,
 			    5,  2, 3, 4, 5, 7);
 }
 
 static void test_bst_traverse_preorder() {
 	bst b;
+	int ints[] = {5, 3, 7, 4, 2};
+	int ints_size = ARRAY_SIZE(ints);
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	insert_ints_bst(&b, 5,
-		    5, 3, 7, 4, 2);
+	insert_ints(&b, (add_fn_t)bst_insert, ints, ints_size);
 	traverse_int_assert(&b, bst_traverse_preorder,
 			    5,  5, 3, 2, 4, 7);
 }
 
 static void test_bst_traverse_breadth_first() {
 	bst b;
+	int ints[] = {5, 3, 7, 4, 2};
+	int ints_size = ARRAY_SIZE(ints);
 
 	bst_init(&b, sizeof(int), comp_int_member);
-	insert_ints_bst(&b, 5,
-		    5, 3, 7, 4, 2);
+	insert_ints(&b, (add_fn_t)bst_insert, ints, ints_size);
 	traverse_int_assert(&b, bst_traverse_breadth_first,
 			    5,  5, 3, 7, 2, 4);
 }
@@ -277,17 +281,5 @@ static void traverse_int_assert(bst *b,
 	for (int i = 0; i < count; i++)
 		assert(*(int*)array_value(&a, i) == va_arg(ap, int));
 
-	va_end(ap);
-}
-
-static void insert_ints_bst(bst *b, int count, ...) {
-	va_list ap;
-	int value;
-
-	va_start(ap, count);
-	for (int i = 0; i < count; i++) {
-		value = va_arg(ap, int);
-		bst_insert(b, &value);
-	}
 	va_end(ap);
 }
