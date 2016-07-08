@@ -49,12 +49,13 @@ typedef struct {
 
 typedef struct {
 	void *dt;
+	dict_dtype dtype;
 } dict;
 
 /* Initialize a new dictionary. The comparison function decides when two
  * elements of the same type are equal. dtype is the underlining data structure
  * used to implement the dictionary.  */
-extern int dict_init(void *d, size_t elem_size, comp_fn_t comp,
+extern int dict_init(dict *d, size_t elem_size, comp_fn_t comp,
 		     dict_dtype dtype);
 
 /* Given a pointer to an element of the type the dictionary holds, return a
@@ -64,26 +65,26 @@ extern int dict_init(void *d, size_t elem_size, comp_fn_t comp,
  * the book (pg. 72), but if I use the element and not it's key I don't have to
  * have two comparison functions, one for the element and one for the element's
  * key. */
-extern void *dict_search(void *d, void *elem_addr);
+extern void *dict_search(dict *d, void *elem_addr);
 
 /* Given a pointer to an element of the type the dictionary holds, insert the
  * element in the dictionary. */
-extern int dict_insert(void *d, void *elem_addr);
+extern int dict_insert(dict *d, void *elem_addr);
 
 /* Given a pointer to an element already in the dictionary, remove it from the
  * dictionary. */
-extern void dict_delete(void *d, void *dict_elem_addr);
+extern void dict_delete(dict *d, void *dict_elem_addr);
 
 /* Retrieve the item with the largest (or smallest) key from the dictionary. */
-extern void *dict_max(void *d);
-extern void *dict_min(void *d);
+extern void *dict_max(dict *d);
+extern void *dict_min(dict *d);
 
 /* Retrieve the item from the dictionary whose key is immediately before (or
  * after) the element in sorted order. The key is defined by the comp function*/
-extern void *dict_predecessor(void *d, void *elem_addr);
-extern void *dict_successor(void *d, void *elem_addr);
+extern void *dict_predecessor(dict *d, void *elem_addr);
+extern void *dict_successor(dict *d, void *elem_addr);
 
 /* Cleanup the dictionary when it's no longer needed. */
-extern int *dict_destroy(void *d);
+extern int *dict_destroy(dict *d);
 
 #endif // DICT_H

@@ -16,17 +16,20 @@ void run_all_dict_tests() {
 }
 
 static void test_dict_search() {
-	dict_sarray d;
+	dict d;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
 
-	dict_init(&d, sizeof(int), comp_int_member, DICT_SARRAY);
-	insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
-	assert_ints(&d, (search_fn_t)dict_search, ints, ints_size);
+	for (dict_dtype dtype = DICT_SARRAY; dtype < DICT_BST; dtype++) {
+		dict_init(&d, sizeof(int), comp_int_member, dtype);
+		insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
+		assert_ints(&d, (search_fn_t)dict_search, ints, ints_size);
+//		dict_destroy(&d);
+	}
 }
 
 static void test_dict_max_min() {
-	dict_sarray d;
+	dict d;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
 
