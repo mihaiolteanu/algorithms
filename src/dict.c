@@ -25,38 +25,32 @@ typedef void *(*dict_max_fn_t)(dict *d);
 typedef void *(*dict_min_fn_t)(dict *d);
 typedef void (*dict_destroy_fn_t)(dict *d);
 
-static dict_init_fn_t dict_init_fns[DICT_TYPE_LAST] = {
-	dict_init_sarray,
-	dict_init_list
+typedef struct {
+	dict_init_fn_t dict_init_fn;
+	dict_search_fn_t dict_search_fn;
+	dict_insert_fn_t dict_insert_fn;
+	dict_max_fn_t dict_max_fn;
+	dict_min_fn_t dict_min_fn;
+	dict_destroy_fn_t dict_destroy_fn;
+} dict_fns_t;
+
+static dict_fns_t dict_fns[DICT_TYPE_LAST] = {
+	{ dict_init_sarray, dict_search_sarray, dict_insert_sarray, NULL, NULL, dict_destroy_sarray },
+	{ dict_init_list, dict_search_list, dict_insert_list, NULL, NULL, dict_destroy_list }
 };
 
-static dict_search_fn_t dict_search_fns[DICT_TYPE_LAST] = {
-	dict_search_sarray,
-	dict_search_list
-};
-
-static dict_insert_fn_t dict_insert_fns[DICT_TYPE_LAST] = {
-	dict_insert_sarray,
-	dict_insert_list
-};
-
-static dict_destroy_fn_t dict_destroy_fns[DICT_TYPE_LAST] = {
-	dict_destroy_sarray,
-	dict_destroy_list
-};
-
-int dict_init(dict *d, size_t elem_size, comp_fn_t comp, dict_dtype dtype) {
-	return dict_init_fns[dtype](d, elem_size, comp, dtype);
+void *dict_init(dict *d, size_t elem_size, comp_fn_t comp, dict_dtype dtype) {
+	return dict_fns[dtype].dict_init_fn(d, elem_size, comp, dtype);
 }
 
 void *dict_search(dict *d, void *elem_addr) {
 	dict_dtype dtype = d->dtype;
-	return dict_search_fns[dtype](d, elem_addr);
+	return dict_fns[dtype].dict_search_fn(d, elem_addr);
 }
 
-int dict_insert(dict *d, void *elem_addr) {
+void *dict_insert(dict *d, void *elem_addr) {
 	dict_dtype dtype = d->dtype;
-	return dict_insert_fns[dtype](d, elem_addr);
+	return dict_fns[dtype].dict_insert_fn(d, elem_addr);
 }
 
 void dict_remove(dict *d, void *x) {
@@ -83,7 +77,7 @@ void *dict_min(dict *d) {
 
 int *dict_destroy(dict *d) {
 	dict_dtype dtype = d->dtype;
-	dict_destroy_fns[dtype](d);
+	dict_fns[dtype].dict_destroy_fn(d);
 }
 
 static void *dict_init_sarray(dict *d, size_t elem_size, comp_fn_t comp,
