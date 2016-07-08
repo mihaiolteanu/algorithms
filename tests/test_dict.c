@@ -24,7 +24,7 @@ static void test_dict_search() {
 		dict_init(&d, sizeof(int), comp_int_member, dtype);
 		insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
 		assert_ints(&d, (search_fn_t)dict_search, ints, ints_size);
-//		dict_destroy(&d);
+		dict_destroy(&d);
 	}
 }
 

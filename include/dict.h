@@ -25,28 +25,6 @@ typedef enum {
 	DICT_TYPE_LAST
 } dict_dtype;
 
-/* The dictionary data structure contains different elements based on the
- * underlining data structure used to implement it. */
-typedef struct {
-	sarray as;
-} dict_sarray;
-
-typedef struct {
-	list l;
-} dict_list;
-
-typedef struct {
-	bst b;
-} dict_bst;
-
-typedef struct {
-	bbst b;
-} dict_bbst;
-
-typedef struct {
-	/* Not implemented yet. */
-} dict_hash;
-
 typedef struct {
 	void *dt;
 	dict_dtype dtype;
