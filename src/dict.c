@@ -3,20 +3,62 @@
 #include "sarray.h"
 #include "system.h"
 
+/* Dictionary sorted array declarations. */
 static void *dict_init_sarray(dict *d, size_t elem_size, comp_fn_t comp,
 			      dict_dtype dtype);
+static void *dict_search_sarray(dict *d, void *elem_addr);
+static void *dict_insert_sarray(dict *d, void *elem_addr);
+static void *dict_max_sarray(dict *d);
+static void *dict_min_sarray(dict *d);
+static void *dict_predecessor_sarray(dict *d, void *elem_addr);
+static void *dict_successor_sarray(dict *d, void *elem_addr);
+static void dict_destroy_sarray(dict *d);
+
+/* Dictionary linked list declarations. */
 static void *dict_init_list(dict *d, size_t elem_size, comp_fn_t comp,
 			    dict_dtype dtype);
-
-static void *dict_search_sarray(dict *d, void *elem_addr);
 static void *dict_search_list(dict *d, void *elem_addr);
-
-static void *dict_insert_sarray(dict *d, void *elem_addr);
 static void *dict_insert_list(dict *d, void *elem_addr);
-
-static void dict_destroy_sarray(dict *d);
+static void *dict_max_list(dict *d);
+static void *dict_min_list(dict *d);
+static void *dict_predecessor_list(dict *d, void *elem_addr);
+static void *dict_successor_list(dict *d, void *elem_addr);
 static void dict_destroy_list(dict *d);
 
+/* Dictionary binary search tree declarations. */
+static void *dict_init_bst(dict *d, size_t elem_size, comp_fn_t comp,
+			   dict_dtype dtype);
+static void *dict_search_bst(dict *d, void *elem_addr);
+static void *dict_insert_bst(dict *d, void *elem_addr);
+static void *dict_max_bst(dict *d);
+static void *dict_min_bst(dict *d);
+static void *dict_predecessor_bst(dict *d, void *elem_addr);
+static void *dict_successor_bst(dict *d, void *elem_addr);
+static void dict_destroy_bst(dict *d);
+
+/* Dictionary balanced binary search tree declarations. */
+static void *dict_init_bbst(dict *d, size_t elem_size, comp_fn_t comp,
+			    dict_dtype dtype);
+static void *dict_search_bbst(dict *d, void *elem_addr);
+static void *dict_insert_bbst(dict *d, void *elem_addr);
+static void *dict_max_bbst(dict *d);
+static void *dict_min_bbst(dict *d);
+static void *dict_predecessor_bbst(dict *d, void *elem_addr);
+static void *dict_successor_bbst(dict *d, void *elem_addr);
+static void dict_destroy_bbst(dict *d);
+
+/* Dictionary hash table declarations. */
+static void *dict_init_hash(dict *d, size_t elem_size, comp_fn_t comp,
+			    dict_dtype dtype);
+static void *dict_search_hash(dict *d, void *elem_addr);
+static void *dict_insert_hash(dict *d, void *elem_addr);
+static void *dict_max_hash(dict *d);
+static void *dict_min_hash(dict *d);
+static void *dict_predecessor_hash(dict *d, void *elem_addr);
+static void *dict_successor_hash(dict *d, void *elem_addr);
+static void dict_destroy_hash(dict *d);
+
+/* Typedefs */
 typedef void *(*dict_init_fn_t)(dict *d, size_t elem_size, comp_fn_t comp,
 				dict_dtype dtype);
 typedef void *(*dict_search_fn_t)(dict *d, void *elem_addr);
@@ -34,11 +76,15 @@ typedef struct {
 	dict_destroy_fn_t dict_destroy_fn;
 } dict_fns_t;
 
+/* All the dictionary functions in a single, easy accessible place. */
 static dict_fns_t dict_fns[DICT_TYPE_LAST] = {
-	{ dict_init_sarray, dict_search_sarray, dict_insert_sarray, NULL, NULL, dict_destroy_sarray },
-	{ dict_init_list, dict_search_list, dict_insert_list, NULL, NULL, dict_destroy_list }
+	{ dict_init_sarray, dict_search_sarray, dict_insert_sarray,
+	  dict_max_sarray, dict_min_sarray, dict_destroy_sarray },
+	{ dict_init_list, dict_search_list, dict_insert_list,
+	  dict_max_list, dict_min_list, dict_destroy_list }
 };
 
+/* Public interfaces. */
 void *dict_init(dict *d, size_t elem_size, comp_fn_t comp, dict_dtype dtype) {
 	return dict_fns[dtype].dict_init_fn(d, elem_size, comp, dtype);
 }
@@ -60,19 +106,13 @@ void dict_remove(dict *d, void *x) {
 }
 
 void *dict_max(dict *d) {
-	sarray *as = d->dt;;
-	int size = sarray_size(as);
-
-	return sarray_value(as, size - 1);
+	dict_dtype dtype = d->dtype;
+	return dict_fns[dtype].dict_max_fn(d);
 }
 
 void *dict_min(dict *d) {
-	sarray *as = d->dt;;
-	int size = sarray_size(as);
-
-	if (size > 0)
-		return sarray_value(as, 0);
-	return NULL;
+	dict_dtype dtype = d->dtype;
+	return dict_fns[dtype].dict_min_fn(d);
 }
 
 int *dict_destroy(dict *d) {
@@ -80,6 +120,7 @@ int *dict_destroy(dict *d) {
 	dict_fns[dtype].dict_destroy_fn(d);
 }
 
+/* Dictionary sorted array implementation. */
 static void *dict_init_sarray(dict *d, size_t elem_size, comp_fn_t comp,
 			      dict_dtype dtype) {
 	sarray *sa;
@@ -88,9 +129,52 @@ static void *dict_init_sarray(dict *d, size_t elem_size, comp_fn_t comp,
 		return NULL;
 	d->dt = sa;
 	d->dtype = dtype;
+	d->comp = comp;
 	return (void *)sarray_init(sa, elem_size, comp);
 }
-	
+
+static void *dict_search_sarray(dict *d, void *elem_addr) {
+	sarray *sa = d->dt;
+	return sarray_search(sa, elem_addr);
+}
+
+static void *dict_insert_sarray(dict *d, void *elem_addr) {
+	sarray *as = d->dt;
+	return sarray_add(as, elem_addr);
+}
+
+static void *dict_max_sarray(dict *d) {
+	sarray *sa = d->dt;
+	int sa_size = sarray_size(sa);
+	if (sa_size > 0)
+		return sarray_value(sa, sa_size-1);
+	return NULL;
+}
+
+static void *dict_min_sarray(dict *d) {
+	sarray *sa = d->dt;
+	int sa_size = sarray_size(sa);
+	if (sa_size > 0)
+		return sarray_value(sa, 0);
+	return NULL;
+}
+
+static void *dict_predecessor_sarray(dict *d, void *elem_addr) {
+
+}
+
+static void *dict_successor_sarray(dict *d, void *elem_addr) {
+
+}
+
+static void dict_destroy_sarray(dict *d) {
+	sarray *sa = d->dt;
+	// sarray_destroy(sa);
+	free(sa);
+}
+
+
+/* Dictionary linked list implementation. */
 static void *dict_init_list(dict *d, size_t elem_size, comp_fn_t comp,
 			    dict_dtype dtype) {
 	list *l;
@@ -99,14 +183,9 @@ static void *dict_init_list(dict *d, size_t elem_size, comp_fn_t comp,
 		return NULL;
 	d->dt = l;
 	d->dtype = dtype;
+	d->comp = comp;
 	list_init(l, elem_size, comp);
 	return (void *)1;
-}
-
-
-static void *dict_search_sarray(dict *d, void *elem_addr) {
-	sarray *sa = d->dt;
-	return sarray_search(sa, elem_addr);
 }
 
 static void *dict_search_list(dict *d, void *elem_addr) {
@@ -114,22 +193,47 @@ static void *dict_search_list(dict *d, void *elem_addr) {
 	return list_search(l, elem_addr);
 }
 
-
-static void *dict_insert_sarray(dict *d, void *elem_addr) {
-	sarray *as = d->dt;
-	return sarray_add(as, elem_addr);
-}
-
 static void *dict_insert_list(dict *d, void *elem_addr) {
 	list *l = d->dt;
 	return list_add(l, elem_addr);
 }
 
+static void *dict_max_list(dict *d) {
+	comp_fn_t comp = d->comp;
+	list *l = d->dt;
+	list_node *node = list_first_node(l);
+	void *node_data;
+	void *max = list_node_data(node);
 
-static void dict_destroy_sarray(dict *d) {
-	sarray *sa = d->dt;
-	// sarray_destroy(sa);
-	free(sa);
+	while((node = list_next_node(node)) != NULL) {
+		node_data = list_node_data(node);
+		if (comp(node_data, max) > 0)
+			max = node_data;
+	}
+	return max;
+}
+
+static void *dict_min_list(dict *d) {
+	comp_fn_t comp = d->comp;
+	list *l = d->dt;
+	list_node *node = list_first_node(l);
+	void *node_data;
+	void *min = list_node_data(node);
+
+	while((node = list_next_node(node)) != NULL) {
+		node_data = list_node_data(node);
+		if (comp(node_data, min) < 0)
+			min = node_data;
+	}
+	return min;
+}
+
+static void *dict_predecessor_list(dict *d, void *elem_addr) {
+
+}
+
+static void *dict_successor_list(dict *d, void *elem_addr) {
+
 }
 
 static void dict_destroy_list(dict *d) {

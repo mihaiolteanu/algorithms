@@ -27,6 +27,7 @@ typedef enum {
 
 typedef struct {
 	void *dt;
+	comp_fn_t comp;
 	dict_dtype dtype;
 } dict;
 
