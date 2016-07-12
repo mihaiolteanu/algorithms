@@ -10,8 +10,7 @@
 
 typedef struct list_node_t {
 	struct list_node_t *next;
-	char data[0]; // GCC zero-length array
-	              // should be made equal to list.tsize
+	char *data;
 } list_node;
 
 typedef struct {

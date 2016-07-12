@@ -23,10 +23,12 @@ void list_init(list *l, size_t elem_size, comp_fn_t comp) {
 int list_add(list *l, void *elem_addr) {
 	size_t tsize = l->tsize;
 
-	list_node *node = malloc(sizeof(list_node) + tsize);
+	list_node *node = malloc(sizeof(list_node));
 	if (node == NULL)
 		return ERROR;
-	memcpy((char *)&node->data, (char *)elem_addr, tsize);
+	if ((node->data = malloc(sizeof(tsize))) == NULL)
+		return ERROR;
+	memcpy(node->data, elem_addr, tsize);
 	node->next = l->head;
 	l->head = node;
 	return OK;
