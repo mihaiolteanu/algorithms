@@ -32,14 +32,16 @@ static void test_dict_max_min() {
 	dict d;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
+	int *min, *max;
 
-	dict_init(&d, sizeof(int), comp_int_member, DICT_SARRAY);
-	insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
-
-	int *min = dict_min(&d);
-	int *max = dict_max(&d);
-
-	assert(*min == 1);
-	assert(*max == 10);
+	for (dict_dtype dtype = DICT_SARRAY; dtype < DICT_BST; dtype++) {
+		dict_init(&d, sizeof(int), comp_int_member, dtype);
+		insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
+		min = dict_min(&d);
+		max = dict_max(&d);
+		assert(*min == 1);
+		assert(*max == 10);
+		dict_destroy(&d);
+	}
 }
 
