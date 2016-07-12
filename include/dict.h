@@ -33,7 +33,7 @@ typedef struct {
 /* Initialize a new dictionary. The comparison function decides when two
  * elements of the same type are equal. dtype is the underlining data structure
  * used to implement the dictionary.  */
-extern int dict_init(dict *d, size_t elem_size, comp_fn_t comp,
+extern void *dict_init(dict *d, size_t elem_size, comp_fn_t comp,
 		     dict_dtype dtype);
 
 /* Given a pointer to an element of the type the dictionary holds, return a
@@ -47,7 +47,7 @@ extern void *dict_search(dict *d, void *elem_addr);
 
 /* Given a pointer to an element of the type the dictionary holds, insert the
  * element in the dictionary. */
-extern int dict_insert(dict *d, void *elem_addr);
+extern void *dict_insert(dict *d, void *elem_addr);
 
 /* Given a pointer to an element already in the dictionary, remove it from the
  * dictionary. */
