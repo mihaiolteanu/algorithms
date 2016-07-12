@@ -35,6 +35,17 @@ extern void *list_search(list *l, void *src_addr);
    to decide which element is equal to the element at src_addr. */
 extern void list_remove(list *l, void *src_addr);
 
+/* Return a pointer to the first node in the linked list. Return NULL if there
+ * a re no nodes in the list. */
+extern list_node *list_first_node(list *l);
+
+/* Return a pointer to the next node in the linked list. Return NULL if this is
+ * the last node in the list. */
+extern list_node *list_next_node(list_node *node);
+
+/* Return the data stored in the list node. */
+extern void *list_node_data(list_node *node);
+
 // Reverse the linked list.
 extern void list_reverse(list *l);
 

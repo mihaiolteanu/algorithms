@@ -62,6 +62,18 @@ void list_remove(list *l, void *src_addr) {
 	return;
 }
 
+list_node *list_first_node(list *l) {
+	return l->head;
+}
+
+list_node *list_next_node(list_node *node) {
+	return node->next;
+}
+
+void *list_node_data(list_node *node) {
+	return (void *)node->data;
+}
+
 /* 3-2.
    solution for exercise 3-2 */
 void list_reverse(list *l) {
