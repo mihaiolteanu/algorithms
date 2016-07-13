@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "dict.h"
 #include "sarray.h"
+#include "list.h"
+#include "bst.h"
 #include "system.h"
 
 /* Dictionary sorted array declarations. */
@@ -78,10 +80,12 @@ typedef struct {
 
 /* All the dictionary functions in a single, easy accessible place. */
 static dict_fns_t dict_fns[DICT_TYPE_LAST] = {
-	{ dict_init_sarray, dict_search_sarray, dict_insert_sarray,
+	{ dict_init_sarray, dict_search_sarray, dict_insert_sarray, /* sarray */
 	  dict_max_sarray, dict_min_sarray, dict_destroy_sarray },
-	{ dict_init_list, dict_search_list, dict_insert_list,
-	  dict_max_list, dict_min_list, dict_destroy_list }
+	{ dict_init_list, dict_search_list, dict_insert_list,       /* list */ 
+	  dict_max_list, dict_min_list, dict_destroy_list },
+	{ dict_init_bst, dict_search_bst, dict_insert_bst,          /* bst */
+	  dict_max_bst, dict_min_bst, dict_destroy_bst}
 };
 
 /* Public interfaces. */
@@ -240,4 +244,52 @@ static void dict_destroy_list(dict *d) {
 	list *l = d->dt;
 	// list_destroy(l)
 	free(l);
+}
+
+
+/* Dictionary binary search tree implementation. */
+static void *dict_init_bst(dict *d, size_t elem_size, comp_fn_t comp,
+			   dict_dtype dtype) {
+	bst *b;
+
+	if ((b = malloc(sizeof(bst))) == NULL)
+		return NULL;
+	d->dt = b;
+	d->dtype = dtype;
+	d->comp = comp;
+	bst_init(b, elem_size, comp);
+	return (void *)1;
+}
+
+static void *dict_search_bst(dict *d, void *elem_addr) {
+	bst *b = d->dt;
+	return bst_search(b, elem_addr);
+}
+
+static void *dict_insert_bst(dict *d, void *elem_addr) {
+	bst *b = d->dt;
+	return bst_insert(b, elem_addr);
+}
+
+static void *dict_max_bst(dict *d) {
+	bst *b = d->dt;
+	return bst_max(b);
+}
+
+static void *dict_min_bst(dict *d) {
+	bst *b = d->dt;
+	return bst_min(b);
+}
+
+static void *dict_predecessor_bst(dict *d, void *elem_addr) {
+
+}
+
+static void *dict_successor_bst(dict *d, void *elem_addr) {
+
+}
+
+static void dict_destroy_bst(dict *d) {
+	bst *b = d->dt;
+	bst_destroy(b);
 }
