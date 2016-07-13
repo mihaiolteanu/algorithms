@@ -123,6 +123,25 @@ int bst_count(bst *b) {
 	return res;
 }
 
+static void nodes_collect(bst_node *node, array *nodes) {
+	array_add(nodes, node);
+}
+
+/* Collect all the nodes in an array and deallocate them. Otherwise, I can't get
+ * to the node children if I deallocate it as I visit the node. */
+void bst_destroy(bst *b) {
+	array a;
+	bst_node *node;
+
+	array_init(&a, sizeof(bst_node), NULL);
+	traverse_inorder_visit_node(b->head, (bst_visit_fn_t)nodes_collect, &a);
+	for (int i = 0; i < array_size(&a); i++) {
+		node = array_value(&a, i);
+		free(node->data);
+		free(node);
+	}
+}
+
 void bst_traverse_inorder(bst *b,
 			  bst_visit_fn_t visit,
 			  void *obj) {

@@ -54,6 +54,8 @@ extern void *bst_max(bst *b);
 /* Returns number of nodes in the bst. */
 extern int bst_count(bst *b);
 
+extern void bst_destroy(bst *b);
+
 /* Function type for visit function to be caled for each node. Used for tree
    traversal. */
 typedef void (*bst_visit_fn_t)(void *visited, void *obj);
