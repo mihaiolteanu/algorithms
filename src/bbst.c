@@ -39,6 +39,11 @@ static void reinsert(bst *b, sarray *sa, size_t m, size_t n) {
 	reinsert(b, sa, middle + 1, n);             /* Insert the right nodes */
 }
 
+void *bbst_search(bbst *bb, void *elem_addr) {
+	bst *b = &bb->b;
+	return bst_search(b, elem_addr);
+}
+
 void bbst_destroy(bbst *bb) {
 	bst *b = &bb->b;
 	sarray *sa = &bb->sa;

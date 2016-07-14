@@ -24,6 +24,8 @@ extern int bbst_init(bbst *bb, size_t elem_size, comp_fn_t comp);
  * bbst.*/
 extern int bbst_insert(bbst *bb, void *elem_addr);
 
+extern void *bbst_search(bbst *bb, void *elem_addr);
+
 extern void bbst_destroy(bbst *bb);
 
 #endif // BBST_H
