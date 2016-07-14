@@ -2,6 +2,7 @@ TARGET := main
 TARGET_TEST := $(TARGET)_test
 CFLAGS += -g
 CFLAGS += -std=c99
+CFLAGS += -Wall
 INC := -Iinclude
 
 # Automatic dependency generation from this link:
