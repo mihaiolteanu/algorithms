@@ -6,14 +6,12 @@
    into the bst. The sorted array elements are bst nodes. */
 static void reinsert(bst *b, sarray *sa, size_t m, size_t n);
 
-extern int bbst_init(bbst *bb, size_t elem_size,
-		     comp_fn_t comp,
-		     comp_fn_t node_comp) {
+extern int bbst_init(bbst *bb, size_t elem_size, comp_fn_t comp) {
 	bst *b = &bb->b;
 	sarray *sa = &bb->sa;
 
 	bst_init(b, elem_size, comp);
-	sarray_init(sa, sizeof(bst_node) + sizeof(int), node_comp);
+	sarray_init(sa, sizeof(bst_node), comp);
 
 	return 0;
 }
@@ -21,17 +19,17 @@ extern int bbst_init(bbst *bb, size_t elem_size,
 int bbst_insert(bbst *bb, void *elem_addr) {
 	bst *b = &bb->b;
 	bst_node *head = b->head;
-	bst_node *node;
 	sarray *sa = &bb->sa;
 
-	node = bst_insert(b, elem_addr);
+	bst_insert(b, elem_addr);
 	/* The data stored in the sorted array is the whole bst node. */
-	sarray_add(sa, node);
+	sarray_add(sa, elem_addr);
 	if (head != NULL) {
 		/* Reinsert all the elements from the sorted array back into the
 		 * bst to keep the tree balanced. */
 		b->head = NULL;
 		int sa_size = sarray_size(sa);
+		bst_destroy(b);
 		reinsert(b, sa, 0, sa_size-1);
 	}
 	else
@@ -43,10 +41,9 @@ static void reinsert(bst *b, sarray *sa, size_t m, size_t n) {
 		return;
 
 	size_t middle = (m + n) / 2;                /* Middle index */
-	bst_node *node = sarray_value(sa, middle);  /* Middle node */
+	void *value = sarray_value(sa, middle);     /* Middle node */
 
-	node->left = node->right = NULL;
-	bst_insert_node(b, node);
+	bst_insert(b, value);
 	if (middle > 0)
 		reinsert(b, sa, m, middle - 1);     /* Insert the left nodes */
 	reinsert(b, sa, middle + 1, n);             /* Insert the right nodes */
