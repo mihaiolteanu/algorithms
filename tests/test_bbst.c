@@ -8,10 +8,6 @@
 
 static void test_bbst_balancing();
 
-static int node_comp(const bst_node *a, const bst_node *b) {
-	return comp_int_member(a->data, b->data);
-}
-
 static void node_visit(int *visited, array *a) {
 	array_add(a, visited);
 }
@@ -27,7 +23,7 @@ void test_bbst_balancing() {
 	/* Collect the elements from the bst after insertion into an array. */
 	array a;
 
-	bbst_init(&bb, sizeof(int), comp_int_member, (comp_fn_t)node_comp);
+	bbst_init(&bb, sizeof(int), comp_int_member);
 	array_init(&a, sizeof(int), NULL);
 	/* Insert 1, 2, 3, 4, 5, 6, 7 into the tree. */
 	for (int i = 1; i < size+1; i++)

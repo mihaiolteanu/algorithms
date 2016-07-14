@@ -18,9 +18,7 @@ typedef struct {
    sorted array. This should just be a wrapper around the comp function. But C
    does not permit defining function at run-time (closures), so the user of the
    balanced binary tree has to write the wrapper himself.*/
-extern int bbst_init(bbst *bb, size_t elem_size,
-		     comp_fn_t comp,
-		     comp_fn_t node_comp);
+extern int bbst_init(bbst *bb, size_t elem_size, comp_fn_t comp);
 
 /* Insert a new element of elem_size bytes from the address elem_addr into the
  * bbst.*/
