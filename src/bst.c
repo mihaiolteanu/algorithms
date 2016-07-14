@@ -140,6 +140,7 @@ void bst_destroy(bst *b) {
 		free(node->data);
 		free(node);
 	}
+	b->head = NULL;
 }
 
 void bst_traverse_inorder(bst *b,
