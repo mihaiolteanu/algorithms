@@ -51,3 +51,12 @@ static void reinsert(bst *b, sarray *sa, size_t m, size_t n) {
 		reinsert(b, sa, m, middle - 1);     /* Insert the left nodes */
 	reinsert(b, sa, middle + 1, n);             /* Insert the right nodes */
 }
+
+void bbst_destroy(bbst *bb) {
+	bst *b = &bb->b;
+	sarray *sa = &bb->sa;
+
+	/* Both bst and sarray are allocated on the caller side. */
+	bst_destroy(b);
+	sarray_destroy(sa);
+}
