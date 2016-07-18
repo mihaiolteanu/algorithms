@@ -11,7 +11,7 @@ extern int bbst_init(bbst *bb, size_t elem_size, comp_fn_t comp) {
 	sarray *sa = &bb->sa;
 
 	bst_init(b, elem_size, comp);
-	sarray_init(sa, sizeof(bst_node), comp);
+	sarray_init(sa, elem_size, comp);
 
 	return 0;
 }
@@ -19,11 +19,12 @@ extern int bbst_init(bbst *bb, size_t elem_size, comp_fn_t comp) {
 int bbst_insert(bbst *bb, void *elem_addr) {
 	bst *b = &bb->b;
 	sarray *sa = &bb->sa;
+	int sa_size;
 
-	bst_insert(b, elem_addr);
 	sarray_add(sa, elem_addr);
 	bst_destroy(b);
-	reinsert(b, sa, 0, sarray_size(sa)-1);
+	sa_size = sarray_size(sa);
+	reinsert(b, sa, 0, sa_size-1);
 }
 
 static void reinsert(bst *b, sarray *sa, size_t m, size_t n) {
