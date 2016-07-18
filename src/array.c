@@ -29,7 +29,7 @@ int array_add(array *a, void *elem_addr) {
 }
 
 extern int array_add_at_index(array *a, void *elem_addr, size_t index) {
-	char *data = a->data;
+	char *data;
 	size_t size = a->size;
 	size_t tsize = a->tsize;
 
@@ -38,6 +38,8 @@ extern int array_add_at_index(array *a, void *elem_addr, size_t index) {
 		return -1;
 
 	increment_size(a);
+	data = a->data;
+	size = a->size;
 	// Shift one position to the right, starting from the index, to make
 	// room for the new element.
 	memmove(data + (index+1)*tsize,
