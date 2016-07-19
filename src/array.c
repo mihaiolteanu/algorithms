@@ -28,7 +28,7 @@ int array_add(array *a, void *elem_addr) {
 	return increment_size(a);
 }
 
-extern int array_add_at_index(array *a, void *elem_addr, size_t index) {
+int array_add_at_index(array *a, void *elem_addr, size_t index) {
 	char *data;
 	size_t size = a->size;
 	size_t tsize = a->tsize;
