@@ -11,8 +11,6 @@ static void test_array_search();
 static void test_array_remove_byindex();
 static void test_array_add_at_index();
 
-/* Add n elements to the array a */
-static void add_elements(array *a, size_t n);
 /* Assert that the count number of ints are not in the array. */
 static void assert_ints_null(array *a, int *ints, int count);
 
@@ -27,42 +25,50 @@ void run_all_array_tests() {
 static void test_array_search() {
 	array a;
 	/* Expected values, used for both insertion and assertion. */
-	int exp[] = {2, 5, 3, 10, 1}; 
+	int ints[] = {2, 5, 3, 10, 1};
+	int ints_size = ARRAY_SIZE(ints);
 	/* Values that should not be found in the array. */
 	int not_exp[] = {4, 9, 12};
+	int not_exp_size = ARRAY_SIZE(not_exp);
 
 	array_init(&a, sizeof(int), comp_int_member);
-	insert_ints(&a, (add_fn_t)array_add, exp, ARRAY_SIZE(exp));
+	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
 
 	/* Search existing and non-existing elements. */
-	assert_ints(&a, (search_fn_t)array_search, exp, ARRAY_SIZE(exp));
-	assert_ints_null(&a, not_exp, ARRAY_SIZE(not_exp));
+	assert_ints(&a, (search_fn_t)array_search, ints, ints_size);
+	assert_ints_null(&a, not_exp, not_exp_size);
 }
 
 static void test_array_add_at_index() {
 	array a;
-	/* Initial elements added to the array. */
-	int init[] = {2, 5, 3, 10, 1};
+	int ints[] = {2, 5, 3, 10, 1};
+	int ints_size = ARRAY_SIZE(ints);
 
 	array_init(&a, sizeof(int), comp_int_member);
-	insert_ints(&a, (add_fn_t)array_add, init, ARRAY_SIZE(init));
+	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
 
-	/* Add elements at specific indexes. */
+	/* Add elements at specific indexes - expected array. */
 	int exp[] = {0, 2, 4, 5, 3, 10, 1, 11};
 	/*           ^     ^               ^ */
+	int exp_size = ARRAY_SIZE(exp);
+
 	array_add_at_index(&a, &exp[0], 0); /* Start of array. */
 	array_add_at_index(&a, &exp[2], 2);
 	array_add_at_index(&a, &exp[7], 7); /* End of array. */
-	assert_ints(&a, (search_fn_t)array_search, exp, ARRAY_SIZE(exp));
+	assert_ints(&a, (search_fn_t)array_search, exp, exp_size);
 
 	/* Add elements at non-existend index - should not be possible. */
 	array_add_at_index(&a, &exp[0], ARRAY_SIZE(exp) + 2);
 	/* The array has not been changed. */
 	assert(array_size(&a) == ARRAY_SIZE(exp));
+	assert_ints(&a, (search_fn_t)array_search, exp, exp_size);
 }
 
 static void test_array_remove_byindex() {
 	array a;
+	int ints[] = {2, 5, 3};
+	int ints_size = ARRAY_SIZE(ints);
+
 	array_init(&a, sizeof(int), comp_int_member);
 
 	// Removing from an empty array does not modify the array.
@@ -71,49 +77,44 @@ static void test_array_remove_byindex() {
 	assert(array_size(&a) == 0);
 
 	// Add 3 random elements to the array.
-	add_elements(&a, 3);
+	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
 
-	// Removing an element decreases the size of the array by one.
+	/* Remove the first element - check the array size and values. */
 	assert(array_size(&a) == 3);
 	array_remove_byindex(&a, 0);
 	assert(array_size(&a) == 2);
+	assert(*(int*)array_value(&a, 0) == 5);
+	assert(*(int*)array_value(&a, 1) == 3);
 
-	// Removing an element at an index greater than the size does not
-	// modify the array.
-	// Index starts at zero, so this is > size
+	/* Remove an element at an index greater than the array size. */
 	array_remove_byindex(&a, 2); 
 	assert(array_size(&a) == 2);
+	assert(*(int*)array_value(&a, 0) == 5);
+	assert(*(int*)array_value(&a, 1) == 3);
 }
 
 static void test_array_size() {
 	array a;
-	size_t asize = 3;
+	int ints[] = {2, 5, 3, 10, 1};
+	int ints_size = ARRAY_SIZE(ints);
+
 	array_init(&a, sizeof(int), comp_int_member);
-
-	// Nothing added yet
+	/* Nothing added yet. */
 	assert(array_size(&a) == 0);
-
-	// Add some elements
-	add_elements(&a, asize);
-	assert(array_size(&a) == asize);
+	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
+	assert(array_size(&a) == ints_size);
 }
 
 static void test_array_value() {
 	array a;
-	size_t asize = 3;
+	int ints[] = {2, 5, 3, 10, 1};
+	int ints_size = ARRAY_SIZE(ints);
+
 	array_init(&a, sizeof(int), comp_int_member);
+	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
 
-	// Check if elements are added at the expected position
-	add_elements(&a, asize);
-
-	for  (int i = 0; i < asize; i++)
-		assert(*(int *)array_value(&a, i) == i);
-}
-
-
-static void add_elements(array *a, size_t n) {
-	for (int i = 0; i < n; i++)
-		array_add(a, &i);
+	for  (int i = 0; i < ints_size; i++)
+		assert(*(int *)array_value(&a, i) == ints[i]);
 }
 
 static void assert_ints_null(array *a, int *ints, int count) {
