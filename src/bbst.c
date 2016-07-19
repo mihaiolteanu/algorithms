@@ -45,6 +45,16 @@ void *bbst_search(bbst *bb, void *elem_addr) {
 	return bst_search(b, elem_addr);
 }
 
+void *bbst_min(bbst *bb) {
+	bst *b = &bb->b;
+	return bst_min(b);
+}
+
+void *bbst_max(bbst *bb) {
+	bst *b = &bb->b;
+	return bst_max(b);
+}
+
 void bbst_destroy(bbst *bb) {
 	bst *b = &bb->b;
 	sarray *sa = &bb->sa;

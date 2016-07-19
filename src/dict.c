@@ -85,7 +85,10 @@ static dict_fns_t dict_fns[DICT_TYPE_LAST] = {
 	{ dict_init_list, dict_search_list, dict_insert_list,       /* list */ 
 	  dict_max_list, dict_min_list, dict_destroy_list },
 	{ dict_init_bst, dict_search_bst, dict_insert_bst,          /* bst */
-	  dict_max_bst, dict_min_bst, dict_destroy_bst}
+	  dict_max_bst, dict_min_bst, dict_destroy_bst},
+	{ dict_init_bbst, dict_search_bbst, dict_insert_bbst,       /* bbst */
+	  dict_max_bbst, dict_min_bbst, dict_destroy_bbst},
+
 };
 
 /* Public interfaces. */
@@ -292,4 +295,57 @@ static void *dict_successor_bst(dict *d, void *elem_addr) {
 static void dict_destroy_bst(dict *d) {
 	bst *b = d->dt;
 	bst_destroy(b);
+}
+
+
+/* Dictionary balanced binary search tree implementation. */
+static void *dict_init_bbst(dict *d, size_t elem_size, comp_fn_t comp,
+			    dict_dtype dtype) {
+	bbst *bb;
+
+	if ((bb = malloc(sizeof(bbst))) == NULL)
+		return NULL;
+	d->dt = bb;
+	d->dtype = dtype;
+	d->comp = comp;
+	bbst_init(bb, elem_size, comp);
+	return (void *)1;
+}
+
+static void *dict_search_bbst(dict *d, void *elem_addr) {
+	bbst *bb = d->dt;
+	return bbst_search(bb, elem_addr);
+}
+
+static void *dict_insert_bbst(dict *d, void *elem_addr) {
+	bbst *bb = d->dt;
+	bbst_insert(bb, elem_addr);
+	return NULL;
+}
+
+static void *dict_max_bbst(dict *d) {
+	bbst *bb = d->dt;
+	bst *b = &bb->b;
+	return bst_max(b);
+}
+
+static void *dict_min_bbst(dict *d) {
+	bbst *bb = d->dt;
+	bst *b = &bb->b;
+	return bst_min(b);
+}
+
+static void *dict_predecessor_bbst(dict *d, void *elem_addr) {
+
+}
+
+static void *dict_successor_bbst(dict *d, void *elem_addr) {
+
+}
+
+static void dict_destroy_bbst(dict *d) {
+	bbst *bb = d->dt;
+	bst *b = &bb->b;
+	bst_destroy(b);
+	free(bb);
 }

@@ -20,7 +20,7 @@ static void test_dict_search() {
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
 
-	for (dict_dtype dtype = DICT_SARRAY; dtype < DICT_BST; dtype++) {
+	for (dict_dtype dtype = DICT_SARRAY; dtype < DICT_HASH; dtype++) {
 		dict_init(&d, sizeof(int), comp_int_member, dtype);
 		insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
 		assert_ints(&d, (search_fn_t)dict_search, ints, ints_size);
@@ -34,7 +34,7 @@ static void test_dict_max_min() {
 	int ints_size = ARRAY_SIZE(ints);
 	int *min, *max;
 
-	for (dict_dtype dtype = DICT_SARRAY; dtype < DICT_BST; dtype++) {
+	for (dict_dtype dtype = DICT_SARRAY; dtype < DICT_HASH; dtype++) {
 		dict_init(&d, sizeof(int), comp_int_member, dtype);
 		insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
 		min = dict_min(&d);
