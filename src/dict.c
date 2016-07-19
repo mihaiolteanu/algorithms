@@ -106,12 +106,6 @@ void *dict_insert(dict *d, void *elem_addr) {
 	return dict_fns[dtype].dict_insert_fn(d, elem_addr);
 }
 
-void dict_remove(dict *d, void *x) {
-	sarray *as = d->dt;;
-
-	sarray_remove_byaddr(as, x);
-}
-
 void *dict_max(dict *d) {
 	dict_dtype dtype = d->dtype;
 	return dict_fns[dtype].dict_max_fn(d);

@@ -25,7 +25,6 @@ extern int sarray_add(sarray *as, void *elem_addr);
 extern void *sarray_value(sarray *as, size_t index);
 extern void *sarray_search(sarray *as, void *elem_addr);
 extern int sarray_remove_byindex(sarray *as, size_t index);
-extern int sarray_remove_byaddr(sarray *as, void *elem_addr);
 extern int sarray_size(sarray *as);
 extern int sarray_cap(sarray *as);
 extern void sarray_destroy(sarray *as);

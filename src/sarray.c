@@ -48,10 +48,6 @@ int sarray_remove_byindex(sarray *as, size_t index) {
 	return array_remove_byindex(as->a, index);
 }
 
-int sarray_remove_byaddr(sarray *as, void *elem_addr) {
-	return array_remove_byaddr(as->a, elem_addr);
-}
-
 int sarray_size(sarray *as) {
 	array *a = as->a;
 	
