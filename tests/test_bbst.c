@@ -7,6 +7,7 @@
 #include "common_int_member.h"
 
 static void test_bbst_balancing();
+static void test_bbst_search();
 
 static void node_visit(int *visited, array *a) {
 	array_add(a, visited);
@@ -14,9 +15,10 @@ static void node_visit(int *visited, array *a) {
 
 void run_all_bbst_tests() {
 	test_bbst_balancing();
+	test_bbst_search();
 }
 
-void test_bbst_balancing() {
+static void test_bbst_balancing() {
 	bbst bb;
 	bst *b = &bb.b;
 	size_t size = 7;
@@ -47,3 +49,12 @@ void test_bbst_balancing() {
 	}
 }
 
+static void test_bbst_search() {
+	bbst bb;
+	int ints[] = {5, 3, 7, 4, 2, 3};
+	int ints_size = ARRAY_SIZE(ints);
+
+	bbst_init(&bb, sizeof(int), comp_int_member);
+	insert_ints(&bb, (add_fn_t)bbst_insert, ints, ints_size);
+	assert_ints(&bb, (search_fn_t)bbst_search, ints, ints_size);
+}
