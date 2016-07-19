@@ -100,12 +100,6 @@ int array_size(array *a) {
 	return size;
 }
 
-int array_cap(array *a) {
-	size_t cap = a->cap;
-
-	return cap;
-}
-
 void array_destroy(array *a) {
 	free(a->data);
 }

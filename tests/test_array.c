@@ -7,7 +7,6 @@
 // Test functions
 static void test_array_size();
 static void test_array_value();
-static void test_array_capacity();
 static void test_array_search();
 static void test_array_remove_byindex();
 static void test_array_add_at_index();
@@ -20,7 +19,6 @@ static void assert_ints_null(array *a, int *ints, int count);
 void run_all_array_tests() {
 	test_array_size();
 	test_array_value();
-	test_array_capacity();
 	test_array_search();
 	test_array_remove_byindex();
 	test_array_add_at_index();
@@ -85,23 +83,6 @@ static void test_array_remove_byindex() {
 	// Index starts at zero, so this is > size
 	array_remove_byindex(&a, 2); 
 	assert(array_size(&a) == 2);
-}
-
-static void test_array_capacity() {
-	array a;
-	array_init(&a, sizeof(int), comp_int_member);
-
-	// Initial capacity as expected?
-	assert(array_cap(&a) == INIT_CAP);
-
-	// Does the capacity double if the array is full?
-	add_elements(&a, INIT_CAP + 1);
-	assert(array_cap(&a) == 2*INIT_CAP);
-
-	// Does the capacity shrinks if the array is half-full?
-	array_remove_byindex(&a, 0);
-	array_remove_byindex(&a, 0);
-	assert(array_cap(&a) == INIT_CAP);
 }
 
 static void test_array_size() {

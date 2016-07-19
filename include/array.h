@@ -86,10 +86,6 @@ extern void array_qsort(array *a, int (*compar)(const void *x, const void *y));
 /* Return the number of elements currently held into the array.*/
 extern int array_size(array *a);
 
-/* Return the maximum number of elements the current array can
-hold.*/
-extern int array_cap(array *a);
-
 /* When done, free all the memory that the array_init and array_add
 might have requested from the system. */
 extern void array_destroy(array *a);
