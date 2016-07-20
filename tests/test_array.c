@@ -87,14 +87,14 @@ static void test_array_remove_byindex() {
 	assert(array_size(&a) == 3);
 	array_remove_byindex(&a, 0);
 	assert(array_size(&a) == 2);
-	assert(*(int*)array_value(&a, 0) == 5);
-	assert(*(int*)array_value(&a, 1) == 3);
+	int exp[] = {5, 3};
+	int exp_size = ARRAY_SIZE(exp);
+	assert_int_values(&a, exp, exp_size);
 
 	/* Remove an element at an index greater than the array size. */
 	array_remove_byindex(&a, 2); 
 	assert(array_size(&a) == 2);
-	assert(*(int*)array_value(&a, 0) == 5);
-	assert(*(int*)array_value(&a, 1) == 3);
+	assert_int_values(&a, exp, exp_size);
 }
 
 static void test_array_size() {
@@ -116,9 +116,7 @@ static void test_array_value() {
 
 	array_init(&a, sizeof(int), comp_int_member);
 	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
-
-	for  (int i = 0; i < ints_size; i++)
-		assert(*(int *)array_value(&a, i) == ints[i]);
+	assert_int_values(&a, ints, ints_size);
 }
 
 static void test_array_expand_fill() {
