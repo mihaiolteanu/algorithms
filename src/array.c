@@ -100,6 +100,35 @@ int array_size(array *a) {
 	return size;
 }
 
+array *array_expand_fill(array *a, size_t index, void *elem_addr) {
+	size_t size = a->size;
+	size_t tsize = a->tsize;
+	size_t cap = a->cap;
+	char *data;
+	void *tmp_data;
+
+	if (index <= size || index < 0)
+		return NULL;
+
+	/* Expand if no room left. */
+	if (cap < index) {
+		if ((tmp_data = realloc(a->data, 2*index*tsize)) == NULL)
+			return NULL;
+		a->data = tmp_data;
+		a->cap = 2*index;
+	}
+	data = a->data;
+
+	/* Fill in the gaps. */
+	for (int i = size; i <= index; i++)
+		memcpy(data + i*tsize, elem_addr, tsize);
+
+	/* Update the array. */
+	a->size = index + 1;
+
+	return a;
+}
+
 void array_destroy(array *a) {
 	free(a->data);
 }

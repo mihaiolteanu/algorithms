@@ -86,6 +86,12 @@ extern void array_qsort(array *a, int (*compar)(const void *x, const void *y));
 /* Return the number of elements currently held into the array.*/
 extern int array_size(array *a);
 
+/* If index is greater than the current array size, make the index the new array
+ * size and fill the created elements (or gaps) with the given value
+ * (elem_addr). The elem_addr should point to an element whose type is the same
+ * as the array type. */
+extern array *array_expand_fill(array *a, size_t index, void *elem_addr);
+
 /* When done, free all the memory that the array_init and array_add
 might have requested from the system. */
 extern void array_destroy(array *a);
