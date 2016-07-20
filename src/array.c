@@ -107,7 +107,7 @@ array *array_expand_fill(array *a, size_t index, void *elem_addr) {
 	char *data;
 	void *tmp_data;
 
-	if (index <= size || index < 0)
+	if (index < size || index < 0)
 		return NULL;
 
 	/* Expand if no room left. */

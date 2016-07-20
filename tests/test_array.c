@@ -127,11 +127,20 @@ static void test_array_expand_fill() {
 	array_init(&a, sizeof(int), comp_int_member);
 	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
 
+	/* Expand with enough elements to force a capacity increase of the
+	 * array. */
 	int exp[] = {2, 5, 3, 10, 1, 10, 10, 10, 10, 10, 10};
 	int exp_size = ARRAY_SIZE(exp);
 	int fill = 10;
 	array_expand_fill(&a, 10, &fill);
 	assert_int_values(&a, exp, exp_size);
+
+	/* Expand only one element - boundary test */
+	int exp1[] = {2, 5, 3, 10, 1, 10, 10, 10, 10, 10, 10, 25};
+	exp_size = ARRAY_SIZE(exp1);
+	fill = 25;
+	array_expand_fill(&a, 11, &fill);
+	assert_int_values(&a, exp1, exp_size);
 }
 
 static void assert_ints_null(array *a, int *ints, int count) {
