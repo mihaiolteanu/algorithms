@@ -11,6 +11,7 @@ static void test_array_search();
 static void test_array_remove_byindex();
 static void test_array_add_at_index();
 static void test_array_expand_fill();
+static void test_array_expand_fill_empty_array();
 
 /* Assert that the count number of ints are not in the array. */
 static void assert_ints_null(array *a, int *ints, int count);
@@ -24,6 +25,7 @@ void run_all_array_tests() {
 	test_array_remove_byindex();
 	test_array_add_at_index();
 	test_array_expand_fill();
+	test_array_expand_fill_empty_array();
 }
 
 static void test_array_search() {
@@ -141,6 +143,18 @@ static void test_array_expand_fill() {
 	fill = 25;
 	array_expand_fill(&a, 11, &fill);
 	assert_int_values(&a, exp1, exp_size);
+}
+
+static void test_array_expand_fill_empty_array() {
+	array a;
+	int exp[] = {5, 5, 5, 5, 5};
+	int exp_size = ARRAY_SIZE(exp);
+	int fill = 5;
+
+	/* Do not insert any members, just expand the array. */
+	array_init(&a, sizeof(int), comp_int_member);
+	array_expand_fill(&a, 4, &fill);
+	assert_int_values(&a, exp, exp_size);
 }
 
 static void assert_ints_null(array *a, int *ints, int count) {
