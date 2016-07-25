@@ -10,6 +10,7 @@ int main(void) {
 	run_all_bst_tests();
 	run_all_bbst_tests();
  	run_all_list_tests();
+	run_all_hash_tests();
 
 	run_all_e_03_tests();
 
