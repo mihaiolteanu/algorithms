@@ -29,13 +29,14 @@ void *hash_search(hash_table *h, void *elem_addr) {
 
 	if (index >= size)
 		return NULL; /* Not found. */
+	/* The array_value returns a pointer to my stored data, and what I'm
+	   storing is a pointer (to a list). This is the reason for casting. */
 	l = *(list**)array_value(a, index);
 	return list_search(l, elem_addr);
 }
 
 void *hash_insert(hash_table *h, void *elem_addr) {
 	array *a = h->a;
-	size_t size = a->size;
 	hash_fn_t hash_fn = h->hash_fn;
 	unsigned long hash_res = hash_fn(elem_addr);
 	unsigned long index = hash_res % h->table_size;
@@ -47,7 +48,9 @@ void *hash_insert(hash_table *h, void *elem_addr) {
 		if ((l = malloc(sizeof(list))) == NULL)
 			return NULL;
 		list_init(l, h->tsize, h->comp);
-		/* Copy the malloc'ed address into the array. */
+		/* The array stores a pointer to my data, and what I'm storing
+		   is a pointer (to a list). This is the reason for passing the
+		   list pointer address and not the list pointer itself. */
 		array_add_at_index(a, &l, index);
 	}
 	list_add(l, elem_addr);
