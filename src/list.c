@@ -101,6 +101,9 @@ void list_destroy(list *l) {
 static void deallocate_all_nodes(list_node *node) {
 	if (node != NULL)
 		deallocate_all_nodes(node->next);
+	else
+		return;
+	free(node->data);
 	free(node);
 }
 
