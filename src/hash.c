@@ -57,3 +57,18 @@ void *hash_insert(hash_table *h, void *elem_addr) {
 
 	return elem_addr;
 }
+
+void hash_destroy(hash_table *h) {
+	array *a = h->a;
+	unsigned long table_size = h->table_size;
+	list *l;
+
+	for (int i = 0; i < table_size; i++) {
+		l = *(list**)array_value(a, i);
+		if (l != NULL) {
+			list_destroy(l);
+			free (l);
+		}
+	}
+	free(a);
+}

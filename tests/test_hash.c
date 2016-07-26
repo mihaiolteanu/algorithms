@@ -31,6 +31,7 @@ static void test_hash_search() {
 	else
 		assert(0 && "hash search returned NULL");
 
+	hash_destroy(&h);
 }
 
 static unsigned long string_hash(char **str) {

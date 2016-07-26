@@ -22,5 +22,6 @@ extern void *hash_init(hash_table *h, size_t elem_size,
 		       unsigned long table_size);
 extern void *hash_search(hash_table *h, void *elem_addr);
 extern void *hash_insert(hash_table *h, void *elem_addr);
+extern void hash_destroy(hash_table *h);
 
 #endif // HASH_H
