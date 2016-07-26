@@ -239,7 +239,7 @@ static void *dict_successor_list(dict *d, void *elem_addr) {
 
 static void dict_destroy_list(dict *d) {
 	list *l = d->dt;
-	// list_destroy(l)
+	list_destroy(l);
 	free(l);
 }
 
