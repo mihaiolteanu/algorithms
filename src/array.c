@@ -80,8 +80,14 @@ int array_remove_byindex(array *a, size_t index) {
 	char *data = a->data;
 
 	if (index >= size || index < 0)
-		return OK;
+		return OK;     /* Invalid index. */
+        if (index+1 == size) { /* Last element, nothing to move around. */
+                a->size--;
+                return OK;
+        }
 
+        /* Shift all elements to the left with one position, overwriting the
+           element at index, which is effectively removed from the array. */
 	char *dest = data + index*tsize;
 	char *src = data + (index+1)*tsize;
 	size_t elems = (size - index - 1)*tsize;
