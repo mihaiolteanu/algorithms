@@ -124,7 +124,8 @@ int bst_count(bst *b) {
 }
 
 static void nodes_collect(bst_node *node, array *nodes) {
-	array_add(nodes, node);
+        /* Add the pointer to node, so that I can free it later. */
+	array_add(nodes, &node);
 }
 
 /* Collect all the nodes in an array and deallocate them. Otherwise, I can't get
@@ -133,14 +134,15 @@ void bst_destroy(bst *b) {
 	array a;
 	bst_node *node;
 
-	array_init(&a, sizeof(bst_node), NULL);
+	array_init(&a, sizeof(bst_node*), NULL);
 	traverse_inorder_visit_node(b->head, (bst_visit_fn_t)nodes_collect, &a);
 	for (int i = 0; i < array_size(&a); i++) {
-		node = array_value(&a, i);
+		node = *(bst_node**)array_value(&a, i);
 		free(node->data);
 		free(node);
 	}
 	b->head = NULL;
+        array_destroy(&a);
 }
 
 void bst_traverse_inorder(bst *b,
