@@ -26,7 +26,7 @@ int list_add(list *l, void *elem_addr) {
 	list_node *node = malloc(sizeof(list_node));
 	if (node == NULL)
 		return ERROR;
-	if ((node->data = malloc(sizeof(tsize))) == NULL)
+	if ((node->data = malloc(tsize)) == NULL)
 		return ERROR;
 	memcpy(node->data, elem_addr, tsize);
 	node->next = l->head;
