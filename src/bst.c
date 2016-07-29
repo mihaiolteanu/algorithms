@@ -287,7 +287,7 @@ static bst_node *new_node(size_t tsize, void *elem_addr) {
 
 	if (newnode == NULL)
 		return NULL;
-	if ((newnode->data = malloc(sizeof(tsize))) == NULL)
+	if ((newnode->data = malloc(tsize)) == NULL)
 		return NULL;
 
 	memcpy(newnode->data, elem_addr, tsize);
