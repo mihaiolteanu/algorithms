@@ -110,8 +110,9 @@ array *array_expand_fill(array *a, size_t index, void *elem_addr) {
 	if (index < size || index < 0)
 		return NULL;
 
-	/* Expand if no room left. */
-	if (cap < index) {
+	/* Expand if no room left. 'index' starts at zero, so if cap == index I
+           need to add index + 1 new elements.*/
+	if (cap <= index) {
 		if ((tmp_data = realloc(a->data, 2*index*tsize)) == NULL)
 			return NULL;
 		a->data = tmp_data;
