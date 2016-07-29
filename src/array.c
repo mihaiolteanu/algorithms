@@ -22,9 +22,11 @@ int array_init(array *a, size_t elem_size, comp_fn_t comp) {
 }
 
 int array_add(array *a, void *elem_addr) {
-	memcpy(a->data + a->size*a->tsize,
-	       elem_addr,
-	       a->tsize);
+        char *data = a->data;
+	size_t size = a->size;
+	size_t tsize = a->tsize;
+
+	memcpy(data + size*tsize, elem_addr, tsize);
 	return increment_size(a);
 }
 
@@ -154,7 +156,7 @@ static int increment_size(array *a) {
 	a->cap = 2*cap;
 	a->data = tmp_data;
 	return OK;
-}		
+}
 
 /* 3-3.
    helper function for implementing a solution to exercise 3-3 (a) */
