@@ -167,7 +167,7 @@ void bst_traverse_breadth_first(bst *b, bst_visit_fn_t visit, void *obj) {
 	bst_node *head = b->head;
 
 	/* Hold the nodes to be visited in a queue. */
-	queue_init(&q, sizeof(bst_node) + btsize);
+	queue_init(&q, sizeof(bst_node));
 	queue_enqueue(&q, head);
 	traverse_breadth_first(&q, visit, obj);
 }
