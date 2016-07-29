@@ -20,6 +20,7 @@ int queue_enqueue(queue *q, void *x) {
 
 void *queue_dequeue(queue *q) {
 	array *a = q->a;
+        size_t tsize = a->tsize;
 	size_t size = array_size(a);
 
 	if (size < 1)
@@ -28,9 +29,9 @@ void *queue_dequeue(queue *q) {
 
 	// Copy the contents of the data_addr, otherwise removing the
 	// element from the array might override it.
-	void *data = malloc(sizeof(a->tsize));
-	memcpy(data, data_addr, a->tsize);		
-	
+	void *data = malloc(tsize);
+	memcpy(data, data_addr, tsize);
+
 	array_remove_byindex(a, 0);
 	// Don't forget to free the data after you use it.
 	return data;
