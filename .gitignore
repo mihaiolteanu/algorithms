@@ -38,7 +38,15 @@
 [#]*[#]
 .\#*
 
+# Emacs tags
 TAGS
+GPATH
+GRTAGS
+GTAGS
+
+# Executables
+main
+main_test
 
 # For stackdumps
 *.stackdump
