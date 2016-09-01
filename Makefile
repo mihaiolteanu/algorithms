@@ -9,6 +9,7 @@ INC := -Iinclude
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 DEPDIR = .d
 $(shell mkdir -p $(DEPDIR) >/dev/null)
+$(shell mkdir -p obj >/dev/null)
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
 POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
