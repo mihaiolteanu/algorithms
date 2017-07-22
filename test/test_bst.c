@@ -1,24 +1,9 @@
-/* test_bst.c - Tests for the generic binary search tree
- */
-
-#include <assert.h>
-#include <string.h>
 #include <stdarg.h>
 #include "bst.h"
 #include "common_city_struct.h"
 #include "common_int_member.h"
 #include "array.h"
-
-// ***** Test functions *****
-static void test_bst_insert();
-static void test_bst_search();
-static void test_bst_search_count();
-static void test_bst_min_max();
-static void test_bst_count();
-static void test_bst_traverse_inorder();
-static void test_bst_traverse_preorder();
-static void test_bst_traverse_breadth_first();
-static void test_bst_fill();
+#include "unity.h"
 
 /* ***** Helper functions ***** */
 /* Traverse the bst in the order specified by the traverse function, collecting
@@ -29,19 +14,6 @@ static void traverse_int_assert(bst *b, traverse_fn traverse, int count, ...);
 
 /* Adds the data to the array. Used as a node visit function for bst traversal*/
 static void int_visit(void *data, array *a);
-
-
-void run_all_bst_tests() {
-	test_bst_insert();
-	test_bst_search();
-	test_bst_search_count();
-	test_bst_min_max();
-	test_bst_count();
-	test_bst_traverse_inorder();
-	test_bst_traverse_preorder();
-	test_bst_traverse_breadth_first();
-	test_bst_fill();
-}
 
 static int test_bst_check_fill(void *node_data, void *elem_addr) {
 	int data = *(int*)node_data;
@@ -60,7 +32,7 @@ static void h_bst_fill(void *node_data, void *elem_addr) {
 		*(int*)node_data += *(int*)elem_addr;
 }
 
-static void test_bst_fill() {
+void test_bst_fill() {
 	bst b;
 	int fillval;
 	int ints[] = {5, 3, 7, 4, 2};
@@ -100,9 +72,9 @@ static void test_bst_fill() {
 	bst_fill(&b, test_bst_check_fill, (bst_fill_fn_t)h_bst_fill, &fillval);
 	traverse_int_assert(&b, bst_traverse_inorder,
 			    4,  2, 5, 7, 10);
-}	
+}
 
-static void test_bst_insert() {
+void test_bst_insert() {
 	bst b;
 	bst_node *node, *left, *right;
 	city *c;
@@ -123,32 +95,32 @@ static void test_bst_insert() {
 	left = bst_node_left(node);
 	right = bst_node_right(node);
 	c = bst_node_value(node);
-	assert(strcmp(c->name, "sibiu") == 0);
+	TEST_ASSERT_EQUAL_STRING(c->name, "sibiu");
 	// sb right node is empty
-	assert(right == NULL);
+	TEST_ASSERT_NULL(right);
 
 	// Descend down the tree.
 	node = left;
 	left = bst_node_left(node);
 	right = bst_node_right(node);
 	c = bst_node_value(node);
-	assert(strcmp(c->name, "cluj") == 0);
+	TEST_ASSERT_EQUAL_STRING(c->name, "cluj");
 	// cj right node is empty
-	assert(right == NULL);
+	TEST_ASSERT_NULL(right);
 
 	// Descend down the tree.
 	node = left;
 	left = bst_node_left(node);
 	right = bst_node_right(node);
 	c = bst_node_value(node);
-	assert(strcmp(c->name, "alba") == 0);
+	TEST_ASSERT_EQUAL_STRING(c->name, "alba");
 
 	// ab has no children
-	assert(left == NULL);
-	assert(right == NULL);
+	TEST_ASSERT_NULL(left);
+	TEST_ASSERT_NULL(right);
 }
 
-static void test_bst_search() {
+void test_bst_search() {
 	bst b;
 	bst_node *node, *left, *right;
 	city *c;
@@ -166,7 +138,7 @@ static void test_bst_search() {
 
 }
 
-static void test_bst_search_count() {
+void test_bst_search_count() {
 	bst b;
 	int search_elem, search_res;
 	int ints[] = {5, 3, 7, 4, 2, 7, 7, 4};
@@ -177,18 +149,18 @@ static void test_bst_search_count() {
 
 	search_elem = 7;
 	search_res = bst_search_count(&b, &search_elem);
-	assert(search_res == 3); // We've added three nodes with value 7.
+	TEST_ASSERT_EQUAL_INT(search_res, 3); // We've added three nodes with value 7.
 
 	search_elem = 4;
 	search_res = bst_search_count(&b, &search_elem);
-	assert(search_res == 2); // We've added three nodes with value 4.
+	TEST_ASSERT_EQUAL_INT(search_res, 2); // We've added three nodes with value 4.
 
 	search_elem = 5;
 	search_res = bst_search_count(&b, &search_elem);
-	assert(search_res == 1); // We've added one node with value 5.
+	TEST_ASSERT_EQUAL_INT(search_res, 1); // We've added one node with value 5.
 }
 
-static void test_bst_min_max() {
+void test_bst_min_max() {
 	bst b;
 	city *c;
 
@@ -198,13 +170,13 @@ static void test_bst_min_max() {
 	city_insert(&b, (adt_add_fn_t)bst_insert, cities_sb_cj_ab);
 
 	c = bst_min(&b);
-	assert(strcmp(c->name, "alba") == 0);
-
+	TEST_ASSERT_EQUAL_STRING(c->name, "alba");
+        
 	c = bst_max(&b);
-	assert(strcmp(c->name, "sibiu") == 0);
+	TEST_ASSERT_EQUAL_STRING(c->name, "sibiu");       
 }
 
-static void test_bst_count() {
+void test_bst_count() {
 	bst b;
 	int count;
 	int ints[] = {5, 3, 7, 4, 2, 3};
@@ -213,21 +185,21 @@ static void test_bst_count() {
 	bst_init(&b, sizeof(int), comp_int_member);
 	insert_ints(&b, (add_fn_t)bst_insert, ints, ints_size);
 	count = bst_count(&b);
-	assert(count == 6);
+	TEST_ASSERT_EQUAL_INT(count, 6);
 }
 
 /* The following test functions use the same tree, but traverses it in different
  * fashions. The visiting function adds the node data (an int) to a resizable
  * array. The traverse function decides in what order the nodes are visited. The
  * arguments to the assert function reflect the expected data of the visited
- * nodes based on the visiting order. 
+ * nodes based on the visiting order.
 	           5
 		  / \
                  3   7
                 / \
                2   4
 */
-static void test_bst_traverse_inorder() {
+void test_bst_traverse_inorder() {
 	bst b;
 	int ints[] = {5, 3, 7, 4, 2};
 	int ints_size = ARRAY_SIZE(ints);
@@ -238,7 +210,7 @@ static void test_bst_traverse_inorder() {
 			    5,  2, 3, 4, 5, 7);
 }
 
-static void test_bst_traverse_preorder() {
+void test_bst_traverse_preorder() {
 	bst b;
 	int ints[] = {5, 3, 7, 4, 2};
 	int ints_size = ARRAY_SIZE(ints);
@@ -249,7 +221,7 @@ static void test_bst_traverse_preorder() {
 			    5,  5, 3, 2, 4, 7);
 }
 
-static void test_bst_traverse_breadth_first() {
+void test_bst_traverse_breadth_first() {
 	bst b;
 	int ints[] = {5, 3, 7, 4, 2};
 	int ints_size = ARRAY_SIZE(ints);
@@ -276,7 +248,7 @@ static void traverse_int_assert(bst *b, traverse_fn traverse, int count, ...) {
 	   this function */
 	va_start(ap, count);
 	for (int i = 0; i < count; i++)
-		assert(*(int*)array_value(&a, i) == va_arg(ap, int));
+	        TEST_ASSERT_EQUAL(*(int*)array_value(&a, i), va_arg(ap, int));
 
 	va_end(ap);
 }

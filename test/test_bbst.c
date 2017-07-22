@@ -1,24 +1,13 @@
-/* test_bst.c - Tests for the generic balanced binary search tree
- */
-
-#include <assert.h>
 #include "bbst.h"
 #include "array.h"
 #include "common_int_member.h"
-
-static void test_bbst_balancing();
-static void test_bbst_search();
+#include "unity.h"
 
 static void node_visit(int *visited, array *a) {
 	array_add(a, visited);
 }
 
-void run_all_bbst_tests() {
-	test_bbst_balancing();
-	test_bbst_search();
-}
-
-static void test_bbst_balancing() {
+void test_bbst_balancing() {
 	bbst bb;
 	bst *b = &bb.b;
 	size_t size = 7;
@@ -45,11 +34,11 @@ static void test_bbst_balancing() {
 
 	for (int i = 0; i < size; i++) {
 		int *value = (int *)array_value(&a, i);
-		assert(*value == expected[i]);
+		TEST_ASSERT_EQUAL_INT(*value, expected[i]);
 	}
 }
 
-static void test_bbst_search() {
+void test_bbst_search() {
 	bbst bb;
 	int ints[] = {5, 3, 7, 4, 2, 3};
 	int ints_size = ARRAY_SIZE(ints);

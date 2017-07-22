@@ -1,14 +1,7 @@
-#include <assert.h>
-#include <stddef.h>
 #include "queue.h"
+#include "unity.h"
 
-static void test_queue_enqueue_dequeue();
-
-void run_all_queue_tests() {
-	test_queue_enqueue_dequeue();
-}
-
-static void test_queue_enqueue_dequeue() {
+void test_queue_enqueue_dequeue() {
 	// Test a queue of ints.
 	queue q;
 	queue_init(&q, sizeof(int));
@@ -21,7 +14,7 @@ static void test_queue_enqueue_dequeue() {
 	// Dequeue and check the correct order.
 	for (int i = 0; i < elems; i++) {
 		int top = *(int*)queue_dequeue(&q);
-		assert(top == i);
+		TEST_ASSERT_EQUAL_INT(top, i);
 	}
 }
 

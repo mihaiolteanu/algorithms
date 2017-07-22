@@ -1,18 +1,10 @@
-#include <assert.h>
-#include <string.h>
-#include <math.h>
 #include "hash.h"
-
-static void test_hash_search();
+#include "unity.h"
 
 static unsigned long string_hash(char **str);
 static int string_comp_pointers(const char *a, const char *b);
 
-void run_all_hash_tests() {
-	test_hash_search();
-}
-
-static void test_hash_search() {
+void test_hash_search() {
 	hash_table h;
 	char *str;
 	char *what = "what";
@@ -27,10 +19,11 @@ static void test_hash_search() {
 	str = *(char**)hash_search(&h, &what);
 
 	if (str != NULL)
-		assert(strcmp(str, "what") == 0);
+	        TEST_ASSERT_EQUAL_STRING(str, "what");
+                
 	else
-		assert(0 && "hash search returned NULL");
-
+	        TEST_ASSERT_TRUE_MESSAGE(0, "hash search returned NULL");
+	
 	hash_destroy(&h);
 }
 

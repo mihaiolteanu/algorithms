@@ -1,21 +1,9 @@
-/* test_dict.c - Tests for the generic dictionary data structure
- */
-
-#include <assert.h>
-#include <string.h>
 #include "dict.h"
 #include "common_int_member.h"
 #include "system.h"
+#include "unity.h"
 
-static void test_dict_search();
-static void test_dict_max_min();
-
-void run_all_dict_tests() {
-	test_dict_search();
-	test_dict_max_min();
-}
-
-static void test_dict_search() {
+void test_dict_search() {
 	dict d;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
@@ -28,7 +16,7 @@ static void test_dict_search() {
 	}
 }
 
-static void test_dict_max_min() {
+void test_dict_max_min() {
 	dict d;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
@@ -39,8 +27,8 @@ static void test_dict_max_min() {
 		insert_ints(&d, (add_fn_t)dict_insert, ints, ints_size);
 		min = dict_min(&d);
 		max = dict_max(&d);
-		assert(*min == 1);
-		assert(*max == 10);
+		TEST_ASSERT_EQUAL_INT(*min, 1);
+		TEST_ASSERT_EQUAL_INT(*max, 10);
 		dict_destroy(&d);
 	}
 }
