@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+
+# Generate a list of mocks dependencies for the input file
+
+script_path=${0:a:h}		# get this script parent absolute path
+file=$1				# test_calculator.c
+mocks=$(cat $file | grep "include \"mock_" | awk -F "\"" '{print $2}')
+
+: ${(A)candidates::=${(f)mocks}} # make array of mock header files
+
+# Print a cmake list of mock header files
+for mock in $candidates; do
+    echo -n $script_path/build/mocks/${mock:r}.c";"
+done

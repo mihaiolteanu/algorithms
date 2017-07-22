@@ -1,0 +1,41 @@
+#!/usr/bin/env zsh
+
+option=$1
+script_path=${0:a:h} # get this script parent absolute path
+build_path=$script_path/build
+test_path=$script_path/test
+
+build() {
+    cmake -H$script_path -B$build_path && make -C $build_path/ >/dev/null
+}
+
+run() {
+    for binary in ${build_path}/test_*(.); do
+	$binary
+    done
+}
+
+clean() {
+    rm -rf $build_path/*
+    rm $test_path/test_runners/*
+}
+
+case $option in
+    'b' | 'build')
+        build
+	;;
+    'r' | 'run')
+	run
+	;;
+    'a' | 'all')
+	build && run
+	;;
+    'c' | 'clean')
+	clean
+	;;
+    *)
+	echo "no such option"
+	exit 1
+	;;
+esac
+

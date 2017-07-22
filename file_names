@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+# Build file names based on the input file name
+
+file=$1				# /path/to/test_add.c
+name=${file:t}			# test_add.c
+binary=${name:r}		# test_add
+src=$name[(ws:_:)2]		# add.c
+runner=${binary}_runner.c	# add_add_runner.c
+
+echo -n $src";"$runner";"$binary # easy to get with cmake list command

@@ -1,34 +1,13 @@
-#include <assert.h>
-#include <stdarg.h>
-#include <stdio.h>
 #include "array.h"
 #include "common_int_member.h"
-
-// Test functions
-static void test_array_size();
-static void test_array_value();
-static void test_array_search();
-static void test_array_remove_byindex();
-static void test_array_add_at_index();
-static void test_array_expand_fill();
-static void test_array_expand_fill_empty_array();
+#include "unity.h"
 
 /* Assert that the count number of ints are not in the array. */
 static void assert_ints_null(array *a, int *ints, int count);
 /* Assert array values. */
 static void assert_int_values(array *a, int *ints, int ints_size);
 
-void run_all_array_tests() {
-	test_array_size();
-	test_array_value();
-	test_array_search();
-	test_array_remove_byindex();
-	test_array_add_at_index();
-	test_array_expand_fill();
-	test_array_expand_fill_empty_array();
-}
-
-static void test_array_search() {
+void test_array_search() {
 	array a;
 	/* Expected values, used for both insertion and assertion. */
 	int ints[] = {2, 5, 3, 10, 1};
@@ -45,7 +24,7 @@ static void test_array_search() {
 	assert_ints_null(&a, not_exp, not_exp_size);
 }
 
-static void test_array_add_at_index() {
+void test_array_add_at_index() {
 	array a;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
@@ -66,11 +45,11 @@ static void test_array_add_at_index() {
 	/* Add elements at non-existend index - should not be possible. */
 	array_add_at_index(&a, &exp[0], ARRAY_SIZE(exp) + 2);
 	/* The array has not been changed. */
-	assert(array_size(&a) == ARRAY_SIZE(exp));
+	TEST_ASSERT_EQUAL(array_size(&a), ARRAY_SIZE(exp));
 	assert_ints(&a, (search_fn_t)array_search, exp, exp_size);
 }
 
-static void test_array_remove_byindex() {
+void test_array_remove_byindex() {
 	array a;
 	int ints[] = {2, 5, 3};
 	int ints_size = ARRAY_SIZE(ints);
@@ -78,40 +57,40 @@ static void test_array_remove_byindex() {
 	array_init(&a, sizeof(int), comp_int_member);
 
 	// Removing from an empty array does not modify the array.
-	assert(array_size(&a) == 0);
+	TEST_ASSERT_EQUAL_INT(array_size(&a), 0);
 	array_remove_byindex(&a, 0);
-	assert(array_size(&a) == 0);
+	TEST_ASSERT_EQUAL_INT(array_size(&a), 0);
 
 	// Add 3 random elements to the array.
 	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
 
 	/* Remove the first element - check the array size and values. */
-	assert(array_size(&a) == 3);
+	TEST_ASSERT_EQUAL_INT(array_size(&a), 3);
 	array_remove_byindex(&a, 0);
-	assert(array_size(&a) == 2);
+	TEST_ASSERT_EQUAL_INT(array_size(&a), 2);
 	int exp[] = {5, 3};
 	int exp_size = ARRAY_SIZE(exp);
 	assert_int_values(&a, exp, exp_size);
 
 	/* Remove an element at an index greater than the array size. */
-	array_remove_byindex(&a, 2); 
-	assert(array_size(&a) == 2);
+	array_remove_byindex(&a, 2);
+	TEST_ASSERT_EQUAL_INT(array_size(&a), 2);
 	assert_int_values(&a, exp, exp_size);
 }
 
-static void test_array_size() {
+void test_array_size() {
 	array a;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
 
 	array_init(&a, sizeof(int), comp_int_member);
 	/* Nothing added yet. */
-	assert(array_size(&a) == 0);
+	TEST_ASSERT_EQUAL_INT(array_size(&a), 0);
 	insert_ints(&a, (add_fn_t)array_add, ints, ints_size);
-	assert(array_size(&a) == ints_size);
+	TEST_ASSERT_EQUAL_INT(array_size(&a), ints_size);
 }
 
-static void test_array_value() {
+void test_array_value() {
 	array a;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
@@ -121,7 +100,7 @@ static void test_array_value() {
 	assert_int_values(&a, ints, ints_size);
 }
 
-static void test_array_expand_fill() {
+void test_array_expand_fill() {
 	array a;
 	int ints[] = {2, 5, 3, 10, 1};
 	int ints_size = ARRAY_SIZE(ints);
@@ -145,7 +124,7 @@ static void test_array_expand_fill() {
 	assert_int_values(&a, exp1, exp_size);
 }
 
-static void test_array_expand_fill_empty_array() {
+void test_array_expand_fill_empty_array() {
 	array a;
 	int exp[] = {5, 5, 5, 5, 5};
 	int exp_size = ARRAY_SIZE(exp);
@@ -160,7 +139,7 @@ static void test_array_expand_fill_empty_array() {
 static void assert_ints_null(array *a, int *ints, int count) {
 	for (int i = 0; i < count; i++) {
 		int *res = array_search(a, &ints[i]);
-		assert (res == NULL);
+		TEST_ASSERT_NULL(res);               
 	}
 }
 
@@ -168,8 +147,8 @@ static void assert_int_values(array *a, int *ints, int ints_size) {
 	for (int i = 0; i < ints_size; i++) {
 		int *res = array_value(a, i);
 		if (res != NULL)
-			assert(*res == ints[i]);
+		        TEST_ASSERT_EQUAL(*res, ints[i]);
 		else if (ints[i] != 0) /* Value 0 can be mistaken with NULL. */
-			assert(0 && "Array value returned NULL");
+		        TEST_ASSERT_TRUE_MESSAGE(0, "Array value returned NULL");
 	}
 }

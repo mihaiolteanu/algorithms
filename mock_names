@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+header=$1			# /path/to/add.h
+mock=mock_${header:t:r}		# mock_add
+mock_c=${mock}.c		# mock_add.c
+mock_h=${mock}.h		# mock_add.h
+
+echo -n $mock_c";"$mock_h	# easy to get with cmake list command
