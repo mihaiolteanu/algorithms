@@ -91,14 +91,16 @@ foreach(test ${test_files})
     ${unity_src}
     ${cmock_src}
     )
+
   target_include_directories(
     ${binary} PUBLIC
     ${test_dir}	      # common test file headers for each test binary
     )
 
-  # set_target_properties(${binary} PROPERTIES
-  #   INCLUDE_DIRECTORIES ${test_dir} # for common files to all tests
-  #   )
+  target_compile_options(
+    ${binary} PUBLIC
+    -g)				# include debugging symbols
+
 endforeach()
 
 # add_executable(calculator ${src_files})
