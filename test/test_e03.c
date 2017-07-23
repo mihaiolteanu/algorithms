@@ -1,9 +1,54 @@
-#include <assert.h>
 #include "e03.h"
 #include "bst.h"
+#include "list.h"
+#include "common_int_member.h"
 #include "unity.h"
 
-void test_e_03_10_best_fit() {
+void test_e03_01() {
+    char *parens;
+    int expect;
+
+    struct {
+	char *parens;
+	int   expect;
+    } pair[] = {
+	{"((()))"	, 0},
+	{"((())"	, 5},
+	{"(()"		, 3},
+	{""		, 0},
+	{"("		, 1},
+	{")"		, 1},
+	{NULL		, -1}
+    };
+
+    int samples = sizeof(pair)/sizeof(pair[0]);
+    for (int i=0; i<samples; i++) {
+	parens = pair[i].parens;
+	expect = pair[i].expect;
+	TEST_ASSERT_EQUAL_INT(e03_01(parens), expect);
+    }
+}
+
+void test_e03_02() {
+    list l;
+    list_node *node;
+    int value;
+    int array[5] = {1, 2, 3, 4, 5};
+
+    list_init(&l, sizeof(int), comp_int_member);
+    for (int i = 0; i < 5; i++)	/* Elements are added in reverse order. */
+	list_add(&l, &array[i]);
+    e03_02(&l);                 /* Reverse the list, obtaining the original array. */
+    node = list_first_node(&l);
+    for (int i = 0; i < 5; i++) {
+        value = *(int *)list_node_data(node);
+	TEST_ASSERT_EQUAL_INT(array[i], value);
+	node = list_next_node(node);
+    }
+    list_destroy(&l);
+}
+
+void test_e03_10_best_fit() {
 	int res;
 
 	res = e_03_10_best_fit(10, 3, 6, 2, 1, 5, 7, 2, 4, 1, 9);

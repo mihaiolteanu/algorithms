@@ -74,8 +74,6 @@ void *list_node_data(list_node *node) {
 	return (void *)node->data;
 }
 
-/* 3-2.
-   solution for exercise 3-2 */
 void list_reverse(list *l) {
 	list_node *nodep = l->head; // First element
 	list_node *prev = NULL;
@@ -116,8 +114,6 @@ static void reverse_rec(list *l, list_node *prev, list_node *node) {
 	node->next = prev;
 }
 
-/* 3-2.
-   recursive solution for exercise 3-2 */
 void list_reverse_rec(list *l) {
 	reverse_rec(l, NULL, l->head);
 }

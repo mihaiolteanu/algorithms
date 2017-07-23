@@ -4,35 +4,43 @@
 #include "e03.h"
 #include "stack.h"
 #include "bst.h"
+#include "list.h"
 
 /* §§§ Exercise 03.01 */
-void e_03_01(char *parens) {
-	stack s;
-	char c;
-	int pos = 0;
-	int res = stack_init(&s, sizeof(char));
+/* parens is a string of open and/or closed parantheses (i.e. (()()))
+   returns -1 on invalid input (null or non-parens char).
+   returns 0 if parens are balanced
+   returns the position of the first offending parens in case of unbalances parens. */
+int e03_01(char *parens) {
+    stack s;
+    char c;
+    int pos;
 
-	printf("%s\n", parens);
+    pos = 0;
+    stack_init(&s, sizeof(char));
+    if (parens == NULL)
+	return -1;
 
-	while ((c = *parens++) != '\0' && ++pos) {
-		if (c == '(')
-			stack_push(&s, &c);
-		else if (c == ')') {
-			if (stack_size(&s) == 0) {
-				printf("wrong parens at pos %d\n", pos);
-				break;
-			} else
-				stack_pop(&s);
-		}
-		else {
-			printf("wrong char, %c at %d\n", c, pos);
-			break;
-		}
+    while ((c = *parens++) != '\0') {
+	pos++;
+	if (c == '(')
+	    stack_push(&s, &c);
+	else if (c == ')') {
+	    if (stack_size(&s) == 0)
+		return pos;	/* Extra closing parens. */
+	    stack_pop(&s);
 	}
-	int size = stack_size(&s);
-	if (size > 0)
-		printf("Unclosed parens at pos %d\n", size);
-	stack_destroy(&s);
+	else
+	    return pos;		/* Not a parens char. */
+    }
+    if (stack_size(&s) > 0)
+	return pos; 		/* Not all parens were closed */
+    return 0;			/* Everything is balanced out. */
+}
+
+/* §§§ Exercise 03.02 */
+void e03_02(list *l) {
+    list_reverse(l);		/* Already implemented by the list module. */
 }
 
 /* §§§ Exercise 03.04 */

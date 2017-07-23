@@ -4,6 +4,7 @@
 #define EX_CH03_H
 
 #include "bst.h"
+#include "list.h"
 
 /* 3-1. [3] A common problem for compilers and text editors is determining 
 whether the parentheses in a string are balanced and properly nested. For 
@@ -12,7 +13,9 @@ which the strings )()( and ()) do not. Give an algorithm that returns true if a
 string contains properly nested and balanced parentheses, and false if 
 otherwise. For full credit, identify the position of the first offending 
 parenthesis if the string is not properly nested and balanced. */
-extern void ex_03_01(char *parens);
+extern int e03_01(char *parens);
+
+extern void e03_02(list *l);
 
 /* 3-10. [5] In the bin-packing problem, we are given n metal objects, each 
 weighing between zero and one kilogram. Our goal is to find the smallest number 
